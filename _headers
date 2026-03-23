@@ -18,6 +18,8 @@
 /data/*
   Cache-Control: public, max-age=3600, stale-while-revalidate=86400
 
+/api/*
+  Cache-Control: public, max-age=60, stale-while-revalidate=300
+
 /LEARN_GERMAN_RESOURCES.md
   Cache-Control: public, max-age=600
-

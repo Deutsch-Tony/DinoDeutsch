@@ -7,12 +7,13 @@
 - `SSL`: Cloudflare Universal SSL
 - `DNS / Domain`: Cloudflare DNS
 
-Project hiện tại là static site, nên không cần server riêng. Cách này là gọn nhất và rẻ nhất.
+Project hiện tại là frontend tĩnh + Cloudflare Pages Functions cho API động, nên vẫn không cần server riêng. Cách này là gọn nhất và rẻ nhất.
 
 ## File đã được chuẩn bị
 
 - `wrangler.toml`: cấu hình deploy cho Cloudflare
 - `_headers`: cache rules + security headers
+- `functions/`: API serverless chạy ngay trên Cloudflare Pages
 - `.gitignore`: file bỏ qua khi đưa lên GitHub
 - `.github/workflows/deploy-cloudflare-pages.yml`: auto deploy từ GitHub Actions lên Cloudflare Pages
 
@@ -26,9 +27,9 @@ Project hiện tại là static site, nên không cần server riêng. Cách nà
 4. Chọn `Pages`.
 5. Chọn `Upload assets`.
 6. Upload toàn bộ thư mục project này.
-7. Đặt tên project, ví dụ `deutsch-sprint`.
+7. Đặt tên project, ví dụ `deutsch-easy`.
 8. Sau khi deploy xong, Cloudflare sẽ cấp cho bạn một domain tạm dạng:
-   - `https://deutsch-sprint.pages.dev`
+   - `https://deutsch-easy.pages.dev`
 
 ### Cách 2: Deploy bằng Wrangler CLI
 
@@ -37,7 +38,7 @@ Nếu máy bạn đã cài Node.js:
 ```powershell
 npm install -g wrangler
 wrangler login
-wrangler pages deploy . --project-name deutsch-sprint
+wrangler pages deploy . --project-name deutsch-easy
 ```
 
 ### Cách 3: Deploy tự động từ GitHub
@@ -69,7 +70,7 @@ wrangler pages deploy . --project-name deutsch-sprint
 ## Gắn domain riêng
 
 1. Mua hoặc đưa domain về Cloudflare DNS.
-2. Vào project `deutsch-sprint` trong Pages.
+2. Vào project `deutsch-easy` trong Pages.
 3. Mở `Custom domains`.
 4. Thêm domain của bạn, ví dụ:
    - `deutschsprint.com`
@@ -80,18 +81,21 @@ wrangler pages deploy . --project-name deutsch-sprint
 
 - `index.html`: không cache cứng, luôn có thể cập nhật ngay
 - `app.js`, `styles.css`: cache 1 ngày
-- `fallback-data.js`, `data/*.json`: cache 1 giờ
+- `data/*.json`: cache 1 giờ
+- `/api/*`: cache ngắn 1 phút
 
 Cách này hợp với site học tập có data thay đổi theo đợt.
 
 ## Khi nào nên đổi lên backend thật
 
-Bạn chỉ cần backend khi muốn:
+Bạn chỉ cần backend riêng hoặc database riêng khi muốn:
 
 - login thật
 - đồng bộ tiến độ giữa nhiều thiết bị
 - admin panel
 - API động
+
+Hiện tại API động cơ bản đã có thể chạy bằng `Cloudflare Pages Functions`.
 
 Nếu chưa cần mấy thứ đó, Cloudflare Pages là đủ.
 

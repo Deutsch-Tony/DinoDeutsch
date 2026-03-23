@@ -66,23 +66,13 @@ function getStateSummary(vocabState) {
   };
 }
 
-async function loadJson(path) {
+async function loadApi(path) {
   if (dataCache.has(path)) return dataCache.get(path);
-
-  try {
-    const response = await fetch(path);
-    if (!response.ok) throw new Error(`Failed to load ${path}`);
-    const data = await response.json();
-    dataCache.set(path, data);
-    return data;
-  } catch (error) {
-    const inlineData = window.__INLINE_DATA__?.[path];
-    if (inlineData) {
-      dataCache.set(path, inlineData);
-      return inlineData;
-    }
-    throw error;
-  }
+  const response = await fetch(path);
+  if (!response.ok) throw new Error(`Failed to load ${path}`);
+  const data = await response.json();
+  dataCache.set(path, data);
+  return data;
 }
 
 function updateActiveNav(route) {
@@ -144,17 +134,17 @@ async function renderHome() {
       eyebrow: "Không gian học tiếng Đức cho riêng bạn",
       title: "Từ mất gốc đến có nhịp học rõ ràng, nhẹ đầu hơn mỗi ngày.",
       description:
-        "Dự án này đã được refactor theo hướng dễ sống lâu dài: layout tách riêng, logic tách riêng, dữ liệu tách riêng. Từ đây bạn có thể mở rộng từng module như Grammatik, Wortschatz, Hören, Lesen và Tests mà không cần đụng một file khổng lồ.",
+        "Website này giờ có thể chuyển dần sang kiến trúc động: frontend giữ nguyên trải nghiệm, còn dữ liệu đi qua API serverless trên Cloudflare Pages Functions. Từ đây bạn có thể thêm search, filter, lưu tiến độ, và sau này nối database mà không phải đập lại giao diện.",
       sideTitle: "Mục tiêu 90 ngày",
       sideStats: [
-        { title: "20+", text: "chủ đề nền tảng" },
+        { title: "Dynamic", text: "dữ liệu qua API" },
         { title: "1000+", text: "từ vựng đã gom" },
-        { title: "IPA", text: "đã chuẩn hóa hàng loạt" },
-        { title: "Local", text: "lưu tiến độ ngay trên máy" }
+        { title: "Functions", text: "Cloudflare serverless" },
+        { title: "Ready", text: "sẵn để nối DB" }
       ]
     })}
     <section class="pill-row">
-      <span>Tập trung người mới học</span>
+      <span>Dữ liệu động qua API</span>
       <span>Lộ trình A1-A2 dễ hiểu</span>
       <span>Code tách lớp rõ ràng</span>
       <span>Dễ mở rộng sau này</span>
@@ -162,37 +152,39 @@ async function renderHome() {
     <section class="section">
       <div class="section-head">
         <p class="eyebrow">Tổng quan kiến trúc</p>
-        <h2>Mỗi mục trên menu bây giờ đều có thể phát triển như một module riêng</h2>
+        <h2>Frontend vẫn gọn, nhưng dữ liệu giờ đã đi qua Cloudflare Pages Functions</h2>
       </div>
       <div class="feature-grid">
-        <article class="card"><h3>Dữ liệu riêng</h3><p>Mỗi phần có thể dùng file JSON riêng để quản lý nội dung dễ hơn.</p></article>
-        <article class="card"><h3>Logic riêng</h3><p>JavaScript render từng view theo route, không cần nhồi hết vào HTML.</p></article>
-        <article class="card"><h3>Theme chung</h3><p>CSS dùng chung giúp giữ giao diện nhất quán trên tất cả các module.</p></article>
-        <article class="card"><h3>Dễ mở rộng</h3><p>Sau này muốn thêm API hoặc backend thì chỉ nối ở một vài điểm rõ ràng.</p></article>
+        <article class="card"><h3>API cho modules</h3><p>Grammatik, Hören, Lesen và Tests đều có endpoint riêng.</p></article>
+        <article class="card"><h3>API cho Wortschatz</h3><p>Meta, level, topic và search đều đi qua route động.</p></article>
+        <article class="card"><h3>State phía client</h3><p>Favoriten, Đã học và Cần ôn vẫn được nhớ bằng localStorage.</p></article>
+        <article class="card"><h3>Sẵn lên cloud</h3><p>Phù hợp luôn với Cloudflare Pages + GitHub integration.</p></article>
       </div>
     </section>
   `;
 }
 
-async function renderGenericModule(path) {
-  const [module, resources] = await Promise.all([
-    loadJson(path),
-    loadJson("./data/resources.json")
+async function renderGenericModule(moduleName) {
+  const [moduleRes, resourcesRes] = await Promise.all([
+    loadApi(`/api/modules/${moduleName}`),
+    loadApi("/api/resources")
   ]);
-  const related = resources.filter((item) => item.category === module.resourceCategory);
+
+  const moduleItem = moduleRes.item;
+  const related = resourcesRes.items.filter((item) => item.category === moduleItem.resourceCategory);
 
   return `
     ${renderHero({
-      eyebrow: module.eyebrow,
-      title: module.title,
-      description: module.description,
+      eyebrow: moduleItem.eyebrow,
+      title: moduleItem.title,
+      description: moduleItem.description,
       sideTitle: "Trọng tâm",
-      sideStats: module.highlights
+      sideStats: moduleItem.highlights
     })}
     <section class="section">
       <div class="section-head">
         <p class="eyebrow">Nguồn học liên quan</p>
-        <h2>Các nguồn nên xem cho ${module.eyebrow}</h2>
+        <h2>Các nguồn nên xem cho ${moduleItem.eyebrow}</h2>
       </div>
       <div class="resource-grid">
         ${renderResourceCards(related)}
@@ -217,12 +209,8 @@ function speakGerman(text) {
 }
 
 function getProgressMeta(entryState) {
-  if (entryState.progress === "learned") {
-    return { label: "Đã học", className: "is-learned" };
-  }
-  if (entryState.progress === "review") {
-    return { label: "Cần ôn", className: "is-review" };
-  }
+  if (entryState.progress === "learned") return { label: "Đã học", className: "is-learned" };
+  if (entryState.progress === "review") return { label: "Cần ôn", className: "is-review" };
   return { label: "Mới", className: "is-new" };
 }
 
@@ -266,11 +254,13 @@ function renderVocabTableRows(items, level, topic, vocabState) {
 }
 
 async function renderVocab() {
-  const vocabData = await loadJson("./data/vocab.json");
-  const resources = await loadJson("./data/resources.json");
-  const levels = Object.keys(vocabData);
-  const initialLevel = levels[0];
-  const initialTopic = Object.keys(vocabData[initialLevel])[0];
+  const [meta, resources] = await Promise.all([
+    loadApi("/api/vocab/meta"),
+    loadApi("/api/resources?category=vocab")
+  ]);
+
+  const initialLevel = meta.levels[0]?.level || "A1";
+  const initialTopic = meta.levels[0]?.topics[0]?.topic || "Familie";
   const stateSummary = getStateSummary(loadVocabState());
 
   return `
@@ -278,12 +268,12 @@ async function renderVocab() {
       eyebrow: "Wortschatz",
       title: "Học từ vựng theo nhóm để dễ nhớ hơn và dễ lặp lại hơn.",
       description:
-        "Module này tổ chức từ vựng theo level A1-A2-B1-B2, chia theo chủ đề, có tìm kiếm, có IPA, ví dụ, phát âm và trạng thái học. Dữ liệu giờ đã vượt mốc 1000 từ để bạn dùng như một thư viện thật sự.",
+        "Module này giờ chạy qua API động: lấy meta, lấy danh sách theo level/topic, hỗ trợ search từ serverless endpoint và sẵn đường để nối database sau này.",
       sideTitle: "Bắt đầu nhanh",
       sideStats: [
-        { title: "1000+", text: "từ trong thư viện" },
-        { title: "Themen", text: "chủ đề dày hơn trước" },
-        { title: "IPA", text: "đã backfill toàn bộ" },
+        { title: `${meta.total}+`, text: "từ trong thư viện" },
+        { title: `${meta.levels.length}`, text: "level đang có" },
+        { title: "API", text: "query theo chủ đề" },
         { title: "Local", text: "nhớ tiến độ học" }
       ]
     })}
@@ -344,13 +334,13 @@ async function renderVocab() {
         <h2>Các nguồn nên xem cho Wortschatz</h2>
       </div>
       <div class="resource-grid">
-        ${renderResourceCards(resources.filter((item) => item.category === "vocab"))}
+        ${renderResourceCards(resources.items)}
       </div>
     </section>
   `;
 }
 
-function setupVocabInteractions(vocabData) {
+function setupVocabInteractions(vocabMeta) {
   const levelEl = document.getElementById("vocabLevels");
   const topicEl = document.getElementById("vocabTopics");
   const searchEl = document.getElementById("vocabSearch");
@@ -363,42 +353,38 @@ function setupVocabInteractions(vocabData) {
 
   if (!levelEl || !topicEl || !searchEl || !bodyEl || !emptyEl || !summaryEl) return;
 
-  const levels = Object.keys(vocabData);
+  const levels = vocabMeta.levels.map((item) => item.level);
   let activeLevel = levels[0];
-  let activeTopic = Object.keys(vocabData[activeLevel])[0];
+  let activeTopic = vocabMeta.levels[0]?.topics[0]?.topic;
   let keyword = "";
 
   function renderLevels() {
     levelEl.innerHTML = levels
-      .map(
-        (level) => `<button class="level-btn ${level === activeLevel ? "is-active" : ""}" data-level="${level}">${level}</button>`
-      )
+      .map((level) => `<button class="level-btn ${level === activeLevel ? "is-active" : ""}" data-level="${level}">${level}</button>`)
       .join("");
 
     levelEl.querySelectorAll("[data-level]").forEach((button) => {
       button.addEventListener("click", () => {
         activeLevel = button.dataset.level;
-        activeTopic = Object.keys(vocabData[activeLevel])[0];
+        activeTopic = vocabMeta.levels.find((item) => item.level === activeLevel)?.topics[0]?.topic;
         renderLevels();
         renderTopics();
-        renderTable();
+        void renderTable();
       });
     });
   }
 
   function renderTopics() {
-    const topics = Object.keys(vocabData[activeLevel]);
+    const topics = vocabMeta.levels.find((item) => item.level === activeLevel)?.topics.map((item) => item.topic) || [];
     topicEl.innerHTML = topics
-      .map(
-        (topic) => `<button class="topic-btn ${topic === activeTopic ? "is-active" : ""}" data-topic="${topic}">${topic}</button>`
-      )
+      .map((topic) => `<button class="topic-btn ${topic === activeTopic ? "is-active" : ""}" data-topic="${topic}">${topic}</button>`)
       .join("");
 
     topicEl.querySelectorAll("[data-topic]").forEach((button) => {
       button.addEventListener("click", () => {
         activeTopic = button.dataset.topic;
         renderTopics();
-        renderTable();
+        void renderTable();
       });
     });
   }
@@ -412,16 +398,14 @@ function setupVocabInteractions(vocabData) {
     `;
   }
 
-  function renderTable() {
-    const source = vocabData[activeLevel][activeTopic];
+  async function renderTable() {
     const vocabState = loadVocabState();
-    const items = source.filter((item) => {
-      if (!keyword) return true;
-      const haystack = [item.word, item.gender, item.pos, item.vi, item.en, item.ipa, item.example]
-        .join(" ")
-        .toLowerCase();
-      return haystack.includes(keyword.toLowerCase());
-    });
+    const query = new URLSearchParams({ level: activeLevel, topic: activeTopic });
+    if (keyword) query.set("search", keyword);
+
+    dataCache.delete(`/api/vocab?${query.toString()}`);
+    const result = await loadApi(`/api/vocab?${query.toString()}`);
+    const items = result.items;
 
     levelLabel.textContent = `Trình độ: ${activeLevel}`;
     topicLabel.textContent = `Chủ đề: ${activeTopic}`;
@@ -441,19 +425,19 @@ function setupVocabInteractions(vocabData) {
         if (action === "favorite") toggleFavorite(vocabId);
         if (action === "learned") setProgress(vocabId, "learned");
         if (action === "review") setProgress(vocabId, "review");
-        renderTable();
+        void renderTable();
       });
     });
   }
 
   searchEl.addEventListener("input", (event) => {
     keyword = event.target.value.trim();
-    renderTable();
+    void renderTable();
   });
 
   renderLevels();
   renderTopics();
-  renderTable();
+  void renderTable();
 }
 
 function renderLoadError(message) {
@@ -464,13 +448,13 @@ async function renderRoute(route) {
   try {
     if (route === "home") return await renderHome();
     if (route === "vocab") return await renderVocab();
-    if (route === "grammar") return await renderGenericModule("./data/grammar.json");
-    if (route === "listening") return await renderGenericModule("./data/listening.json");
-    if (route === "reading") return await renderGenericModule("./data/reading.json");
-    if (route === "test") return await renderGenericModule("./data/tests.json");
+    if (route === "grammar") return await renderGenericModule("grammar");
+    if (route === "listening") return await renderGenericModule("listening");
+    if (route === "reading") return await renderGenericModule("reading");
+    if (route === "test") return await renderGenericModule("test");
     return await renderHome();
   } catch (error) {
-    return renderLoadError("Không tải được dữ liệu. Hãy mở web qua static server hoặc dùng bản fallback nội bộ.");
+    return renderLoadError("Không tải được dữ liệu động từ API. Hãy kiểm tra Cloudflare Pages Functions hoặc môi trường deploy.");
   }
 }
 
@@ -482,8 +466,8 @@ async function mountRoute() {
   app.innerHTML = await renderRoute(route);
 
   if (route === "vocab") {
-    const vocabData = await loadJson("./data/vocab.json");
-    setupVocabInteractions(vocabData);
+    const vocabMeta = await loadApi("/api/vocab/meta");
+    setupVocabInteractions(vocabMeta);
   }
 }
 
