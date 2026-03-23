@@ -1,0 +1,12 @@
+﻿{
+  "eyebrow": "Hören",
+  "title": "Nghe ít một nhưng đều sẽ hiểu tiếng Đức tự nhiên hơn.",
+  "description": "Module này dành cho bài nghe ngắn, transcript, shadowing và các chủ đề luyện nghe theo cấp độ.",
+  "highlights": [
+    { "title": "A1", "text": "Câu chào hỏi, mua đồ, hỏi đường, giờ giấc." },
+    { "title": "A2", "text": "Hội thoại có ngữ cảnh, đoạn hội thoại đời sống." },
+    { "title": "Transcript", "text": "Nghe trước, đối chiếu sau để tăng khả năng bắt âm." },
+    { "title": "Shadowing", "text": "Lặp lại từng cụm ngắn để tạo phản xạ." }
+  ],
+  "resourceCategory": "listening"
+}

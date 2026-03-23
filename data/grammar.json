@@ -1,0 +1,12 @@
+﻿{
+  "eyebrow": "Grammatik",
+  "title": "Học ngữ pháp theo từng khối để dễ hấp thụ hơn.",
+  "description": "Module này dành cho các điểm ngữ pháp cốt lõi, từ cases cơ bản tới trật tự từ và các thì thường gặp.",
+  "highlights": [
+    { "title": "Nominativ", "text": "Câu chủ ngữ cơ bản và nhận diện thành phần chính." },
+    { "title": "Akkusativ", "text": "Tân ngữ trực tiếp và các động từ đi với Akkusativ." },
+    { "title": "Dativ", "text": "Tân ngữ gián tiếp và giới từ thường gặp." },
+    { "title": "Wortstellung", "text": "Vị trí động từ, trật tự thời gian và câu hỏi." }
+  ],
+  "resourceCategory": "grammar"
+}

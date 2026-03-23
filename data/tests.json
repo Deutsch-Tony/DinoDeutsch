@@ -1,0 +1,12 @@
+﻿{
+  "eyebrow": "Tests",
+  "title": "Kiểm tra theo từng mục nhỏ để thấy tiến bộ rõ hơn.",
+  "description": "Module này dành cho mini test, checkpoint theo level và các bài tự đánh giá sau từng chủ đề.",
+  "highlights": [
+    { "title": "A1", "text": "Câu cơ bản, từ vựng nền tảng, nghe hiểu ngắn." },
+    { "title": "A2", "text": "Đọc hiểu ngắn, hội thoại và cấu trúc quen thuộc." },
+    { "title": "Mini quiz", "text": "5-10 câu sau mỗi bài học." },
+    { "title": "Checkpoint", "text": "Tổng hợp mỗi 2 tuần hoặc mỗi chủ đề lớn." }
+  ],
+  "resourceCategory": "test"
+}

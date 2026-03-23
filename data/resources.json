@@ -1,0 +1,16 @@
+[
+  { "name": "Goethe-Institut Online", "category": "courses", "level": "A1-C2", "price": "paid", "note": "Nguon hoc bai ban theo CEFR.", "url": "https://www.goethe.de/en/spr/kur/doln.html" },
+  { "name": "Goethe Deutschstunde", "category": "grammar", "level": "A1-C2", "price": "free", "note": "Kho tai lieu lon, hop de hoc va xay noi dung.", "url": "https://www.goethe.de/prj/dlp/en" },
+  { "name": "vhs-Lernportal", "category": "courses", "level": "A1-C1", "price": "free", "note": "Nen tang mien phi rat on de di duong dai.", "url": "https://a1.vhs-lernportal.de/wws/553396.php" },
+  { "name": "DW / Nicos Weg", "category": "video", "level": "A1-B1", "price": "free", "note": "Hoc qua video va tinh huong thuc te.", "url": "https://www.youtube.com/shorts/4-eDoThe6qo" },
+  { "name": "Schubert-Verlag", "category": "grammar", "level": "A1-B2", "price": "free", "note": "Bai tap ngu phap va ky nang co dap an.", "url": "https://www.schubert-verlag.de/aufgaben/" },
+  { "name": "Lingolia German", "category": "grammar", "level": "A1-C1", "price": "freemium", "note": "Manh ve ngu phap va test trinh do.", "url": "https://deutsch.lingolia.com/en/test" },
+  { "name": "Duden", "category": "reading", "level": "A2-C2", "price": "free", "note": "Tra chinh ta, nghia va cach dung tu.", "url": "https://www.duden.de/woerterbuch" },
+  { "name": "LEO", "category": "vocab", "level": "A1-C2", "price": "free", "note": "Tra tu, vi du va forum hoi dap.", "url": "https://www.leo.org/itde/index_en.html" },
+  { "name": "dict.cc", "category": "vocab", "level": "A1-C2", "price": "free", "note": "Tra nhanh, tien dung hang ngay.", "url": "https://denl.pocket.dict.cc/" },
+  { "name": "Forvo", "category": "listening", "level": "A1-C2", "price": "free", "note": "Nghe phat am nguoi that cho tu va cum tu.", "url": "https://forvo.com/pronounce/de/" },
+  { "name": "Easy German Podcast", "category": "listening", "level": "A2-C1", "price": "freemium", "note": "Podcast tu nhien, nghe rat tot.", "url": "https://www.easygerman.org/podcast" },
+  { "name": "Easy German", "category": "video", "level": "A2-C1", "price": "freemium", "note": "Video tieng Duc doi thuong, rat huu ich.", "url": "https://www.easygerman.org/" },
+  { "name": "Anki", "category": "vocab", "level": "A1-C2", "price": "free", "note": "Flashcard SRS cho tu vung va cau truc.", "url": "https://ankiweb.net/" },
+  { "name": "LanguageLevel", "category": "test", "level": "A1-C1", "price": "free", "note": "Test trinh do nhanh mang tinh tham khao.", "url": "https://www.languagelevel.com/" }
+]

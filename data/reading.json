@@ -1,0 +1,12 @@
+﻿{
+  "eyebrow": "Lesen",
+  "title": "Đọc để hiểu ý trước, rồi mới đọc để nâng cấp từ vựng và ngữ pháp.",
+  "description": "Module này dành cho bài đọc ngắn, glossary, câu hỏi kiểm tra và bài viết lại theo mức độ.",
+  "highlights": [
+    { "title": "Text ngắn", "text": "80-150 từ cho A1-A2, dài hơn ở B1-B2." },
+    { "title": "Glossary", "text": "Giải nghĩa từ mới ngay cạnh đoạn đọc." },
+    { "title": "Questions", "text": "Kiểm tra hiểu ý chính và chi tiết." },
+    { "title": "Rewrite", "text": "Viết lại 2-3 câu để tăng active recall." }
+  ],
+  "resourceCategory": "reading"
+}
