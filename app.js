@@ -7,34 +7,39 @@ const ROUTES = [
   { key: "vocab", selector: "#vocab" },
   { key: "listening", selector: "#listening" },
   { key: "reading", selector: "#reading" },
-  { key: "test", selector: "#test" }
+  { key: "test", selector: "#test" },
+  { key: "profile", selector: "#profile" }
 ];
 
 const SEO = {
   home: {
-    title: "Deutsch Sprint | Tự học tiếng Đức theo nhịp gọn và rõ",
+    title: "Deutsch Sprint | Tu hoc tieng Duc theo nhip gon va ro",
     description:
-      "Deutsch Sprint là không gian tự học tiếng Đức cá nhân với Wortschatz, Grammatik, Hören, Lesen và Tests được tổ chức gọn, rõ và dễ mở rộng."
+      "Deutsch Sprint la khong gian tu hoc tieng Duc ca nhan voi Wortschatz, Grammatik, Horen, Lesen va Tests duoc to chuc gon, ro va de mo rong."
   },
   grammar: {
     title: "Grammatik | Deutsch Sprint",
-    description: "Học ngữ pháp tiếng Đức theo từng khối rõ ràng: cases, thì, wortstellung và cấu trúc cần nhớ."
+    description: "Hoc ngu phap tieng Duc theo tung khoi ro rang: cases, thi, wortstellung va cau truc can nho."
   },
   vocab: {
     title: "Wortschatz | Deutsch Sprint",
-    description: "Thư viện hơn 1000 từ vựng tiếng Đức theo level A1-B2, chủ đề, tìm kiếm, IPA và tiến độ học."
+    description: "Thu vien hon 1000 tu vung tieng Duc theo level A1-B2, chu de, tim kiem, IPA va tien do hoc."
   },
   listening: {
-    title: "Hören | Deutsch Sprint",
-    description: "Module luyện nghe tiếng Đức với transcript, shadowing và nguồn học chọn lọc theo cấp độ."
+    title: "Horen | Deutsch Sprint",
+    description: "Module luyen nghe tieng Duc voi transcript, shadowing va nguon hoc chon loc theo cap do."
   },
   reading: {
     title: "Lesen | Deutsch Sprint",
-    description: "Module đọc hiểu tiếng Đức gồm bài đọc ngắn, glossary và câu hỏi kiểm tra để học gọn hơn."
+    description: "Module doc hieu tieng Duc gom bai doc ngan, glossary va cau hoi kiem tra de hoc gon hon."
   },
   test: {
     title: "Tests | Deutsch Sprint",
-    description: "Mini test và checkpoint để tự đánh giá trình độ tiếng Đức theo từng mục học."
+    description: "Mini test va checkpoint de tu danh gia trinh do tieng Duc theo tung muc hoc."
+  },
+  profile: {
+    title: "Ho so tai khoan | Deutsch Sprint",
+    description: "Thong tin tai khoan, trang thai dong bo va tien do hoc cua ban tren Deutsch Sprint."
   }
 };
 
@@ -45,6 +50,9 @@ const supabase = hasSupabaseConfig ? createClient(SUPABASE_CONFIG.url, SUPABASE_
 
 let authMode = "signin";
 let currentSession = null;
+let currentProfile = null;
+let syncStatus = "Tien do hien dang luu tren trinh duyet.";
+let syncPromise = null;
 
 function routeFromHash() {
   const key = (location.hash || "#home").replace("#", "");
@@ -63,10 +71,20 @@ function getVocabId(level, topic, word) {
   return `${level}__${topic}__${word}`;
 }
 
+function normalizeStateEntry(entry = {}) {
+  return {
+    favorite: Boolean(entry.favorite),
+    progress: entry.progress || "new",
+    updatedAt: entry.updatedAt || new Date().toISOString()
+  };
+}
+
 function loadVocabState() {
   try {
     const raw = localStorage.getItem(VOCAB_STATE_KEY);
-    return raw ? JSON.parse(raw) : {};
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    return Object.fromEntries(Object.entries(parsed).map(([key, value]) => [key, normalizeStateEntry(value)]));
   } catch {
     return {};
   }
@@ -76,21 +94,74 @@ function saveVocabState(state) {
   localStorage.setItem(VOCAB_STATE_KEY, JSON.stringify(state));
 }
 
-function toggleFavorite(vocabId) {
+async function persistVocabState() {
+  if (!currentSession?.user || !supabase) return;
+  if (syncPromise) return syncPromise;
+
   const state = loadVocabState();
-  const current = state[vocabId] || { favorite: false, progress: "new" };
-  state[vocabId] = { ...current, favorite: !current.favorite };
+  const payload = Object.entries(state).map(([vocabId, entry]) => {
+    const [level, topic, word] = vocabId.split("__");
+    return {
+      user_id: currentSession.user.id,
+      vocab_id: vocabId,
+      level,
+      topic,
+      word,
+      favorite: Boolean(entry.favorite),
+      progress: entry.progress || "new",
+      updated_at: entry.updatedAt || new Date().toISOString()
+    };
+  });
+
+  syncStatus = "Dang dong bo tien do hoc...";
+  syncPromise = supabase
+    .from("user_vocab_state")
+    .upsert(payload, { onConflict: "user_id,vocab_id" })
+    .then(({ error }) => {
+      if (error) {
+        syncStatus = `Dong bo that bai: ${error.message}`;
+        return;
+      }
+      syncStatus = `Da dong bo ${payload.length} muc tien do len cloud.`;
+    })
+    .catch((error) => {
+      syncStatus = `Dong bo that bai: ${error.message}`;
+    })
+    .finally(() => {
+      syncPromise = null;
+      if (routeFromHash() === "profile") void mountRoute();
+    });
+
+  return syncPromise;
+}
+
+function markStateChanged(mutator) {
+  const state = loadVocabState();
+  mutator(state);
   saveVocabState(state);
+  if (currentSession?.user) void persistVocabState();
+}
+
+function toggleFavorite(vocabId) {
+  markStateChanged((state) => {
+    const current = normalizeStateEntry(state[vocabId]);
+    state[vocabId] = {
+      ...current,
+      favorite: !current.favorite,
+      updatedAt: new Date().toISOString()
+    };
+  });
 }
 
 function setProgress(vocabId, progress) {
-  const state = loadVocabState();
-  const current = state[vocabId] || { favorite: false, progress: "new" };
-  state[vocabId] = {
-    ...current,
-    progress: current.progress === progress ? "new" : progress
-  };
-  saveVocabState(state);
+  markStateChanged((state) => {
+    const current = normalizeStateEntry(state[vocabId]);
+    state[vocabId] = {
+      ...current,
+      progress: current.progress === progress ? "new" : progress,
+      updatedAt: new Date().toISOString()
+    };
+  });
 }
 
 function getStateSummary(vocabState) {
@@ -100,6 +171,72 @@ function getStateSummary(vocabState) {
     learned: values.filter((item) => item.progress === "learned").length,
     review: values.filter((item) => item.progress === "review").length
   };
+}
+
+function mergeState(localState, remoteRows) {
+  const merged = { ...localState };
+
+  for (const row of remoteRows) {
+    const remoteEntry = normalizeStateEntry({
+      favorite: row.favorite,
+      progress: row.progress,
+      updatedAt: row.updated_at
+    });
+    const localEntry = normalizeStateEntry(merged[row.vocab_id]);
+
+    if (!merged[row.vocab_id]) {
+      merged[row.vocab_id] = remoteEntry;
+      continue;
+    }
+
+    const localTime = Date.parse(localEntry.updatedAt || "") || 0;
+    const remoteTime = Date.parse(remoteEntry.updatedAt || "") || 0;
+    merged[row.vocab_id] = remoteTime >= localTime ? remoteEntry : localEntry;
+  }
+
+  return merged;
+}
+
+async function loadRemoteState() {
+  if (!currentSession?.user || !supabase) return;
+
+  syncStatus = "Dang tai tien do hoc tu cloud...";
+  const { data, error } = await supabase
+    .from("user_vocab_state")
+    .select("vocab_id,favorite,progress,updated_at")
+    .eq("user_id", currentSession.user.id);
+
+  if (error) {
+    syncStatus = `Khong doc duoc tien do cloud: ${error.message}`;
+    return;
+  }
+
+  const localState = loadVocabState();
+  const mergedState = mergeState(localState, data || []);
+  saveVocabState(mergedState);
+  syncStatus = `Da nap ${Object.keys(mergedState).length} muc tien do tu cloud.`;
+  await persistVocabState();
+}
+
+async function upsertProfile(user) {
+  if (!supabase || !user) return;
+
+  const payload = {
+    id: user.id,
+    email: user.email || null,
+    full_name: user.user_metadata?.full_name || user.user_metadata?.name || null,
+    avatar_url: user.user_metadata?.avatar_url || null,
+    provider: user.app_metadata?.provider || "email"
+  };
+
+  const { data, error } = await supabase.from("profiles").upsert(payload).select("*").single();
+  if (!error) currentProfile = data;
+}
+
+async function loadProfile(user) {
+  if (!supabase || !user) return;
+  const { data, error } = await supabase.from("profiles").select("*").eq("id", user.id).single();
+  if (!error) currentProfile = data;
 }
 
 async function loadApi(path) {
@@ -120,7 +257,7 @@ function updateActiveNav(route) {
 
 function updateSeo(route) {
   const seo = SEO[route] || SEO.home;
-  const baseUrl = "https://deutsch-easy.pages.dev/";
+  const baseUrl = SUPABASE_CONFIG.redirectTo || "https://deutsch-easy.pages.dev/";
   const routeUrl = route === "home" ? baseUrl : `${baseUrl}#${route}`;
   document.title = seo.title;
 
@@ -165,18 +302,18 @@ function syncAuthTabUI() {
 
   if (titleEl) {
     titleEl.textContent =
-      authMode === "signin" ? "Đăng nhập để lưu nhịp học của bạn" : "Tạo tài khoản để giữ tiến độ học lâu dài";
+      authMode === "signin" ? "Dang nhap de luu nhip hoc cua ban" : "Tao tai khoan de giu tien do hoc lau dai";
   }
 
   if (descEl) {
     descEl.textContent =
       authMode === "signin"
-        ? "Bạn có thể đăng nhập bằng email hoặc liên kết tài khoản Google. Phiên đăng nhập sẽ do Supabase Auth quản lý."
-        : "Đăng ký bằng email hoặc dùng Google để tạo tài khoản nhanh. Sau đó bạn có thể quay lại tiếp tục học trên cùng một tài khoản.";
+        ? "Ban co the dang nhap bang email hoac lien ket tai khoan Google. Phien dang nhap se do Supabase Auth quan ly."
+        : "Dang ky bang email hoac dung Google de tao tai khoan nhanh. Sau do ban co the quay lai tiep tuc hoc tren cung mot tai khoan.";
   }
 
   if (submitEl) {
-    submitEl.textContent = authMode === "signin" ? "Đăng nhập bằng email" : "Đăng ký bằng email";
+    submitEl.textContent = authMode === "signin" ? "Dang nhap bang email" : "Dang ky bang email";
   }
 
   if (passwordEl) {
@@ -202,8 +339,8 @@ function closeAuthModal() {
 }
 
 function getUserDisplay(user) {
-  const email = user?.email || "Tài khoản";
-  const name = user?.user_metadata?.full_name || user?.user_metadata?.name || email;
+  const email = user?.email || "Tai khoan";
+  const name = currentProfile?.full_name || user?.user_metadata?.full_name || user?.user_metadata?.name || email;
   return { name, email };
 }
 
@@ -214,8 +351,8 @@ function renderTopbarAuth() {
   const user = currentSession?.user;
   if (!user) {
     container.innerHTML = `
-      <button class="auth-link auth-trigger" type="button" data-auth-mode="signin">Đăng nhập</button>
-      <button class="auth-button auth-trigger" type="button" data-auth-mode="signup">Đăng ký</button>
+      <button class="auth-link auth-trigger" type="button" data-auth-mode="signin">Dang nhap</button>
+      <button class="auth-button auth-trigger" type="button" data-auth-mode="signup">Dang ky</button>
     `;
     bindAuthTriggers();
     return;
@@ -230,12 +367,14 @@ function renderTopbarAuth() {
       <span>${escapeAttr(display.email)}</span>
     </div>
     <div class="user-actions">
-      <button type="button" id="openAuthProfile">Tài khoản</button>
-      <button type="button" id="logoutButton">Đăng xuất</button>
+      <button type="button" id="openProfileButton">Ho so</button>
+      <button type="button" id="logoutButton">Dang xuat</button>
     </div>
   `;
 
-  document.getElementById("openAuthProfile")?.addEventListener("click", () => openAuthModal("signin"));
+  document.getElementById("openProfileButton")?.addEventListener("click", () => {
+    location.hash = "#profile";
+  });
   document.getElementById("logoutButton")?.addEventListener("click", async () => {
     if (!supabase) return;
     await supabase.auth.signOut();
@@ -251,7 +390,7 @@ function bindAuthTriggers() {
 async function handleEmailAuth(event) {
   event.preventDefault();
   if (!supabase) {
-    setAuthStatus("Bạn chưa cấu hình Supabase nên chưa dùng được đăng nhập thật.", "error");
+    setAuthStatus("Ban chua cau hinh Supabase nen chua dung duoc dang nhap that.", "error");
     return;
   }
 
@@ -259,11 +398,11 @@ async function handleEmailAuth(event) {
   const password = document.getElementById("authPassword")?.value || "";
 
   if (!email || !password) {
-    setAuthStatus("Hãy nhập đủ email và mật khẩu.", "error");
+    setAuthStatus("Hay nhap du email va mat khau.", "error");
     return;
   }
 
-  setAuthStatus("Đang xử lý...", "success");
+  setAuthStatus("Dang xu ly...", "success");
 
   if (authMode === "signin") {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -271,7 +410,7 @@ async function handleEmailAuth(event) {
       setAuthStatus(error.message, "error");
       return;
     }
-    setAuthStatus("Đăng nhập thành công.", "success");
+    setAuthStatus("Dang nhap thanh cong.", "success");
     closeAuthModal();
     return;
   }
@@ -289,12 +428,12 @@ async function handleEmailAuth(event) {
     return;
   }
 
-  setAuthStatus("Đăng ký thành công. Kiểm tra email để xác nhận nếu Supabase đang bật email confirmation.", "success");
+  setAuthStatus("Dang ky thanh cong. Kiem tra email de xac nhan neu Supabase dang bat email confirmation.", "success");
 }
 
 async function handleGoogleAuth() {
   if (!supabase) {
-    setAuthStatus("Bạn chưa cấu hình Supabase nên chưa dùng được Google login.", "error");
+    setAuthStatus("Ban chua cau hinh Supabase nen chua dung duoc Google login.", "error");
     return;
   }
 
@@ -322,11 +461,29 @@ async function initAuth() {
 
   const sessionRes = await supabase.auth.getSession();
   currentSession = sessionRes.data.session;
+
+  if (currentSession?.user) {
+    await upsertProfile(currentSession.user);
+    await loadProfile(currentSession.user);
+    await loadRemoteState();
+  }
+
   renderTopbarAuth();
 
-  supabase.auth.onAuthStateChange((_event, session) => {
+  supabase.auth.onAuthStateChange(async (_event, session) => {
     currentSession = session;
+    currentProfile = null;
+
+    if (session?.user) {
+      await upsertProfile(session.user);
+      await loadProfile(session.user);
+      await loadRemoteState();
+    } else {
+      syncStatus = "Ban da dang xuat. Tien do hien chi con tren trinh duyet nay.";
+    }
+
     renderTopbarAuth();
+    if (routeFromHash() === "profile") void mountRoute();
   });
 
   bindAuthTriggers();
@@ -361,7 +518,7 @@ function renderHero({ eyebrow, title, description, sideTitle, sideStats = [] }) 
         <h1>${title}</h1>
         <p>${description}</p>
         <div class="hero-actions">
-          <a class="hero-primary" href="#vocab">Mở Wortschatz</a>
+          <a class="hero-primary" href="#vocab">Mo Wortschatz</a>
           <a class="hero-secondary" href="#grammar">Xem Grammatik</a>
         </div>
       </div>
@@ -398,7 +555,7 @@ function renderResourceCards(items) {
           </div>
           <h3>${item.name}</h3>
           <p>${item.note}</p>
-          <a href="${item.url}" target="_blank" rel="noreferrer">Mở nguồn này</a>
+          <a href="${item.url}" target="_blank" rel="noreferrer">Mo nguon nay</a>
         </article>
       `
     )
@@ -426,50 +583,50 @@ function renderCompactCards(items, eyebrow) {
 async function renderHome() {
   return `
     ${renderHero({
-      eyebrow: "Không gian học tiếng Đức cho riêng bạn",
-      title: "Từ mất gốc đến có nhịp học rõ ràng, nhẹ đầu hơn mỗi ngày.",
+      eyebrow: "Khong gian hoc tieng Duc cho rieng ban",
+      title: "Tu mat goc den co nhip hoc ro rang, nhe dau hon moi ngay.",
       description:
-        "Website này giờ có thể chuyển dần sang kiến trúc động: frontend giữ nguyên trải nghiệm, còn dữ liệu đi qua API serverless trên Cloudflare Pages Functions. Từ đây bạn có thể thêm search, filter, lưu tiến độ, và sau này nối database mà không phải đập lại giao diện.",
-      sideTitle: "Mục tiêu 90 ngày",
+        "Website nay gio co the chuyen dan sang kien truc dong: frontend giu nguyen trai nghiem, con du lieu di qua API serverless tren Cloudflare Pages Functions. Tu day ban co the them search, filter, luu tien do, va sau nay noi database ma khong phai dap lai giao dien.",
+      sideTitle: "Muc tieu 90 ngay",
       sideStats: [
-        { title: "Dynamic", text: "dữ liệu qua API" },
-        { title: "1000+", text: "từ vựng đã gom" },
+        { title: "Dynamic", text: "du lieu qua API" },
+        { title: "1000+", text: "tu vung da gom" },
         { title: "Functions", text: "Cloudflare serverless" },
-        { title: "Ready", text: "sẵn để nối DB" }
+        { title: "Ready", text: "san de noi DB" }
       ]
     })}
     <section class="pill-row">
-      <span>Dữ liệu động qua API</span>
-      <span>Lộ trình A1-A2 dễ hiểu</span>
-      <span>Code tách lớp rõ ràng</span>
-      <span>Dễ mở rộng sau này</span>
+      <span>Du lieu dong qua API</span>
+      <span>Lo trinh A1-A2 de hieu</span>
+      <span>Code tach lop ro rang</span>
+      <span>De mo rong sau nay</span>
     </section>
     <section class="section">
       <div class="section-head">
-        <p class="eyebrow">Nhịp học đề xuất</p>
-        <h2>Mỗi tab là một không gian nhỏ, gọn và dễ quay lại đúng chỗ đang học</h2>
+        <p class="eyebrow">Nhip hoc de xuat</p>
+        <h2>Moi tab la mot khong gian nho, gon va de quay lai dung cho dang hoc</h2>
       </div>
       ${renderCompactCards(
         [
-          { title: "Wortschatz", text: "Chọn level, chọn chủ đề rồi search ngay trong cùng một nhịp." },
-          { title: "Grammatik", text: "Gom ngữ pháp thành từng khối ngắn để đọc ít mà vẫn vào ý chính." },
-          { title: "Hören", text: "Nghe, đối chiếu transcript, rồi quay lại shadowing theo cụm." },
-          { title: "Lesen + Tests", text: "Đọc ngắn, chốt bằng câu hỏi nhỏ để giữ nhịp học đều hơn." }
+          { title: "Wortschatz", text: "Chon level, chon chu de roi search ngay trong cung mot nhip." },
+          { title: "Grammatik", text: "Gom ngu phap thanh tung khoi ngan de doc it ma van vao y chinh." },
+          { title: "Horen", text: "Nghe, doi chieu transcript, roi quay lai shadowing theo cum." },
+          { title: "Lesen + Tests", text: "Doc ngan, chot bang cau hoi nho de giu nhip hoc deu hon." }
         ],
         "Study flow"
       )}
     </section>
     <section class="section">
       <div class="section-head">
-        <p class="eyebrow">Tài khoản</p>
-        <h2>Đăng ký bằng email hoặc Google để sau này đồng bộ tiến độ học lên cloud</h2>
+        <p class="eyebrow">Tai khoan</p>
+        <h2>Dang nhap de luu tien do hoc va quay lai dung nhip dang theo</h2>
       </div>
       ${renderCompactCards(
         [
-          { title: "Email", text: "Đăng nhập và đăng ký trực tiếp bằng email + mật khẩu." },
-          { title: "Google", text: "Liên kết nhanh bằng tài khoản Google qua Supabase Auth." },
-          { title: "Session", text: "Phiên đăng nhập được Supabase quản lý, không cần tự viết auth từ đầu." },
-          { title: "Progress", text: "Hiện tiến độ vẫn ở localStorage; bước sau có thể đẩy lên Supabase DB." }
+          { title: "Email", text: "Dang nhap va dang ky truc tiep bang email + mat khau." },
+          { title: "Google", text: "Lien ket nhanh bang tai khoan Google qua Supabase Auth." },
+          { title: "Cloud sync", text: "Favorite, da hoc va can on se duoc day len database khi ban dang nhap." },
+          { title: "Ho so", text: "Co trang ho so rieng de xem tai khoan, muc sync va thong ke hoc tap." }
         ],
         "Auth"
       )}
@@ -491,7 +648,7 @@ async function renderGenericModule(moduleName) {
       eyebrow: moduleItem.eyebrow,
       title: moduleItem.title,
       description: moduleItem.description,
-      sideTitle: "Trọng tâm",
+      sideTitle: "Trong tam",
       sideStats: moduleItem.highlights
     })}
     <section class="section">
@@ -499,8 +656,8 @@ async function renderGenericModule(moduleName) {
     </section>
     <section class="section">
       <div class="section-head">
-        <p class="eyebrow">Nguồn học liên quan</p>
-        <h2>Các nguồn nên xem cho ${moduleItem.eyebrow}</h2>
+        <p class="eyebrow">Nguon hoc lien quan</p>
+        <h2>Cac nguon nen xem cho ${moduleItem.eyebrow}</h2>
       </div>
       <div class="resource-grid">
         ${renderResourceCards(related)}
@@ -511,7 +668,7 @@ async function renderGenericModule(moduleName) {
 
 function speakGerman(text) {
   if (!("speechSynthesis" in window)) {
-    alert("Trình duyệt này chưa hỗ trợ phát âm.");
+    alert("Trinh duyet nay chua ho tro phat am.");
     return;
   }
 
@@ -525,18 +682,18 @@ function speakGerman(text) {
 }
 
 function getProgressMeta(entryState) {
-  if (entryState.progress === "learned") return { label: "Đã học", className: "is-learned" };
-  if (entryState.progress === "review") return { label: "Cần ôn", className: "is-review" };
-  return { label: "Mới", className: "is-new" };
+  if (entryState.progress === "learned") return { label: "Da hoc", className: "is-learned" };
+  if (entryState.progress === "review") return { label: "Can on", className: "is-review" };
+  return { label: "Moi", className: "is-new" };
 }
 
 function renderVocabTableRows(items, level, topic, vocabState) {
   return items
     .map((item) => {
       const vocabId = getVocabId(level, topic, item.word);
-      const entryState = vocabState[vocabId] || { favorite: false, progress: "new" };
+      const entryState = normalizeStateEntry(vocabState[vocabId]);
       const progress = getProgressMeta(entryState);
-      const favoriteLabel = entryState.favorite ? "Bỏ fav" : "Fav";
+      const favoriteLabel = entryState.favorite ? "Bo fav" : "Fav";
 
       return `
         <tr>
@@ -558,8 +715,8 @@ function renderVocabTableRows(items, level, topic, vocabState) {
           <td>
             <div class="action-stack">
               <button class="state-btn ${entryState.favorite ? "is-active" : ""}" type="button" data-action="favorite" data-id="${escapeAttr(vocabId)}">${favoriteLabel}</button>
-              <button class="state-btn ${entryState.progress === "learned" ? "is-active" : ""}" type="button" data-action="learned" data-id="${escapeAttr(vocabId)}">Học</button>
-              <button class="state-btn ${entryState.progress === "review" ? "is-active" : ""}" type="button" data-action="review" data-id="${escapeAttr(vocabId)}">Ôn lại</button>
+              <button class="state-btn ${entryState.progress === "learned" ? "is-active" : ""}" type="button" data-action="learned" data-id="${escapeAttr(vocabId)}">Hoc</button>
+              <button class="state-btn ${entryState.progress === "review" ? "is-active" : ""}" type="button" data-action="review" data-id="${escapeAttr(vocabId)}">On lai</button>
             </div>
           </td>
           <td><button class="speak-btn" type="button" data-speak="${escapeAttr(item.word)}">&#128266;</button></td>
@@ -582,24 +739,24 @@ async function renderVocab() {
   return `
     ${renderHero({
       eyebrow: "Wortschatz",
-      title: "Học từ vựng theo nhóm để dễ nhớ hơn và dễ lặp lại hơn.",
+      title: "Hoc tu vung theo nhom de de nho hon va de lap lai hon.",
       description:
-        "Module này giờ chạy qua API động: lấy meta, lấy danh sách theo level/topic, hỗ trợ search từ serverless endpoint và sẵn đường để nối database sau này.",
-      sideTitle: "Bắt đầu nhanh",
+        "Module nay gio chay qua API dong: lay meta, lay danh sach theo level/topic, ho tro search tu serverless endpoint va san duong de noi database sau nay.",
+      sideTitle: "Bat dau nhanh",
       sideStats: [
-        { title: `${meta.total}+`, text: "từ trong thư viện" },
-        { title: `${meta.levels.length}`, text: "level đang có" },
-        { title: "API", text: "query theo chủ đề" },
-        { title: "Local", text: "nhớ tiến độ học" }
+        { title: `${meta.total}+`, text: "tu trong thu vien" },
+        { title: `${meta.levels.length}`, text: "level dang co" },
+        { title: "API", text: "query theo chu de" },
+        { title: currentSession?.user ? "Cloud sync" : "Local", text: currentSession?.user ? "da bat dong bo" : "nho tien do hoc" }
       ]
     })}
     <section class="section">
       ${renderCompactCards(
         [
-          { title: "A1-B2", text: "Đi theo level trước, rồi mới chia nhỏ theo từng chủ đề." },
-          { title: "Search", text: "Tìm theo từ Đức, nghĩa Việt, nghĩa Anh và cả ví dụ." },
-          { title: "Progress", text: "Đánh dấu Favorit, Đã học và Cần ôn ngay trong bảng." },
-          { title: "Audio", text: "Bấm loa để nghe phát âm nhanh khi trình duyệt hỗ trợ voice Đức." }
+          { title: "A1-B2", text: "Di theo level truoc, roi moi chia nho theo tung chu de." },
+          { title: "Search", text: "Tim theo tu Duc, nghia Viet, nghia Anh va ca vi du." },
+          { title: "Progress", text: "Danh dau Favorit, Da hoc va Can on ngay trong bang." },
+          { title: "Audio", text: "Bam loa de nghe phat am nhanh khi trinh duyet ho tro voice Duc." }
         ],
         "Wortschatz"
       )}
@@ -607,7 +764,7 @@ async function renderVocab() {
     <section class="section">
       <div class="section-head">
         <p class="eyebrow">Wortschatz-Bibliothek</p>
-        <h2>Chọn trình độ, mở chủ đề và theo dõi từ đang học</h2>
+        <h2>Chon trinh do, mo chu de va theo doi tu dang hoc</h2>
       </div>
       <div class="vocab-shell">
         <div class="toolbar-card">
@@ -621,50 +778,132 @@ async function renderVocab() {
           </div>
           <div>
             <p class="eyebrow">Suche</p>
-            <input id="vocabSearch" class="search-input" type="search" placeholder="Tìm theo từ Đức, nghĩa Việt, nghĩa Anh..." />
+            <input id="vocabSearch" class="search-input" type="search" placeholder="Tim theo tu Duc, nghia Viet, nghia Anh..." />
           </div>
           <div class="vocab-meta">
-            <span id="vocabLevelLabel">Trình độ: ${initialLevel}</span>
-            <span id="vocabTopicLabel">Chủ đề: ${initialTopic}</span>
+            <span id="vocabLevelLabel">Trinh do: ${initialLevel}</span>
+            <span id="vocabTopicLabel">Chu de: ${initialTopic}</span>
             <span id="vocabCountLabel"></span>
           </div>
           <div class="vocab-summary" id="vocabSummary">
             <span>Favoriten: ${stateSummary.favorite}</span>
-            <span>Đã học: ${stateSummary.learned}</span>
-            <span>Cần ôn: ${stateSummary.review}</span>
+            <span>Da hoc: ${stateSummary.learned}</span>
+            <span>Can on: ${stateSummary.review}</span>
           </div>
+          <p class="sync-inline">${currentSession?.user ? syncStatus : "Dang nhap de dong bo tien do hoc len cloud."}</p>
         </div>
         <div class="table-card">
           <table class="vocab-table">
             <thead>
               <tr>
-                <th>Từ vựng</th>
-                <th>Loại từ</th>
-                <th>Nghĩa Việt</th>
-                <th>Nghĩa Anh</th>
+                <th>Tu vung</th>
+                <th>Loai tu</th>
+                <th>Nghia Viet</th>
+                <th>Nghia Anh</th>
                 <th>IPA</th>
-                <th>Ví dụ cách dùng</th>
-                <th>Trạng thái</th>
-                <th>Hành động</th>
-                <th>Âm thanh</th>
+                <th>Vi du cach dung</th>
+                <th>Trang thai</th>
+                <th>Hanh dong</th>
+                <th>Am thanh</th>
               </tr>
             </thead>
             <tbody id="vocabTableBody"></tbody>
           </table>
-          <div id="vocabEmpty" class="empty-state" hidden>Không có từ nào khớp bộ lọc hiện tại.</div>
+          <div id="vocabEmpty" class="empty-state" hidden>Khong co tu nao khop bo loc hien tai.</div>
         </div>
       </div>
     </section>
     <section class="section">
       <div class="section-head">
-        <p class="eyebrow">Nguồn học liên quan</p>
-        <h2>Các nguồn nên xem cho Wortschatz</h2>
+        <p class="eyebrow">Nguon hoc lien quan</p>
+        <h2>Cac nguon nen xem cho Wortschatz</h2>
       </div>
       <div class="resource-grid">
         ${renderResourceCards(resources.items)}
       </div>
     </section>
   `;
+}
+
+function renderProfile() {
+  if (!currentSession?.user) {
+    return `
+      <section class="section">
+        <div class="profile-shell">
+          <div class="card profile-main">
+            <p class="eyebrow">Ho so tai khoan</p>
+            <h2>Ban chua dang nhap</h2>
+            <p>Dang nhap bang email hoac Google de luu tien do hoc len Supabase va dong bo giua cac thiet bi.</p>
+            <div class="hero-actions">
+              <button class="hero-primary auth-trigger" type="button" data-auth-mode="signin">Dang nhap</button>
+              <button class="hero-secondary auth-trigger" type="button" data-auth-mode="signup">Dang ky</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  const display = getUserDisplay(currentSession.user);
+  const summary = getStateSummary(loadVocabState());
+  const provider = currentProfile?.provider || currentSession.user.app_metadata?.provider || "email";
+  const initials = (display.name || display.email).trim().charAt(0).toUpperCase();
+
+  return `
+    <section class="section">
+      <div class="profile-shell">
+        <div class="card profile-main">
+          <div class="profile-head">
+            <div class="profile-avatar-large">${escapeAttr(initials)}</div>
+            <div>
+              <p class="eyebrow">Ho so tai khoan</p>
+              <h2>${escapeAttr(display.name)}</h2>
+              <p>${escapeAttr(display.email)}</p>
+            </div>
+          </div>
+          <div class="profile-grid">
+            <article class="card compact-card">
+              <p class="mini-kicker">Dang nhap bang</p>
+              <h3>${escapeAttr(provider)}</h3>
+              <p>Tai khoan hien tai dang duoc Supabase Auth quan ly.</p>
+            </article>
+            <article class="card compact-card">
+              <p class="mini-kicker">Cloud sync</p>
+              <h3>Tien do dang dong bo</h3>
+              <p>${escapeAttr(syncStatus)}</p>
+            </article>
+            <article class="card compact-card">
+              <p class="mini-kicker">Favoriten</p>
+              <h3>${summary.favorite}</h3>
+              <p>So muc ban dang giu lai de on them.</p>
+            </article>
+            <article class="card compact-card">
+              <p class="mini-kicker">Da hoc / Can on</p>
+              <h3>${summary.learned} / ${summary.review}</h3>
+              <p>Thong ke tong quan tu trang thai hoc hien tai.</p>
+            </article>
+          </div>
+          <div class="profile-actions">
+            <button class="hero-secondary" type="button" id="forceSyncButton">Dong bo lai</button>
+            <button class="hero-primary" type="button" id="profileLogoutButton">Dang xuat</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function setupProfileInteractions() {
+  document.getElementById("forceSyncButton")?.addEventListener("click", async () => {
+    await persistVocabState();
+    await mountRoute();
+  });
+  document.getElementById("profileLogoutButton")?.addEventListener("click", async () => {
+    if (!supabase) return;
+    await supabase.auth.signOut();
+    location.hash = "#home";
+  });
+  bindAuthTriggers();
 }
 
 function setupVocabInteractions(vocabMeta) {
@@ -720,8 +959,8 @@ function setupVocabInteractions(vocabMeta) {
     const summary = getStateSummary(vocabState);
     summaryEl.innerHTML = `
       <span>Favoriten: ${summary.favorite}</span>
-      <span>Đã học: ${summary.learned}</span>
-      <span>Cần ôn: ${summary.review}</span>
+      <span>Da hoc: ${summary.learned}</span>
+      <span>Can on: ${summary.review}</span>
     `;
   }
 
@@ -734,9 +973,9 @@ function setupVocabInteractions(vocabMeta) {
     const result = await loadApi(`/api/vocab?${query.toString()}`);
     const items = result.items;
 
-    levelLabel.textContent = `Trình độ: ${activeLevel}`;
-    topicLabel.textContent = `Chủ đề: ${activeTopic}`;
-    countLabel.textContent = `Số từ: ${items.length}`;
+    levelLabel.textContent = `Trinh do: ${activeLevel}`;
+    topicLabel.textContent = `Chu de: ${activeTopic}`;
+    countLabel.textContent = `So tu: ${items.length}`;
     bodyEl.innerHTML = renderVocabTableRows(items, activeLevel, activeTopic, vocabState);
     emptyEl.hidden = items.length > 0;
     renderSummary(vocabState);
@@ -779,9 +1018,10 @@ async function renderRoute(route) {
     if (route === "listening") return await renderGenericModule("listening");
     if (route === "reading") return await renderGenericModule("reading");
     if (route === "test") return await renderGenericModule("test");
+    if (route === "profile") return renderProfile();
     return await renderHome();
   } catch (error) {
-    return renderLoadError("Không tải được dữ liệu động từ API. Hãy kiểm tra Cloudflare Pages Functions hoặc môi trường deploy.");
+    return renderLoadError("Khong tai duoc du lieu dong tu API hoac Supabase. Hay kiem tra Pages Functions, bang du lieu va cau hinh auth.");
   }
 }
 
@@ -796,6 +1036,10 @@ async function mountRoute() {
   if (route === "vocab") {
     const vocabMeta = await loadApi("/api/vocab/meta");
     setupVocabInteractions(vocabMeta);
+  }
+
+  if (route === "profile") {
+    setupProfileInteractions();
   }
 }
 

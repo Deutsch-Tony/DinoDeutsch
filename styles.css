@@ -855,12 +855,59 @@ p, li {
   cursor: pointer;
 }
 
+.sync-inline {
+  margin: 0;
+  color: #6a6259;
+  font-weight: 600;
+}
+
+.profile-shell {
+  display: grid;
+  gap: 18px;
+}
+
+.profile-main {
+  display: grid;
+  gap: 22px;
+}
+
+.profile-head {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.profile-avatar-large {
+  width: 72px;
+  height: 72px;
+  border-radius: 24px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #4a525b, #67717c);
+  color: #fff;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.profile-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
 @media (max-width: 980px) {
   .hero,
   .resource-grid,
   .section-grid-3,
   .pill-row,
-  .feature-grid {
+  .feature-grid,
+  .profile-grid {
     grid-template-columns: 1fr;
   }
 
@@ -894,5 +941,9 @@ p, li {
   .hero-primary,
   .hero-secondary {
     width: 100%;
+  }
+  .profile-head {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }

@@ -1,4 +1,4 @@
-# Supabase Auth cho Deutsch Sprint
+# Supabase setup cho Deutsch Sprint
 
 ## Dữ liệu được lưu ở đâu
 
@@ -13,75 +13,101 @@ Phần này được lưu trong `Supabase Auth`.
 
 ### Dữ liệu học tập
 
-Hiện tại:
+Hiện tại website sẽ lưu:
 
-- Favorite
-- Đã học
-- Cần ôn
+- `favorite`
+- `progress` gồm `new / learned / review`
+- thời điểm cập nhật cuối
 
-vẫn đang lưu ở `localStorage` trên trình duyệt.
+Phần này được lưu trong bảng `user_vocab_state` của Supabase khi user đăng nhập.
 
-Nếu muốn đồng bộ nhiều thiết bị, bước tiếp theo là tạo bảng trong Supabase Postgres để lưu tiến độ học.
+### Hồ sơ tài khoản
 
-## Cần tạo gì trong Supabase
+Thông tin cơ bản như:
 
-1. Tạo project mới trên Supabase.
-2. Vào `Project Settings -> API`.
-3. Copy:
-   - `Project URL`
-   - `anon public key`
-4. Mở file [supabase-config.js](C:\Users\adminn\Desktop\code\supabase-config.js)
-5. Điền:
+- email
+- tên hiển thị
+- avatar url
+- provider đăng nhập
+
+được lưu trong bảng `profiles`.
+
+## 1. Điền config frontend
+
+Mở file [supabase-config.js](C:\Users\adminn\Desktop\code\supabase-config.js) và điền:
 
 ```js
 export const SUPABASE_CONFIG = {
   url: "https://YOUR-PROJECT.supabase.co",
-  anonKey: "YOUR-ANON-KEY",
+  anonKey: "YOUR-ANON-PUBLIC-KEY",
   redirectTo: "https://deutsch-easy.pages.dev"
 };
 ```
 
-Sau này khi domain riêng chạy ổn thì đổi `redirectTo` thành:
+Sau khi domain riêng hoạt động, đổi `redirectTo` thành:
 
 ```js
 redirectTo: "https://deutschdeec.com.vn"
 ```
 
-## Bật Email Auth
-
-1. Vào `Supabase -> Authentication -> Providers`.
-2. Bật `Email`.
-3. Chọn cho phép:
-   - sign up
-   - sign in
-
-## Bật Google Auth
-
-1. Vào `Supabase -> Authentication -> Providers -> Google`.
-2. Bật `Google`.
-3. Tạo OAuth credentials trong Google Cloud.
-4. Copy `Client ID` và `Client Secret` vào Supabase.
-
-## Redirect URLs cần thêm
+## 2. Bật provider
 
 Trong Supabase:
 
-`Authentication -> URL Configuration`
+- `Authentication -> Sign In / Providers`
+- bật `Email`
+- bật `Google`
+
+## 3. Thêm redirect URLs
+
+Trong:
+
+- `Authentication -> URL Configuration`
 
 Thêm:
 
 - `https://deutsch-easy.pages.dev`
 - `https://deutsch-easy.pages.dev/`
+
+Sau này thêm tiếp:
+
 - `https://deutschdeec.com.vn`
 - `https://deutschdeec.com.vn/`
-
-Nếu bạn dùng `www` thì thêm luôn:
-
 - `https://www.deutschdeec.com.vn`
 - `https://www.deutschdeec.com.vn/`
 
-## Lưu ý
+## 4. Tạo bảng database
+
+Mở `SQL Editor` trong Supabase và chạy toàn bộ file:
+
+- [SUPABASE_SCHEMA.sql](C:\Users\adminn\Desktop\code\SUPABASE_SCHEMA.sql)
+
+File này sẽ tạo:
+
+- bảng `profiles`
+- bảng `user_vocab_state`
+- RLS policies để mỗi user chỉ đọc/ghi dữ liệu của chính mình
+
+## 5. Luồng hoạt động sau khi xong
+
+1. User đăng nhập bằng email hoặc Google.
+2. Supabase tạo session.
+3. Frontend upsert hồ sơ vào `profiles`.
+4. Frontend tải dữ liệu từ `user_vocab_state`.
+5. Tiến độ local và cloud được merge theo `updated_at`.
+6. Khi user bấm `Fav / Học / Ôn lại`, website tự upsert lại lên Supabase.
+
+## Lưu ý bảo mật
 
 - `anonKey` là public key, để ở frontend được
-- không đưa `service_role` key vào frontend
-- nếu muốn lưu tiến độ học lên cloud, nên làm bước tiếp theo bằng bảng `profiles` và `user_progress`
+- không bao giờ đưa `service_role` key vào website
+- RLS phải bật như trong SQL schema
+
+## Nếu muốn mở rộng tiếp
+
+Bước kế tiếp hợp lý là thêm:
+
+- bảng `user_test_attempts`
+- bảng `user_settings`
+- lưu lịch sử mini test
+- lưu level mục tiêu A1/A2/B1/B2
