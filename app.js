@@ -1,4 +1,7 @@
-﻿const ROUTES = [
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2?bundle";
+import { SUPABASE_CONFIG } from "./supabase-config.js";
+
+const ROUTES = [
   { key: "home", selector: "#home" },
   { key: "grammar", selector: "#grammar" },
   { key: "vocab", selector: "#vocab" },
@@ -7,8 +10,41 @@
   { key: "test", selector: "#test" }
 ];
 
+const SEO = {
+  home: {
+    title: "Deutsch Sprint | Tự học tiếng Đức theo nhịp gọn và rõ",
+    description:
+      "Deutsch Sprint là không gian tự học tiếng Đức cá nhân với Wortschatz, Grammatik, Hören, Lesen và Tests được tổ chức gọn, rõ và dễ mở rộng."
+  },
+  grammar: {
+    title: "Grammatik | Deutsch Sprint",
+    description: "Học ngữ pháp tiếng Đức theo từng khối rõ ràng: cases, thì, wortstellung và cấu trúc cần nhớ."
+  },
+  vocab: {
+    title: "Wortschatz | Deutsch Sprint",
+    description: "Thư viện hơn 1000 từ vựng tiếng Đức theo level A1-B2, chủ đề, tìm kiếm, IPA và tiến độ học."
+  },
+  listening: {
+    title: "Hören | Deutsch Sprint",
+    description: "Module luyện nghe tiếng Đức với transcript, shadowing và nguồn học chọn lọc theo cấp độ."
+  },
+  reading: {
+    title: "Lesen | Deutsch Sprint",
+    description: "Module đọc hiểu tiếng Đức gồm bài đọc ngắn, glossary và câu hỏi kiểm tra để học gọn hơn."
+  },
+  test: {
+    title: "Tests | Deutsch Sprint",
+    description: "Mini test và checkpoint để tự đánh giá trình độ tiếng Đức theo từng mục học."
+  }
+};
+
 const dataCache = new Map();
 const VOCAB_STATE_KEY = "deutschSprint.vocabState";
+const hasSupabaseConfig = Boolean(SUPABASE_CONFIG.url && SUPABASE_CONFIG.anonKey);
+const supabase = hasSupabaseConfig ? createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey) : null;
+
+let authMode = "signin";
+let currentSession = null;
 
 function routeFromHash() {
   const key = (location.hash || "#home").replace("#", "");
@@ -82,15 +118,256 @@ function updateActiveNav(route) {
   });
 }
 
+function updateSeo(route) {
+  const seo = SEO[route] || SEO.home;
+  const baseUrl = "https://deutsch-easy.pages.dev/";
+  const routeUrl = route === "home" ? baseUrl : `${baseUrl}#${route}`;
+  document.title = seo.title;
+
+  const descriptionEl = document.getElementById("meta-description");
+  const ogTitleEl = document.getElementById("meta-og-title");
+  const ogDescriptionEl = document.getElementById("meta-og-description");
+  const ogUrlEl = document.getElementById("meta-og-url");
+  const twitterTitleEl = document.getElementById("meta-twitter-title");
+  const twitterDescriptionEl = document.getElementById("meta-twitter-description");
+  const canonicalEl = document.getElementById("canonical-link");
+
+  if (descriptionEl) descriptionEl.setAttribute("content", seo.description);
+  if (ogTitleEl) ogTitleEl.setAttribute("content", seo.title);
+  if (ogDescriptionEl) ogDescriptionEl.setAttribute("content", seo.description);
+  if (ogUrlEl) ogUrlEl.setAttribute("content", routeUrl);
+  if (twitterTitleEl) twitterTitleEl.setAttribute("content", seo.title);
+  if (twitterDescriptionEl) twitterDescriptionEl.setAttribute("content", seo.description);
+  if (canonicalEl) canonicalEl.setAttribute("href", routeUrl);
+}
+
+function getRedirectTo() {
+  return SUPABASE_CONFIG.redirectTo || window.location.origin;
+}
+
+function setAuthStatus(message, type = "") {
+  const statusEl = document.getElementById("authStatus");
+  if (!statusEl) return;
+  statusEl.textContent = message;
+  statusEl.className = "auth-status";
+  if (type) statusEl.classList.add(`is-${type}`);
+}
+
+function syncAuthTabUI() {
+  const titleEl = document.getElementById("authTitle");
+  const descEl = document.getElementById("authDescription");
+  const submitEl = document.getElementById("authSubmit");
+  const passwordEl = document.getElementById("authPassword");
+
+  document.querySelectorAll(".auth-tab").forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.authTab === authMode);
+  });
+
+  if (titleEl) {
+    titleEl.textContent =
+      authMode === "signin" ? "Đăng nhập để lưu nhịp học của bạn" : "Tạo tài khoản để giữ tiến độ học lâu dài";
+  }
+
+  if (descEl) {
+    descEl.textContent =
+      authMode === "signin"
+        ? "Bạn có thể đăng nhập bằng email hoặc liên kết tài khoản Google. Phiên đăng nhập sẽ do Supabase Auth quản lý."
+        : "Đăng ký bằng email hoặc dùng Google để tạo tài khoản nhanh. Sau đó bạn có thể quay lại tiếp tục học trên cùng một tài khoản.";
+  }
+
+  if (submitEl) {
+    submitEl.textContent = authMode === "signin" ? "Đăng nhập bằng email" : "Đăng ký bằng email";
+  }
+
+  if (passwordEl) {
+    passwordEl.setAttribute("autocomplete", authMode === "signin" ? "current-password" : "new-password");
+  }
+}
+
+function openAuthModal(mode = "signin") {
+  authMode = mode;
+  syncAuthTabUI();
+  const modal = document.getElementById("authModal");
+  if (!modal) return;
+  modal.hidden = false;
+  document.body.style.overflow = "hidden";
+  setAuthStatus("");
+}
+
+function closeAuthModal() {
+  const modal = document.getElementById("authModal");
+  if (!modal) return;
+  modal.hidden = true;
+  document.body.style.overflow = "";
+}
+
+function getUserDisplay(user) {
+  const email = user?.email || "Tài khoản";
+  const name = user?.user_metadata?.full_name || user?.user_metadata?.name || email;
+  return { name, email };
+}
+
+function renderTopbarAuth() {
+  const container = document.getElementById("topbarAuth");
+  if (!container) return;
+
+  const user = currentSession?.user;
+  if (!user) {
+    container.innerHTML = `
+      <button class="auth-link auth-trigger" type="button" data-auth-mode="signin">Đăng nhập</button>
+      <button class="auth-button auth-trigger" type="button" data-auth-mode="signup">Đăng ký</button>
+    `;
+    bindAuthTriggers();
+    return;
+  }
+
+  const display = getUserDisplay(user);
+  const initials = (display.name || display.email).trim().charAt(0).toUpperCase();
+
+  container.innerHTML = `
+    <div class="user-chip">
+      <span class="user-avatar">${escapeAttr(initials)}</span>
+      <span>${escapeAttr(display.email)}</span>
+    </div>
+    <div class="user-actions">
+      <button type="button" id="openAuthProfile">Tài khoản</button>
+      <button type="button" id="logoutButton">Đăng xuất</button>
+    </div>
+  `;
+
+  document.getElementById("openAuthProfile")?.addEventListener("click", () => openAuthModal("signin"));
+  document.getElementById("logoutButton")?.addEventListener("click", async () => {
+    if (!supabase) return;
+    await supabase.auth.signOut();
+  });
+}
+
+function bindAuthTriggers() {
+  document.querySelectorAll(".auth-trigger").forEach((button) => {
+    button.addEventListener("click", () => openAuthModal(button.dataset.authMode || "signin"));
+  });
+}
+
+async function handleEmailAuth(event) {
+  event.preventDefault();
+  if (!supabase) {
+    setAuthStatus("Bạn chưa cấu hình Supabase nên chưa dùng được đăng nhập thật.", "error");
+    return;
+  }
+
+  const email = document.getElementById("authEmail")?.value.trim();
+  const password = document.getElementById("authPassword")?.value || "";
+
+  if (!email || !password) {
+    setAuthStatus("Hãy nhập đủ email và mật khẩu.", "error");
+    return;
+  }
+
+  setAuthStatus("Đang xử lý...", "success");
+
+  if (authMode === "signin") {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      setAuthStatus(error.message, "error");
+      return;
+    }
+    setAuthStatus("Đăng nhập thành công.", "success");
+    closeAuthModal();
+    return;
+  }
+
+  const { error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      emailRedirectTo: getRedirectTo()
+    }
+  });
+
+  if (error) {
+    setAuthStatus(error.message, "error");
+    return;
+  }
+
+  setAuthStatus("Đăng ký thành công. Kiểm tra email để xác nhận nếu Supabase đang bật email confirmation.", "success");
+}
+
+async function handleGoogleAuth() {
+  if (!supabase) {
+    setAuthStatus("Bạn chưa cấu hình Supabase nên chưa dùng được Google login.", "error");
+    return;
+  }
+
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: getRedirectTo()
+    }
+  });
+
+  if (error) {
+    setAuthStatus(error.message, "error");
+  }
+}
+
+async function initAuth() {
+  renderTopbarAuth();
+
+  const notice = document.getElementById("authConfigNotice");
+  if (!hasSupabaseConfig) {
+    if (notice) notice.hidden = false;
+    bindAuthTriggers();
+    return;
+  }
+
+  const sessionRes = await supabase.auth.getSession();
+  currentSession = sessionRes.data.session;
+  renderTopbarAuth();
+
+  supabase.auth.onAuthStateChange((_event, session) => {
+    currentSession = session;
+    renderTopbarAuth();
+  });
+
+  bindAuthTriggers();
+}
+
+function initAuthUI() {
+  document.getElementById("authClose")?.addEventListener("click", closeAuthModal);
+  document.querySelector("[data-auth-close='true']")?.addEventListener("click", closeAuthModal);
+  document.getElementById("authForm")?.addEventListener("submit", handleEmailAuth);
+  document.getElementById("googleAuthButton")?.addEventListener("click", handleGoogleAuth);
+
+  document.querySelectorAll(".auth-tab").forEach((button) => {
+    button.addEventListener("click", () => {
+      authMode = button.dataset.authTab || "signin";
+      syncAuthTabUI();
+      setAuthStatus("");
+    });
+  });
+
+  syncAuthTabUI();
+}
+
 function renderHero({ eyebrow, title, description, sideTitle, sideStats = [] }) {
   return `
     <section class="hero">
-      <div>
+      <div class="hero-copy">
+        <div class="liquid-band">
+          <span class="liquid-dot"></span>
+          <span>Liquid study flow</span>
+        </div>
         <p class="eyebrow">${eyebrow}</p>
         <h1>${title}</h1>
         <p>${description}</p>
+        <div class="hero-actions">
+          <a class="hero-primary" href="#vocab">Mở Wortschatz</a>
+          <a class="hero-secondary" href="#grammar">Xem Grammatik</a>
+        </div>
       </div>
-      <div class="card">
+      <div class="card glass-card">
+        <div class="glass-wave glass-wave-a"></div>
+        <div class="glass-wave glass-wave-b"></div>
         <p class="eyebrow">${sideTitle}</p>
         <div class="stat-grid">
           ${sideStats
@@ -128,6 +405,24 @@ function renderResourceCards(items) {
     .join("");
 }
 
+function renderCompactCards(items, eyebrow) {
+  return `
+    <div class="feature-grid">
+      ${items
+        .map(
+          (item) => `
+            <article class="card compact-card">
+              <p class="mini-kicker">${eyebrow}</p>
+              <h3>${item.title}</h3>
+              <p>${item.text}</p>
+            </article>
+          `
+        )
+        .join("")}
+    </div>
+  `;
+}
+
 async function renderHome() {
   return `
     ${renderHero({
@@ -151,15 +446,33 @@ async function renderHome() {
     </section>
     <section class="section">
       <div class="section-head">
-        <p class="eyebrow">Tổng quan kiến trúc</p>
-        <h2>Frontend vẫn gọn, nhưng dữ liệu giờ đã đi qua Cloudflare Pages Functions</h2>
+        <p class="eyebrow">Nhịp học đề xuất</p>
+        <h2>Mỗi tab là một không gian nhỏ, gọn và dễ quay lại đúng chỗ đang học</h2>
       </div>
-      <div class="feature-grid">
-        <article class="card"><h3>API cho modules</h3><p>Grammatik, Hören, Lesen và Tests đều có endpoint riêng.</p></article>
-        <article class="card"><h3>API cho Wortschatz</h3><p>Meta, level, topic và search đều đi qua route động.</p></article>
-        <article class="card"><h3>State phía client</h3><p>Favoriten, Đã học và Cần ôn vẫn được nhớ bằng localStorage.</p></article>
-        <article class="card"><h3>Sẵn lên cloud</h3><p>Phù hợp luôn với Cloudflare Pages + GitHub integration.</p></article>
+      ${renderCompactCards(
+        [
+          { title: "Wortschatz", text: "Chọn level, chọn chủ đề rồi search ngay trong cùng một nhịp." },
+          { title: "Grammatik", text: "Gom ngữ pháp thành từng khối ngắn để đọc ít mà vẫn vào ý chính." },
+          { title: "Hören", text: "Nghe, đối chiếu transcript, rồi quay lại shadowing theo cụm." },
+          { title: "Lesen + Tests", text: "Đọc ngắn, chốt bằng câu hỏi nhỏ để giữ nhịp học đều hơn." }
+        ],
+        "Study flow"
+      )}
+    </section>
+    <section class="section">
+      <div class="section-head">
+        <p class="eyebrow">Tài khoản</p>
+        <h2>Đăng ký bằng email hoặc Google để sau này đồng bộ tiến độ học lên cloud</h2>
       </div>
+      ${renderCompactCards(
+        [
+          { title: "Email", text: "Đăng nhập và đăng ký trực tiếp bằng email + mật khẩu." },
+          { title: "Google", text: "Liên kết nhanh bằng tài khoản Google qua Supabase Auth." },
+          { title: "Session", text: "Phiên đăng nhập được Supabase quản lý, không cần tự viết auth từ đầu." },
+          { title: "Progress", text: "Hiện tiến độ vẫn ở localStorage; bước sau có thể đẩy lên Supabase DB." }
+        ],
+        "Auth"
+      )}
     </section>
   `;
 }
@@ -181,6 +494,9 @@ async function renderGenericModule(moduleName) {
       sideTitle: "Trọng tâm",
       sideStats: moduleItem.highlights
     })}
+    <section class="section">
+      ${renderCompactCards(moduleItem.highlights, moduleItem.eyebrow)}
+    </section>
     <section class="section">
       <div class="section-head">
         <p class="eyebrow">Nguồn học liên quan</p>
@@ -277,6 +593,17 @@ async function renderVocab() {
         { title: "Local", text: "nhớ tiến độ học" }
       ]
     })}
+    <section class="section">
+      ${renderCompactCards(
+        [
+          { title: "A1-B2", text: "Đi theo level trước, rồi mới chia nhỏ theo từng chủ đề." },
+          { title: "Search", text: "Tìm theo từ Đức, nghĩa Việt, nghĩa Anh và cả ví dụ." },
+          { title: "Progress", text: "Đánh dấu Favorit, Đã học và Cần ôn ngay trong bảng." },
+          { title: "Audio", text: "Bấm loa để nghe phát âm nhanh khi trình duyệt hỗ trợ voice Đức." }
+        ],
+        "Wortschatz"
+      )}
+    </section>
     <section class="section">
       <div class="section-head">
         <p class="eyebrow">Wortschatz-Bibliothek</p>
@@ -460,6 +787,7 @@ async function renderRoute(route) {
 
 async function mountRoute() {
   const route = routeFromHash();
+  updateSeo(route);
   updateActiveNav(route);
   const app = document.getElementById("app");
   if (!app) return;
@@ -472,4 +800,8 @@ async function mountRoute() {
 }
 
 window.addEventListener("hashchange", mountRoute);
-window.addEventListener("DOMContentLoaded", mountRoute);
+window.addEventListener("DOMContentLoaded", async () => {
+  initAuthUI();
+  await initAuth();
+  await mountRoute();
+});

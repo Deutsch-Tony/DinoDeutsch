@@ -4,7 +4,7 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: geolocation=(), microphone=(), camera=()
-  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://esm.sh; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://*.googleusercontent.com; connect-src 'self' https://*.supabase.co; object-src 'none'; base-uri 'self'; frame-ancestors 'self'
 
 /app.js
   Cache-Control: public, max-age=86400, stale-while-revalidate=604800
@@ -12,8 +12,11 @@
 /styles.css
   Cache-Control: public, max-age=86400, stale-while-revalidate=604800
 
-/fallback-data.js
-  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+/supabase-config.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/og-card.svg
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
 
 /data/*
   Cache-Control: public, max-age=3600, stale-while-revalidate=86400

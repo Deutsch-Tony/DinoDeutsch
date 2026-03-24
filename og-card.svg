@@ -1,0 +1,29 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" rx="36" fill="#ECE7E1"/>
+  <g opacity="0.9">
+    <path d="M96 124C246 78 359 174 509 150C671 124 729 34 891 36C1010 38 1085 91 1152 152V630H96V124Z" fill="url(#paint0_linear)"/>
+    <path d="M0 370C145 308 262 435 408 408C593 374 643 252 831 258C984 263 1092 351 1200 432V630H0V370Z" fill="url(#paint1_linear)"/>
+  </g>
+  <rect x="92" y="86" width="1016" height="456" rx="40" fill="rgba(255,255,255,0.54)"/>
+  <rect x="92" y="86" width="1016" height="456" rx="40" stroke="rgba(35,39,46,0.08)"/>
+  <rect x="138" y="132" width="86" height="86" rx="26" fill="#4C5560"/>
+  <text x="181" y="187" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="white">DS</text>
+  <text x="138" y="286" font-family="Arial, sans-serif" font-size="72" font-weight="700" fill="#171717">Deutsch Sprint</text>
+  <text x="138" y="354" font-family="Arial, sans-serif" font-size="28" font-weight="500" fill="#5B554F">Tu hoc tieng Duc theo nhip gon, ro va de mo rong.</text>
+  <g>
+    <rect x="138" y="418" width="184" height="54" rx="27" fill="#23272E"/>
+    <text x="230" y="452" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#F7F3EE">Wortschatz</text>
+    <rect x="338" y="418" width="172" height="54" rx="27" fill="#FFFFFF" fill-opacity="0.62"/>
+    <text x="424" y="452" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#23272E">Grammatik</text>
+  </g>
+  <defs>
+    <linearGradient id="paint0_linear" x1="624" y1="36" x2="624" y2="630" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A79584" stop-opacity="0.38"/>
+      <stop offset="1" stop-color="#ECE7E1" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="paint1_linear" x1="600" y1="258" x2="600" y2="630" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6B747D" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#ECE7E1" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+</svg>

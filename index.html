@@ -4,6 +4,34 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Deutsch Sprint</title>
+    <meta
+      id="meta-description"
+      name="description"
+      content="Deutsch Sprint la khong gian tu hoc tieng Duc ca nhan voi Wortschatz, Grammatik, Horen, Lesen va Tests chay tren Cloudflare Pages Functions."
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="author" content="Deutsch Sprint" />
+    <meta name="theme-color" content="#23272e" />
+    <meta id="meta-og-title" property="og:title" content="Deutsch Sprint | Tu hoc tieng Duc theo nhom chu de" />
+    <meta
+      id="meta-og-description"
+      property="og:description"
+      content="Website tu hoc tieng Duc ca nhan voi giao dien gon, tu vung theo CEFR, module nghe-doc-ngu phap va API dong."
+    />
+    <meta property="og:type" content="website" />
+    <meta id="meta-og-url" property="og:url" content="https://deutsch-easy.pages.dev/" />
+    <meta property="og:site_name" content="Deutsch Sprint" />
+    <meta property="og:locale" content="vi_VN" />
+    <meta property="og:image" content="https://deutsch-easy.pages.dev/og-card.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta id="meta-twitter-title" name="twitter:title" content="Deutsch Sprint | Tu hoc tieng Duc theo nhom chu de" />
+    <meta
+      id="meta-twitter-description"
+      name="twitter:description"
+      content="Website tu hoc tieng Duc ca nhan voi Wortschatz, Grammatik, Horen, Lesen va Tests."
+    />
+    <meta name="twitter:image" content="https://deutsch-easy.pages.dev/og-card.svg" />
+    <link id="canonical-link" rel="canonical" href="https://deutsch-easy.pages.dev/" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -11,6 +39,8 @@
   </head>
   <body>
     <div class="page">
+      <div class="ambient ambient-a"></div>
+      <div class="ambient ambient-b"></div>
       <header class="topbar">
         <a class="brand" href="#home">
           <span class="brand-mark">DS</span>
@@ -23,9 +53,9 @@
           <a class="topbar-item tone-4" href="#reading"><span class="icon">L</span><span>Lesen</span></a>
           <a class="topbar-item tone-5" href="#test"><span class="icon">T</span><span>Tests</span></a>
         </nav>
-        <div class="topbar-auth">
-          <a class="auth-link" href="#home">Anmelden</a>
-          <a class="auth-button" href="#home">Registrieren</a>
+        <div class="topbar-auth" id="topbarAuth">
+          <button class="auth-link auth-trigger" type="button" data-auth-mode="signin">Đăng nhập</button>
+          <button class="auth-button auth-trigger" type="button" data-auth-mode="signup">Đăng ký</button>
         </div>
       </header>
 
@@ -34,6 +64,43 @@
       </main>
     </div>
 
-    <script src="./app.js"></script>
+    <div class="auth-modal" id="authModal" hidden>
+      <div class="auth-backdrop" data-auth-close="true"></div>
+      <div class="auth-dialog">
+        <button class="auth-close" type="button" id="authClose" aria-label="Đóng">×</button>
+        <div class="auth-dialog-copy">
+          <p class="eyebrow" id="authEyebrow">Tài khoản</p>
+          <h2 id="authTitle">Đăng nhập để lưu nhịp học của bạn</h2>
+          <p id="authDescription">
+            Bạn có thể đăng nhập bằng email hoặc liên kết tài khoản Google. Phiên đăng nhập sẽ do Supabase Auth quản lý.
+          </p>
+        </div>
+        <div class="auth-card">
+          <div class="auth-tabs">
+            <button class="auth-tab is-active" type="button" data-auth-tab="signin">Đăng nhập</button>
+            <button class="auth-tab" type="button" data-auth-tab="signup">Đăng ký</button>
+          </div>
+          <form id="authForm" class="auth-form">
+            <label class="auth-field">
+              <span>Email</span>
+              <input id="authEmail" type="email" autocomplete="email" placeholder="ban@email.com" required />
+            </label>
+            <label class="auth-field">
+              <span>Mật khẩu</span>
+              <input id="authPassword" type="password" autocomplete="current-password" placeholder="Tối thiểu 6 ký tự" required />
+            </label>
+            <button id="authSubmit" class="auth-submit" type="submit">Tiếp tục</button>
+          </form>
+          <div class="auth-divider"><span>hoặc</span></div>
+          <button id="googleAuthButton" class="google-auth" type="button">Tiếp tục với Google</button>
+          <p id="authStatus" class="auth-status"></p>
+          <div id="authConfigNotice" class="auth-config-notice" hidden>
+            Chưa cấu hình Supabase. Hãy điền `SUPABASE_URL` và `SUPABASE_ANON_KEY` trong file `supabase-config.js`.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="./app.js"></script>
   </body>
 </html>

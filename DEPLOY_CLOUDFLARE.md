@@ -1,108 +1,87 @@
-# Deploy Deutsch Sprint Lên Cloudflare
+# Deploy Deutsch Sprint lên Cloudflare Pages
 
-## Kiến trúc đề xuất
+## Kiến trúc hiện tại
 
 - `Host`: Cloudflare Pages
-- `CDN`: Cloudflare global edge cache
-- `SSL`: Cloudflare Universal SSL
-- `DNS / Domain`: Cloudflare DNS
+- `CDN`: Cloudflare global edge
+- `API`: Cloudflare Pages Functions trong thư mục `functions/`
+- `Data`: JSON nội bộ trong thư mục `data/`
+- `Config tối thiểu`: `wrangler.toml` + `_headers`
 
-Project hiện tại là frontend tĩnh + Cloudflare Pages Functions cho API động, nên vẫn không cần server riêng. Cách này là gọn nhất và rẻ nhất.
+Project này không cần GitHub Actions để deploy nữa vì Cloudflare Pages đã kết nối thẳng với repo GitHub.
 
-## File đã được chuẩn bị
+## File còn cần giữ
 
-- `wrangler.toml`: cấu hình deploy cho Cloudflare
-- `_headers`: cache rules + security headers
-- `functions/`: API serverless chạy ngay trên Cloudflare Pages
-- `.gitignore`: file bỏ qua khi đưa lên GitHub
-- `.github/workflows/deploy-cloudflare-pages.yml`: auto deploy từ GitHub Actions lên Cloudflare Pages
+- [wrangler.toml](C:\Users\adminn\Desktop\code\wrangler.toml)
+- [_headers](C:\Users\adminn\Desktop\code\_headers)
+- [index.html](C:\Users\adminn\Desktop\code\index.html)
+- [app.js](C:\Users\adminn\Desktop\code\app.js)
+- [styles.css](C:\Users\adminn\Desktop\code\styles.css)
+- thư mục `functions/`
+- thư mục `data/`
 
-## Cách deploy nhanh nhất
+## Cách deploy đúng
 
-### Cách 1: Deploy bằng giao diện Cloudflare Pages
+1. Đẩy code lên branch `main` của repo GitHub.
+2. Vào `Cloudflare -> Workers & Pages -> deutsch-easy`.
+3. Để Cloudflare tự build từ Git integration.
 
-1. Đăng nhập Cloudflare.
-2. Vào `Workers & Pages`.
-3. Chọn `Create application`.
-4. Chọn `Pages`.
-5. Chọn `Upload assets`.
-6. Upload toàn bộ thư mục project này.
-7. Đặt tên project, ví dụ `deutsch-easy`.
-8. Sau khi deploy xong, Cloudflare sẽ cấp cho bạn một domain tạm dạng:
-   - `https://deutsch-easy.pages.dev`
+Build config đúng:
 
-### Cách 2: Deploy bằng Wrangler CLI
+- `Framework preset`: `None`
+- `Build command`: để trống
+- `Build output directory`: `.`
+- `Root directory`: để trống
 
-Nếu máy bạn đã cài Node.js:
+Cloudflare sẽ tự:
 
-```powershell
-npm install -g wrangler
-wrangler login
-wrangler pages deploy . --project-name deutsch-easy
-```
+- publish asset tĩnh
+- nhận `functions/` làm API serverless
+- áp dụng header từ `_headers`
 
-### Cách 3: Deploy tự động từ GitHub
+## Kiểm tra sau deploy
 
-1. Tạo repo trên GitHub.
-2. Upload toàn bộ project này lên repo đó.
-3. Trong GitHub repo, vào `Settings -> Secrets and variables -> Actions`.
-4. Tạo 2 secret:
-   - `CLOUDFLARE_API_TOKEN`
-   - `CLOUDFLARE_ACCOUNT_ID`
-5. Push lên branch `main`.
-6. Workflow ở `.github/workflows/deploy-cloudflare-pages.yml` sẽ tự deploy.
+Mở các URL này:
 
-## Cách lấy Cloudflare secrets
+- `https://deutsch-easy.pages.dev/`
+- `https://deutsch-easy.pages.dev/api/resources`
+- `https://deutsch-easy.pages.dev/api/vocab/meta`
+- `https://deutsch-easy.pages.dev/api/modules/grammar`
 
-### `CLOUDFLARE_ACCOUNT_ID`
+Nếu 3 URL `/api/...` trả JSON thì phần động đang chạy đúng.
 
-1. Đăng nhập Cloudflare.
-2. Ở dashboard bên phải thường có `Account ID`.
-3. Copy giá trị đó vào GitHub secret.
+## Gắn custom domain
 
-### `CLOUDFLARE_API_TOKEN`
-
-1. Vào `My Profile -> API Tokens`.
-2. Chọn `Create Token`.
-3. Dùng template gần giống `Edit Cloudflare Workers` hoặc tạo custom token có quyền Pages/Workers deploy.
-4. Copy token đó vào GitHub secret.
-
-## Gắn domain riêng
-
-1. Mua hoặc đưa domain về Cloudflare DNS.
-2. Vào project `deutsch-easy` trong Pages.
+1. Đưa domain về cùng tài khoản Cloudflare.
+2. Vào `Cloudflare -> Workers & Pages -> deutsch-easy`.
 3. Mở `Custom domains`.
-4. Thêm domain của bạn, ví dụ:
-   - `deutschsprint.com`
-   - `app.deutschsprint.com`
-5. Cloudflare sẽ tự tạo SSL và route CDN.
+4. Bấm `Set up a custom domain`.
+5. Nhập domain bạn muốn gắn, ví dụ:
+   - `deutsch.yourdomain.com`
+   - `app.yourdomain.com`
+   - `yourdomain.com`
+6. Cloudflare sẽ tự tạo DNS record và SSL nếu domain nằm trong cùng account.
 
-## Cách cache hiện tại
+Khuyến nghị:
 
-- `index.html`: không cache cứng, luôn có thể cập nhật ngay
+- dùng subdomain như `deutsch.domain.com` an toàn và gọn hơn
+- chỉ dùng apex domain nếu bạn thật sự muốn đây là trang chính
+
+## Khi nào cần đụng Wrangler CLI
+
+Hiện tại gần như không cần chạy deploy thủ công bằng Wrangler nữa.
+
+`wrangler.toml` vẫn nên giữ vì:
+
+- Cloudflare đọc `compatibility_date`
+- Cloudflare đọc `pages_build_output_dir`
+- cấu hình này giúp Pages Functions ổn định hơn
+
+## Cache hiện tại
+
+- `index.html`: luôn revalidate
 - `app.js`, `styles.css`: cache 1 ngày
-- `data/*.json`: cache 1 giờ
-- `/api/*`: cache ngắn 1 phút
+- `data/*`: cache 1 giờ
+- `/api/*`: cache 60 giây
 
-Cách này hợp với site học tập có data thay đổi theo đợt.
-
-## Khi nào nên đổi lên backend thật
-
-Bạn chỉ cần backend riêng hoặc database riêng khi muốn:
-
-- login thật
-- đồng bộ tiến độ giữa nhiều thiết bị
-- admin panel
-- API động
-
-Hiện tại API động cơ bản đã có thể chạy bằng `Cloudflare Pages Functions`.
-
-Nếu chưa cần mấy thứ đó, Cloudflare Pages là đủ.
-
-## Ghi chú thẳng thắn
-
-Mình đã chuẩn bị sẵn cấu hình deploy trong codebase, nhưng chưa thể tạo project thật trên tài khoản Cloudflare của bạn từ đây vì không có quyền đăng nhập hoặc token. Khi bạn có tài khoản, chỉ cần làm theo các bước trên là site lên host + CDN được ngay.
-
-## Lưu ý trên máy hiện tại
-
-Máy này hiện chưa có `git`, nên chưa thể `git init`, commit hay push thẳng repo từ terminal. Nếu bạn cài `git`, mình có thể làm tiếp phần đó ngay.
+Cấu hình này đủ ổn cho app học tập cá nhân và vẫn cập nhật nhanh sau mỗi lần push.
