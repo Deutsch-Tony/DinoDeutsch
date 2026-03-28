@@ -1,12 +1,108 @@
 ﻿{
   "eyebrow": "Grammatik",
-  "title": "Học ngữ pháp theo từng khối để dễ hấp thụ hơn.",
-  "description": "Module này dành cho các điểm ngữ pháp cốt lõi, từ cases cơ bản tới trật tự từ và các thì thường gặp.",
-  "highlights": [
-    { "title": "Nominativ", "text": "Câu chủ ngữ cơ bản và nhận diện thành phần chính." },
-    { "title": "Akkusativ", "text": "Tân ngữ trực tiếp và các động từ đi với Akkusativ." },
-    { "title": "Dativ", "text": "Tân ngữ gián tiếp và giới từ thường gặp." },
-    { "title": "Wortstellung", "text": "Vị trí động từ, trật tự thời gian và câu hỏi." }
-  ],
-  "resourceCategory": "grammar"
+  "title": "Thu vien ngu phap A1-B2 de hoc theo level, nhom bai va quay lai on nhanh.",
+  "description": "Module nay gom cac diem ngu phap cot loi tu A1 den B2. Moi bai co tom tat ngan, cau truc mau, vi du va loi hay gap de tu hoc gon hon.",
+  "resourceCategory": "grammar",
+  "overview": {
+    "intro": "Tu A1 den B2 theo mot cay ngu phap ro rang: cau co ban, qua khu, lien ket cau, argumentation va van viet nang cao.",
+    "studyFlow": [
+      "Chon dung level dang hoc.",
+      "Doc tom tat va cau truc truoc.",
+      "Tu dat 3-5 cau moi sau moi bai."
+    ]
+  },
+  "levels": [
+    {
+      "level": "A1",
+      "label": "Grundlagen",
+      "focus": "Nen tang cau don, dong tu co ban, article, cau hoi va Akkusativ.",
+      "sections": [
+        {
+          "group": "Satzbau",
+          "lessons": [
+            {"slug":"a1-sein-haben","title":"sein va haben","summary":"Hai dong tu cot loi de gioi thieu, mo ta va noi ve so huu.","pattern":"Subjekt + sein/haben + Ergaenzung","examples":["Ich bin Studentin.","Er hat einen Bruder."],"mistakes":["Quen chia dong tu theo chu ngu.","Dung haben cho nghe nghiep thay vi sein."]},
+            {"slug":"a1-praesens","title":"Praesens dong tu thuong","summary":"Chia dong tu hien tai va giu dong tu o vi tri thu hai trong cau chinh.","pattern":"Subjekt + Verb + Objekt / Zeit","examples":["Ich lerne Deutsch.","Sie arbeitet im Krankenhaus."],"mistakes":["Dat dong tu sau tan ngu.","Sai duoi dong tu nguoi thu ba."]},
+            {"slug":"a1-trennbare-verben","title":"Dong tu tach","summary":"Prefix tach ve cuoi cau trong cau chinh.","pattern":"Subjekt + Stammverb + ... + Praefix","examples":["Ich stehe um sechs Uhr auf.","Er ruft seine Mutter an."],"mistakes":["Khong tach prefix.","Dat prefix sai vi tri."]}
+          ]
+        },
+        {
+          "group": "Fragen und Kasus",
+          "lessons": [
+            {"slug":"a1-fragen","title":"W-Fragen va Ja/Nein-Fragen","summary":"Dat cau hoi co tu hoi va yes/no question.","pattern":"W-Wort + Verb + Subjekt / Verb + Subjekt...?","examples":["Wo wohnst du?","Hast du heute Zeit?"],"mistakes":["Giu word order cau khang dinh.","Quen dua dong tu len dau cau hoi yes/no."]},
+            {"slug":"a1-artikel-plural","title":"der, die, das va plural","summary":"Hoc giong danh tu va mot so mau so nhieu pho bien.","pattern":"Artikel + Nomen / die + Plural","examples":["der Tisch - die Tische","das Buch - die Buecher"],"mistakes":["Hoc tu khong kem article.","Nghi plural luc nao cung them -e."]},
+            {"slug":"a1-akkusativ","title":"Nominativ va Akkusativ co ban","summary":"Phan biet chu ngu va tan ngu truc tiep.","pattern":"Subjekt(Nom) + Verb + Objekt(Akk)","examples":["Der Mann kauft den Apfel.","Ich sehe die Frau."],"mistakes":["Khong doi der -> den trong Akkusativ.","Nhan ca hai thanh phan la Nominativ."]}
+          ]
+        }
+      ]
+    },
+    {
+      "level": "A2",
+      "label": "Aufbauen",
+      "focus": "Mo rong qua khu, gioi tu, cau phu va adjective ending co ban.",
+      "sections": [
+        {
+          "group": "Vergangenheit",
+          "lessons": [
+            {"slug":"a2-perfekt","title":"Perfekt voi haben va sein","summary":"Phan biet tro dong tu trong qua khu noi chuyen hang ngay.","pattern":"haben/sein + Partizip II","examples":["Ich habe lange gearbeitet.","Wir sind nach Berlin gefahren."],"mistakes":["Dung sai sein/haben.","Dat Partizip khong o cuoi cau."]},
+            {"slug":"a2-praeteritum","title":"Praeteritum voi sein, haben, modal","summary":"Dang qua khu hay gap trong viet va mot so dong tu rat thong dung.","pattern":"war, hatte, konnte, musste...","examples":["Ich war gestern krank.","Wir hatten keine Zeit."],"mistakes":["Lan voi Perfekt.","Quen duoi qua khu cua modal."]},
+            {"slug":"a2-zeitkonnektoren","title":"wenn va als","summary":"Phan biet dieu kien/lap lai va mot moc qua khu duy nhat.","pattern":"Wenn ... / Als ...","examples":["Wenn ich Zeit habe, lese ich.","Als ich klein war, spielte ich viel."],"mistakes":["Dung als cho dieu kien hien tai.","Khong phan biet tinh lap lai."]}
+          ]
+        },
+        {
+          "group": "Nebensaetze und Praepositionen",
+          "lessons": [
+            {"slug":"a2-weil-dass","title":"weil va dass","summary":"Bat dau noi ly do va noi dung menh de bang Nebensatz.","pattern":"..., weil/dass + Subjekt + ... + Verb","examples":["Ich bleibe zu Hause, weil ich krank bin.","Ich weiss, dass er heute kommt."],"mistakes":["Khong day dong tu ve cuoi.","Quen dau phay."]},
+            {"slug":"a2-wechselpraepositionen","title":"Wechselpraepositionen","summary":"Phan biet vi tri (Dativ) va huong di chuyen (Akkusativ).","pattern":"Wo? + Dativ / Wohin? + Akkusativ","examples":["Das Buch liegt auf dem Tisch.","Ich lege das Buch auf den Tisch."],"mistakes":["Dung cung mot cach cho ca wo va wohin.","Khong hoc kem vi du thuc te."]},
+            {"slug":"a2-adjektivdeklination","title":"Adjektivdeklination co ban","summary":"Tinh tu dung duoi sau article xac dinh va khong xac dinh.","pattern":"der rote Mantel / ein rotes Auto","examples":["Ich kaufe einen schoenen Rock.","Das ist ein kleines Zimmer."],"mistakes":["Bo qua ending cua tinh tu.","Tron der-word va ein-word."]}
+          ]
+        }
+      ]
+    },
+    {
+      "level": "B1",
+      "label": "Selbststaendig",
+      "focus": "Lien ket y, passiv, relativsatz nang hon va nen argumentation.",
+      "sections": [
+        {
+          "group": "Satzbau und Bericht",
+          "lessons": [
+            {"slug":"b1-vorfeld","title":"Vorfeld va inversion","summary":"Day thanh phan len dau cau nhung van giu dong tu da chia o vi tri thu hai.","pattern":"Heute + Verb + Subjekt ...","examples":["Heute gehe ich nicht ins Buero.","Deshalb habe ich den Termin verschoben."],"mistakes":["Dat chu ngu truoc dong tu sau adverb.","Khong nhan ra cau chinh chi co mot Vorfeld."]},
+            {"slug":"b1-passiv","title":"Passiv hien tai va qua khu","summary":"Dien dat hanh dong duoc thuc hien ma khong nhan manh chu the.","pattern":"werden/wurde + Partizip II","examples":["Hier wird nur Deutsch gesprochen.","Die Strasse wurde gesperrt."],"mistakes":["Nham voi sein + Partizip.","Quen chia werden theo thi."]},
+            {"slug":"b1-perfekt-praeteritum","title":"Perfekt va Praeteritum","summary":"Chon dung thi theo ngu canh noi, viet va ke chuyen.","pattern":"gesprochenes Deutsch -> Perfekt / Bericht -> Praeteritum","examples":["Ich habe ihn gestern gesehen.","Dann ging er nach Hause."],"mistakes":["Dung mot thi cho moi ngu canh.","Khong doi thi trong doan ke chuyen."]}
+          ]
+        },
+        {
+          "group": "Nebensaetze und Meinung",
+          "lessons": [
+            {"slug":"b1-obwohl-nachdem","title":"obwohl, waehrend, bevor, nachdem","summary":"Noi su tuong phan va quan he thoi gian giua hai hanh dong.","pattern":"Obwohl ..., ... / Nachdem ..., ...","examples":["Obwohl ich muede war, habe ich gelernt.","Nachdem er gegessen hatte, ging er spazieren."],"mistakes":["Khong day dong tu ve cuoi menh de phu.","Nham logic bevor va nachdem."]},
+            {"slug":"b1-relativsatz","title":"Relativsatz voi Dativ va gioi tu","summary":"Mo rong menh de tuong doi de mo ta nguoi, vat va tinh huong ro hon.","pattern":"die Frau, mit der ... / das Thema, ueber das ...","examples":["Das ist die Frau, mit der ich arbeite.","Das ist das Thema, ueber das wir sprechen."],"mistakes":["Chon sai relativpronomen.","Dat gioi tu sai vi tri."]},
+            {"slug":"b1-meinung","title":"Neu y kien va dua ly do","summary":"Cum dien dat co ban cho bai noi va bai viet B1.","pattern":"Meiner Meinung nach ... / Ein Vorteil ist, dass ...","examples":["Meiner Meinung nach ist Online-Lernen praktisch.","Ein Vorteil ist, dass man flexibel ist."],"mistakes":["Chi liet ke y ma khong co ly do.","Lap lai mot mau cau duy nhat."]}
+          ]
+        }
+      ]
+    },
+    {
+      "level": "B2",
+      "label": "Praeziser Ausdruck",
+      "focus": "Van viet chat hon, nominalstil, argumentation va cau truc nang cao.",
+      "sections": [
+        {
+          "group": "Stil und Register",
+          "lessons": [
+            {"slug":"b2-nominalisierung","title":"Nominalisierung","summary":"Chuyen dong tu/tinh tu sang danh tu de viet hoc thuat va trang trong hon.","pattern":"die Entscheidung / die Entwicklung / das Lernen","examples":["Die Verbesserung der Sprache braucht Zeit.","Regelmaessiges Lernen fuehrt zu Fortschritten."],"mistakes":["Nominal hoa qua muc.","Quen viet hoa danh tu hoa."]},
+            {"slug":"b2-funktionsverbgefuege","title":"Funktionsverbgefuege","summary":"Cum dong tu + danh tu thuong gap trong email cong viec va van ban chinh thuc.","pattern":"eine Entscheidung treffen / zur Verfuegung stehen","examples":["Wir muessen eine Entscheidung treffen.","Weitere Informationen stehen online zur Verfuegung."],"mistakes":["Dich tung tu theo nghia den.","Khong nhan ra co the doi sang dong tu don gian."]},
+            {"slug":"b2-partizipialattribute","title":"Partizipialattribute","summary":"Rut gon menh de thanh cum bo nghia cho danh tu.","pattern":"die in Berlin lebende Frau / die gestern gekaufte Tasche","examples":["Die in Hue geborene Autorin lebt jetzt in Berlin.","Die gestern bestellten Buecher sind angekommen."],"mistakes":["Bo qua adjective ending.","Dung cau truc nay trong moi truong hop khien cau kho doc."]}
+          ]
+        },
+        {
+          "group": "Argumentation und Perspektive",
+          "lessons": [
+            {"slug":"b2-konnektoren","title":"Konnektoren tranh luan B2","summary":"Dung einerseits...andererseits, folglich, insofern de lap luan chuan hon.","pattern":"Einerseits ..., andererseits ... / Folglich ...","examples":["Einerseits spart Homeoffice Zeit, andererseits fehlt der direkte Austausch.","Die Nachfrage steigt; folglich muessen wir schneller handeln."],"mistakes":["Dung nhieu connective nhung logic van khong ro.","Lan sac thai cua hingegen, trotzdem, folglich."]},
+            {"slug":"b2-passiversatz","title":"Passiversatzformen","summary":"Nhung cau truc thay the Passiv de van viet tu nhien va da dang hon.","pattern":"Das Problem laesst sich loesen / ist leicht zu loesen","examples":["Die Aufgabe ist leicht zu loesen.","Das Fenster laesst sich nicht oeffnen."],"mistakes":["Ep dung Passiv trong moi cau.","Khong thay duoc sac thai giua tung cau truc."]},
+            {"slug":"b2-indirekte-rede","title":"Indirekte Rede can dung duoc","summary":"Trinh bay lai loi noi cua nguoi khac trong van viet va tin tuc.","pattern":"Er sagt, er habe ... / dass er ... hat","examples":["Die Zeitung berichtet, die Preise seien gestiegen.","Er behauptet, er habe davon nichts gewusst."],"mistakes":["Nham giua gian tiep va trich dan y kien.","Qua tap trung hinh thuc ma bo logic van canh."]}
+          ]
+        }
+      ]
+    }
+  ]
 }

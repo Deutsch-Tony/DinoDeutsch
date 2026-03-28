@@ -666,6 +666,144 @@ async function renderGenericModule(moduleName) {
   `;
 }
 
+function getGrammarLessonCount(grammar) {
+  return grammar.levels.reduce(
+    (total, level) => total + level.sections.reduce((sum, section) => sum + section.lessons.length, 0),
+    0
+  );
+}
+
+function renderGrammarLessonCard(lesson) {
+  return `
+    <details class="grammar-lesson">
+      <summary>
+        <div>
+          <h3>${lesson.title}</h3>
+          <p>${lesson.summary}</p>
+        </div>
+        <span class="grammar-open">Mo bai</span>
+      </summary>
+      <div class="grammar-lesson-body">
+        <div class="grammar-panel">
+          <p class="mini-kicker">Trong tam</p>
+          <p>${lesson.summary}</p>
+        </div>
+        <div class="grammar-panel">
+          <p class="mini-kicker">Cong thuc</p>
+          <p class="grammar-pattern">${lesson.pattern}</p>
+        </div>
+        <div class="grammar-panel">
+          <p class="mini-kicker">Giai thich nhanh</p>
+          <p>${lesson.what || lesson.summary}</p>
+        </div>
+        <div class="grammar-panel">
+          <p class="mini-kicker">Vi du</p>
+          <ul class="grammar-list">
+            ${lesson.examples.map((example) => `<li>${example}</li>`).join("")}
+          </ul>
+        </div>
+        <div class="grammar-panel">
+          <p class="mini-kicker">Loi hay gap</p>
+          <ul class="grammar-list">
+            ${lesson.mistakes.map((item) => `<li>${item}</li>`).join("")}
+          </ul>
+        </div>
+      </div>
+    </details>
+  `;
+}
+
+function renderGrammarSection(section, level) {
+  return `
+    <section class="grammar-group">
+      <div class="grammar-group-head">
+        <div>
+          <p class="eyebrow">${level}</p>
+          <h3>${section.group}</h3>
+        </div>
+        <span class="grammar-group-count">${section.lessons.length} bai</span>
+      </div>
+      <div class="grammar-lessons">
+        ${section.lessons.map((lesson) => renderGrammarLessonCard(lesson)).join("")}
+      </div>
+    </section>
+  `;
+}
+
+async function renderGrammar() {
+  const [grammarRes, resourcesRes] = await Promise.all([
+    loadApi("/api/modules/grammar"),
+    loadApi("/api/resources?category=grammar")
+  ]);
+
+  const grammar = grammarRes.item;
+  const firstLevel = grammar.levels[0];
+  const totalLessons = getGrammarLessonCount(grammar);
+
+  return `
+    ${renderHero({
+      eyebrow: grammar.eyebrow,
+      title: "Hoc ngu phap theo level de biet minh dang dung o dau va can mo rong cho nao.",
+      description: grammar.description,
+      sideTitle: "Tong quan",
+      sideStats: [
+        { title: `${grammar.levels.length}`, text: "level A1-B2" },
+        { title: `${totalLessons}`, text: "bai grammar" },
+        { title: firstLevel.label, text: `${firstLevel.level} mo dau` },
+        { title: "Flow", text: "level -> nhom -> bai" }
+      ]
+    })}
+    <section class="section">
+      ${renderCompactCards(
+        [
+          { title: "Theo level", text: "Tu A1 den B2, moi level co nhom bai ro rang de tranh hoc lan muc." },
+          { title: "Search nhanh", text: "Tim theo ten bai, diem grammar, vi du va loi hay gap." },
+          { title: "Mo bai tai cho", text: "Bam tung bai de xem cong thuc, vi du va note ngay tren cung trang." },
+          { title: "De mo rong", text: "Sau nay ban chi can them lesson vao grammar.json la UI tu render." }
+        ],
+        "Grammatik"
+      )}
+    </section>
+    <section class="section">
+      <div class="section-head">
+        <p class="eyebrow">Grammatik-Bibliothek</p>
+        <h2>Chon level roi mo tung diem ngu phap can hoc hoac can on lai</h2>
+      </div>
+      <div class="grammar-shell">
+        <div class="toolbar-card">
+          <p class="eyebrow">CEFR-Stufen</p>
+          <div class="level-row" id="grammarLevels"></div>
+        </div>
+        <div class="topic-card grammar-toolbar">
+          <div>
+            <p class="eyebrow">Suche</p>
+            <input id="grammarSearch" class="search-input" type="search" placeholder="Tim theo ten bai, pattern, vi du, loi hay gap..." />
+          </div>
+          <div class="vocab-meta grammar-meta">
+            <span id="grammarLevelLabel">Trinh do: ${firstLevel.level}</span>
+            <span id="grammarFocusLabel">Trong tam: ${firstLevel.focus}</span>
+            <span id="grammarCountLabel"></span>
+          </div>
+          <div class="grammar-flow">
+            ${grammar.overview.studyFlow.map((item) => `<span>${item}</span>`).join("")}
+          </div>
+        </div>
+        <div id="grammarContent" class="grammar-content"></div>
+        <div id="grammarEmpty" class="empty-state" hidden>Khong co bai grammar nao khop bo loc hien tai.</div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="section-head">
+        <p class="eyebrow">Nguon hoc lien quan</p>
+        <h2>Cac nguon nen xem them cho Grammatik</h2>
+      </div>
+      <div class="resource-grid">
+        ${renderResourceCards(resourcesRes.items)}
+      </div>
+    </section>
+  `;
+}
+
 function speakGerman(text) {
   if (!("speechSynthesis" in window)) {
     alert("Trinh duyet nay chua ho tro phat am.");
@@ -823,6 +961,69 @@ async function renderVocab() {
       </div>
     </section>
   `;
+}
+
+function setupGrammarInteractions(grammar) {
+  const levelEl = document.getElementById("grammarLevels");
+  const searchEl = document.getElementById("grammarSearch");
+  const contentEl = document.getElementById("grammarContent");
+  const emptyEl = document.getElementById("grammarEmpty");
+  const levelLabel = document.getElementById("grammarLevelLabel");
+  const focusLabel = document.getElementById("grammarFocusLabel");
+  const countLabel = document.getElementById("grammarCountLabel");
+
+  if (!levelEl || !searchEl || !contentEl || !emptyEl || !levelLabel || !focusLabel || !countLabel) return;
+
+  let activeLevel = grammar.levels[0]?.level || "A1";
+  let keyword = "";
+
+  function renderLevels() {
+    levelEl.innerHTML = grammar.levels
+      .map(
+        (level) =>
+          `<button class="level-btn ${level.level === activeLevel ? "is-active" : ""}" data-level="${level.level}">${level.level}</button>`
+      )
+      .join("");
+
+    levelEl.querySelectorAll("[data-level]").forEach((button) => {
+      button.addEventListener("click", () => {
+        activeLevel = button.dataset.level;
+        renderLevels();
+        renderGrammarView();
+      });
+    });
+  }
+
+  function renderGrammarView() {
+    const level = grammar.levels.find((item) => item.level === activeLevel) || grammar.levels[0];
+    const query = keyword.trim().toLowerCase();
+
+    const filteredSections = level.sections
+      .map((section) => ({
+        ...section,
+        lessons: section.lessons.filter((lesson) =>
+          [lesson.title, lesson.summary, lesson.what, lesson.pattern, ...(lesson.examples || []), ...(lesson.mistakes || [])]
+            .join(" ")
+            .toLowerCase()
+            .includes(query)
+        )
+      }))
+      .filter((section) => section.lessons.length > 0);
+
+    levelLabel.textContent = `Trinh do: ${level.level}`;
+    focusLabel.textContent = `Trong tam: ${level.focus}`;
+    countLabel.textContent = `So bai: ${filteredSections.reduce((sum, section) => sum + section.lessons.length, 0)}`;
+    contentEl.innerHTML = filteredSections.map((section) => renderGrammarSection(section, level.level)).join("");
+    emptyEl.hidden = filteredSections.length > 0;
+  }
+
+  searchEl.addEventListener("input", (event) => {
+    keyword = event.target.value;
+    renderGrammarView();
+  });
+
+  renderLevels();
+  renderGrammarView();
 }
 
 function renderProfile() {
@@ -1013,8 +1214,8 @@ function renderLoadError(message) {
 async function renderRoute(route) {
   try {
     if (route === "home") return await renderHome();
+    if (route === "grammar") return await renderGrammar();
     if (route === "vocab") return await renderVocab();
-    if (route === "grammar") return await renderGenericModule("grammar");
     if (route === "listening") return await renderGenericModule("listening");
     if (route === "reading") return await renderGenericModule("reading");
     if (route === "test") return await renderGenericModule("test");
@@ -1032,6 +1233,11 @@ async function mountRoute() {
   const app = document.getElementById("app");
   if (!app) return;
   app.innerHTML = await renderRoute(route);
+
+  if (route === "grammar") {
+    const grammarRes = await loadApi("/api/modules/grammar");
+    setupGrammarInteractions(grammarRes.item);
+  }
 
   if (route === "vocab") {
     const vocabMeta = await loadApi("/api/vocab/meta");
