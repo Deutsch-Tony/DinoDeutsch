@@ -53,6 +53,17 @@ let currentSession = null;
 let currentProfile = null;
 let syncStatus = "Tien do hien dang luu tren trinh duyet.";
 let syncPromise = null;
+let listeningPlayback = {
+  lessonId: null,
+  text: "",
+  duration: 0,
+  currentTime: 0,
+  startedAt: 0,
+  startOffset: 0,
+  utterance: null,
+  timer: null,
+  playing: false
+};
 
 function routeFromLocation() {
   const hashKey = (location.hash || "").replace("#", "");
@@ -707,6 +718,7 @@ function getListeningLessonCount(listening) {
 }
 
 function renderListeningLessonCard(lesson) {
+  const transcriptText = lesson.transcript.join(" ");
   return `
     <details class="listening-lesson">
       <summary>
@@ -733,6 +745,24 @@ function renderListeningLessonCard(lesson) {
           <ol class="listening-lines">
             ${lesson.transcript.map((line) => `<li>${line}</li>`).join("")}
           </ol>
+        </div>
+        <div class="listening-panel listening-audio-panel">
+          <p class="mini-kicker">Audio player</p>
+          <div class="listening-player" data-lesson="${lesson.slug}" data-text="${escapeAttr(transcriptText)}">
+            <div class="listening-player-controls">
+              <button class="listening-control" type="button" data-listening-action="back">-5s</button>
+              <button class="listening-control listening-play" type="button" data-listening-action="toggle">Play</button>
+              <button class="listening-control" type="button" data-listening-action="forward">+5s</button>
+            </div>
+            <div class="listening-progress-wrap">
+              <input class="listening-progress" type="range" min="0" max="1000" value="0" step="1" data-listening-action="seek" />
+              <div class="listening-time">
+                <span data-role="current">00:00</span>
+                <span data-role="total">00:00</span>
+              </div>
+            </div>
+            <p class="listening-player-note">Dang dung voice cua trinh duyet de phat transcript. Sau nay co the doi sang audio that.</p>
+          </div>
         </div>
         <div class="listening-panel">
           <p class="mini-kicker">Can nghe ra</p>
@@ -850,6 +880,224 @@ async function renderListening() {
       </div>
     </section>
   `;
+}
+
+function estimateListeningDuration(text) {
+  const words = text.trim().split(/\s+/).filter(Boolean).length;
+  return Math.max(12000, words * 430);
+}
+
+function formatListeningTime(ms) {
+  const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+  const minutes = Math.floor(totalSeconds / 60)
+    .toString()
+    .padStart(2, "0");
+  const seconds = (totalSeconds % 60).toString().padStart(2, "0");
+  return `${minutes}:${seconds}`;
+}
+
+function getListeningVoice() {
+  const voices = speechSynthesis.getVoices();
+  return voices.find((voice) => voice.lang && voice.lang.toLowerCase().startsWith("de")) || null;
+}
+
+function stopListeningTimer() {
+  if (listeningPlayback.timer) {
+    clearInterval(listeningPlayback.timer);
+    listeningPlayback.timer = null;
+  }
+}
+
+function syncListeningPlayers() {
+  document.querySelectorAll(".listening-player").forEach((player) => {
+    const lessonId = player.dataset.lesson;
+    const currentEl = player.querySelector('[data-role="current"]');
+    const totalEl = player.querySelector('[data-role="total"]');
+    const progressEl = player.querySelector(".listening-progress");
+    const playButton = player.querySelector(".listening-play");
+    if (!currentEl || !totalEl || !progressEl || !playButton) return;
+
+    const isActive = listeningPlayback.lessonId === lessonId;
+    const duration = isActive ? listeningPlayback.duration : estimateListeningDuration(player.dataset.text || "");
+    const currentTime = isActive ? listeningPlayback.currentTime : 0;
+
+    currentEl.textContent = formatListeningTime(currentTime);
+    totalEl.textContent = formatListeningTime(duration);
+    progressEl.value = duration ? Math.round((currentTime / duration) * 1000) : 0;
+    playButton.textContent = isActive && listeningPlayback.playing ? "Pause" : "Play";
+  });
+}
+
+function stopListeningPlayback({ reset = false } = {}) {
+  stopListeningTimer();
+  if ("speechSynthesis" in window) {
+    speechSynthesis.cancel();
+  }
+  listeningPlayback.playing = false;
+  listeningPlayback.utterance = null;
+  listeningPlayback.startedAt = 0;
+  listeningPlayback.startOffset = listeningPlayback.currentTime;
+
+  if (reset) {
+    listeningPlayback = {
+      lessonId: null,
+      text: "",
+      duration: 0,
+      currentTime: 0,
+      startedAt: 0,
+      startOffset: 0,
+      utterance: null,
+      timer: null,
+      playing: false
+    };
+  }
+
+  syncListeningPlayers();
+}
+
+function playListeningTranscript(lessonId, text) {
+  if (!("speechSynthesis" in window)) {
+    alert("Trinh duyet nay chua ho tro phat am transcript.");
+    return;
+  }
+
+  const duration = estimateListeningDuration(text);
+  const words = text.trim().split(/\s+/).filter(Boolean);
+  const safeCurrentTime = Math.min(listeningPlayback.currentTime, duration);
+  const startWordIndex = Math.min(words.length - 1, Math.max(0, Math.floor((safeCurrentTime / duration) * words.length)));
+  const remainingText = words.slice(startWordIndex).join(" ");
+
+  if (!remainingText) {
+    listeningPlayback.currentTime = duration;
+    listeningPlayback.playing = false;
+    syncListeningPlayers();
+    return;
+  }
+
+  stopListeningTimer();
+  speechSynthesis.cancel();
+
+  const utterance = new SpeechSynthesisUtterance(remainingText);
+  utterance.lang = "de-DE";
+  const voice = getListeningVoice();
+  if (voice) utterance.voice = voice;
+
+  listeningPlayback.lessonId = lessonId;
+  listeningPlayback.text = text;
+  listeningPlayback.duration = duration;
+  listeningPlayback.currentTime = safeCurrentTime;
+  listeningPlayback.startOffset = safeCurrentTime;
+  listeningPlayback.startedAt = Date.now();
+  listeningPlayback.utterance = utterance;
+  listeningPlayback.playing = true;
+  listeningPlayback.timer = setInterval(() => {
+    listeningPlayback.currentTime = Math.min(
+      listeningPlayback.duration,
+      listeningPlayback.startOffset + (Date.now() - listeningPlayback.startedAt)
+    );
+    syncListeningPlayers();
+  }, 250);
+
+  utterance.onend = () => {
+    stopListeningTimer();
+    listeningPlayback.currentTime = listeningPlayback.duration;
+    listeningPlayback.playing = false;
+    listeningPlayback.utterance = null;
+    syncListeningPlayers();
+  };
+
+  utterance.onerror = () => {
+    stopListeningPlayback();
+  };
+
+  speechSynthesis.speak(utterance);
+  syncListeningPlayers();
+}
+
+function pauseListeningTranscript() {
+  if (!listeningPlayback.playing) return;
+  listeningPlayback.currentTime = Math.min(
+    listeningPlayback.duration,
+    listeningPlayback.startOffset + (Date.now() - listeningPlayback.startedAt)
+  );
+  stopListeningPlayback();
+}
+
+function toggleListeningTranscript(lessonId, text) {
+  if (listeningPlayback.lessonId === lessonId && listeningPlayback.playing) {
+    pauseListeningTranscript();
+    return;
+  }
+
+  if (listeningPlayback.lessonId !== lessonId) {
+    stopListeningPlayback({ reset: true });
+    listeningPlayback.lessonId = lessonId;
+    listeningPlayback.text = text;
+    listeningPlayback.duration = estimateListeningDuration(text);
+    listeningPlayback.currentTime = 0;
+  }
+
+  playListeningTranscript(lessonId, text);
+}
+
+function seekListeningTranscript(lessonId, text, nextTime) {
+  const duration = estimateListeningDuration(text);
+  const clamped = Math.max(0, Math.min(duration, nextTime));
+
+  if (listeningPlayback.lessonId !== lessonId) {
+    listeningPlayback.lessonId = lessonId;
+    listeningPlayback.text = text;
+    listeningPlayback.duration = duration;
+  }
+
+  listeningPlayback.currentTime = clamped;
+
+  if (listeningPlayback.playing) {
+    playListeningTranscript(lessonId, text);
+  } else {
+    syncListeningPlayers();
+  }
+}
+
+function setupListeningPlayers() {
+  document.querySelectorAll(".listening-player").forEach((player) => {
+    const lessonId = player.dataset.lesson;
+    const text = player.dataset.text || "";
+
+    player.querySelectorAll("[data-listening-action]").forEach((control) => {
+      const action = control.dataset.listeningAction;
+
+      if (action === "toggle") {
+        control.addEventListener("click", () => toggleListeningTranscript(lessonId, text));
+      }
+
+      if (action === "back") {
+        control.addEventListener("click", () => {
+          const base =
+            listeningPlayback.lessonId === lessonId ? listeningPlayback.currentTime : 0;
+          seekListeningTranscript(lessonId, text, base - 5000);
+        });
+      }
+
+      if (action === "forward") {
+        control.addEventListener("click", () => {
+          const base =
+            listeningPlayback.lessonId === lessonId ? listeningPlayback.currentTime : 0;
+          seekListeningTranscript(lessonId, text, base + 5000);
+        });
+      }
+
+      if (action === "seek") {
+        control.addEventListener("input", (event) => {
+          const duration = estimateListeningDuration(text);
+          const ratio = Number(event.target.value) / 1000;
+          seekListeningTranscript(lessonId, text, duration * ratio);
+        });
+      }
+    });
+  });
+
+  syncListeningPlayers();
 }
 
 function getGrammarLessonCount(grammar) {
@@ -1271,7 +1519,9 @@ function setupListeningInteractions(listening) {
     levelLabel.textContent = `Trinh do: ${level.level}`;
     focusLabel.textContent = `Trong tam: ${level.focus}`;
     countLabel.textContent = `So bai: ${filteredTracks.reduce((sum, track) => sum + track.lessons.length, 0)}`;
+    stopListeningPlayback({ reset: true });
     contentEl.innerHTML = filteredTracks.map((track) => renderListeningTrack(track, level.level)).join("");
+    setupListeningPlayers();
     emptyEl.hidden = filteredTracks.length > 0;
   }
 
@@ -1491,6 +1741,7 @@ async function mountRoute() {
   bindRouteLinks();
   const app = document.getElementById("app");
   if (!app) return;
+  stopListeningPlayback({ reset: true });
   app.innerHTML = await renderRoute(route);
   bindRouteLinks();
 

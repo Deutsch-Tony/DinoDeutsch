@@ -841,6 +841,65 @@ p, li {
   background: rgba(255, 255, 255, 0.5);
 }
 
+.listening-audio-panel {
+  grid-column: 1 / -1;
+}
+
+.listening-player {
+  display: grid;
+  gap: 14px;
+}
+
+.listening-player-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.listening-control {
+  border: 1px solid rgba(18, 27, 45, 0.12);
+  background: rgba(255, 255, 255, 0.78);
+  color: #2c3137;
+  border-radius: 999px;
+  padding: 10px 14px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.listening-play {
+  background: var(--panel-dark);
+  color: #f8f4ef;
+  border-color: transparent;
+}
+
+.listening-progress-wrap {
+  display: grid;
+  gap: 8px;
+}
+
+.listening-progress {
+  width: 100%;
+  accent-color: #4a525b;
+  cursor: pointer;
+}
+
+.listening-time {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: #665e56;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.listening-player-note {
+  margin: 0;
+  color: #6b635c;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
 .listening-transcript {
   grid-column: 1 / -1;
 }
