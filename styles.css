@@ -217,6 +217,77 @@ body {
   margin: 0 auto;
 }
 
+.site-footer {
+  padding-top: 84px;
+  padding-bottom: 36px;
+}
+
+.footer-shell,
+.footer-bottom {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
+}
+
+.footer-shell {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 28px;
+  padding: 28px;
+  border-radius: 32px 32px 22px 22px;
+}
+
+.footer-brand {
+  display: grid;
+  gap: 16px;
+}
+
+.footer-brand-link {
+  width: fit-content;
+}
+
+.footer-brand p {
+  margin: 0;
+  max-width: 52ch;
+}
+
+.footer-links {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.footer-col {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+}
+
+.footer-col a,
+.footer-col span {
+  color: var(--muted);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.footer-col a:hover {
+  color: #2d3339;
+}
+
+.footer-bottom {
+  margin-top: 10px;
+  padding: 14px 18px;
+  border-radius: 0 0 22px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #5f5750;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
 .hero {
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
@@ -1029,7 +1100,9 @@ p, li {
   .pill-row,
   .feature-grid,
   .profile-grid,
-  .grammar-lesson-body {
+  .grammar-lesson-body,
+  .footer-shell,
+  .footer-links {
     grid-template-columns: 1fr;
   }
 
@@ -1071,5 +1144,9 @@ p, li {
   .grammar-group-head,
   .grammar-lesson summary {
     flex-direction: column;
+  }
+  .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
