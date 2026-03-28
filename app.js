@@ -699,6 +699,159 @@ async function renderGenericModule(moduleName) {
   `;
 }
 
+function getListeningLessonCount(listening) {
+  return listening.levels.reduce(
+    (total, level) => total + level.tracks.reduce((sum, track) => sum + track.lessons.length, 0),
+    0
+  );
+}
+
+function renderListeningLessonCard(lesson) {
+  return `
+    <details class="listening-lesson">
+      <summary>
+        <div>
+          <h3>${lesson.title}</h3>
+          <p>${lesson.scenario}</p>
+        </div>
+        <div class="listening-summary-meta">
+          <span>${lesson.duration}</span>
+          <span class="listening-open">Mo bai</span>
+        </div>
+      </summary>
+      <div class="listening-lesson-body">
+        <div class="listening-panel">
+          <p class="mini-kicker">Muc tieu nghe</p>
+          <p>${lesson.goal}</p>
+        </div>
+        <div class="listening-panel">
+          <p class="mini-kicker">Tinh huong</p>
+          <p>${lesson.scenario}</p>
+        </div>
+        <div class="listening-panel listening-transcript">
+          <p class="mini-kicker">Transcript</p>
+          <ol class="listening-lines">
+            ${lesson.transcript.map((line) => `<li>${line}</li>`).join("")}
+          </ol>
+        </div>
+        <div class="listening-panel">
+          <p class="mini-kicker">Can nghe ra</p>
+          <ul class="grammar-list">
+            ${lesson.listenFor.map((item) => `<li>${item}</li>`).join("")}
+          </ul>
+        </div>
+        <div class="listening-panel">
+          <p class="mini-kicker">Shadowing</p>
+          <ul class="grammar-list">
+            ${lesson.shadowing.map((item) => `<li>${item}</li>`).join("")}
+          </ul>
+        </div>
+        <div class="listening-panel">
+          <p class="mini-kicker">Tu check</p>
+          <ul class="grammar-list">
+            ${lesson.checklist.map((item) => `<li>${item}</li>`).join("")}
+          </ul>
+        </div>
+        <div class="listening-panel">
+          <p class="mini-kicker">Ghi chu</p>
+          <p>${lesson.sourceHint}</p>
+        </div>
+      </div>
+    </details>
+  `;
+}
+
+function renderListeningTrack(track, level) {
+  return `
+    <section class="listening-group">
+      <div class="listening-group-head">
+        <div>
+          <p class="eyebrow">${level}</p>
+          <h3>${track.group}</h3>
+        </div>
+        <span class="grammar-group-count">${track.lessons.length} bai nghe</span>
+      </div>
+      <div class="listening-lessons">
+        ${track.lessons.map((lesson) => renderListeningLessonCard(lesson)).join("")}
+      </div>
+    </section>
+  `;
+}
+
+async function renderListening() {
+  const [listeningRes, resourcesRes] = await Promise.all([
+    loadApi("/api/modules/listening"),
+    loadApi("/api/resources?category=listening")
+  ]);
+
+  const listening = listeningRes.item;
+  const firstLevel = listening.levels[0];
+  const totalLessons = getListeningLessonCount(listening);
+
+  return `
+    ${renderHero({
+      eyebrow: listening.eyebrow,
+      title: "Luyen nghe theo tinh huong de bat am, hieu y va noi lai de hon.",
+      description: listening.description,
+      sideTitle: "Tong quan",
+      sideStats: [
+        { title: `${listening.levels.length}`, text: "level A1-B2" },
+        { title: `${totalLessons}`, text: "bai nghe ngan" },
+        { title: firstLevel.label, text: `${firstLevel.level} khoi dau` },
+        { title: "Flow", text: "nghe -> doc -> shadowing" }
+      ]
+    })}
+    <section class="section">
+      ${renderCompactCards(
+        [
+          { title: "Theo level", text: "Moi level di theo toc do nghe va do phuc tap cua thong tin." },
+          { title: "Transcript", text: "Nghe truoc, doi chieu transcript sau de tranh phu thuoc vao text." },
+          { title: "Shadowing", text: "Moi bai deu co goi y lap lai de giu nhip noi va bat am tot hon." },
+          { title: "API data", text: "Tat ca bai nghe di qua /api/modules/listening, sau nay mo rong JSON la xong." }
+        ],
+        "Horen"
+      )}
+    </section>
+    <section class="section">
+      <div class="section-head">
+        <p class="eyebrow">Hoer-Bibliothek</p>
+        <h2>Chon level, mo nhom bai va luyen nghe theo transcript, checklist va shadowing</h2>
+      </div>
+      <div class="grammar-shell listening-shell">
+        <div class="toolbar-card">
+          <p class="eyebrow">CEFR-Stufen</p>
+          <div class="level-row" id="listeningLevels"></div>
+        </div>
+        <div class="topic-card grammar-toolbar">
+          <div>
+            <p class="eyebrow">Suche</p>
+            <input id="listeningSearch" class="search-input" type="search" placeholder="Tim theo bai nghe, tinh huong, transcript, tu khoa..." />
+          </div>
+          <div class="vocab-meta grammar-meta">
+            <span id="listeningLevelLabel">Trinh do: ${firstLevel.level}</span>
+            <span id="listeningFocusLabel">Trong tam: ${firstLevel.focus}</span>
+            <span id="listeningCountLabel"></span>
+          </div>
+          <div class="grammar-flow">
+            ${listening.overview.studyFlow.map((item) => `<span>${item}</span>`).join("")}
+          </div>
+        </div>
+        <div id="listeningContent" class="grammar-content listening-content"></div>
+        <div id="listeningEmpty" class="empty-state" hidden>Khong co bai nghe nao khop bo loc hien tai.</div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="section-head">
+        <p class="eyebrow">Nguon hoc lien quan</p>
+        <h2>Cac nguon nen xem them cho Horen</h2>
+      </div>
+      <div class="resource-grid">
+        ${renderResourceCards(resourcesRes.items)}
+      </div>
+    </section>
+  `;
+}
+
 function getGrammarLessonCount(grammar) {
   return grammar.levels.reduce(
     (total, level) => total + level.sections.reduce((sum, section) => sum + section.lessons.length, 0),
@@ -1059,6 +1212,78 @@ function setupGrammarInteractions(grammar) {
   renderGrammarView();
 }
 
+function setupListeningInteractions(listening) {
+  const levelEl = document.getElementById("listeningLevels");
+  const searchEl = document.getElementById("listeningSearch");
+  const contentEl = document.getElementById("listeningContent");
+  const emptyEl = document.getElementById("listeningEmpty");
+  const levelLabel = document.getElementById("listeningLevelLabel");
+  const focusLabel = document.getElementById("listeningFocusLabel");
+  const countLabel = document.getElementById("listeningCountLabel");
+
+  if (!levelEl || !searchEl || !contentEl || !emptyEl || !levelLabel || !focusLabel || !countLabel) return;
+
+  let activeLevel = listening.levels[0]?.level || "A1";
+  let keyword = "";
+
+  function renderLevels() {
+    levelEl.innerHTML = listening.levels
+      .map(
+        (level) =>
+          `<button class="level-btn ${level.level === activeLevel ? "is-active" : ""}" data-level="${level.level}">${level.level}</button>`
+      )
+      .join("");
+
+    levelEl.querySelectorAll("[data-level]").forEach((button) => {
+      button.addEventListener("click", () => {
+        activeLevel = button.dataset.level;
+        renderLevels();
+        renderListeningView();
+      });
+    });
+  }
+
+  function renderListeningView() {
+    const level = listening.levels.find((item) => item.level === activeLevel) || listening.levels[0];
+    const query = keyword.trim().toLowerCase();
+
+    const filteredTracks = level.tracks
+      .map((track) => ({
+        ...track,
+        lessons: track.lessons.filter((lesson) =>
+          [
+            lesson.title,
+            lesson.scenario,
+            lesson.goal,
+            lesson.sourceHint,
+            ...(lesson.transcript || []),
+            ...(lesson.listenFor || []),
+            ...(lesson.shadowing || []),
+            ...(lesson.checklist || [])
+          ]
+            .join(" ")
+            .toLowerCase()
+            .includes(query)
+        )
+      }))
+      .filter((track) => track.lessons.length > 0);
+
+    levelLabel.textContent = `Trinh do: ${level.level}`;
+    focusLabel.textContent = `Trong tam: ${level.focus}`;
+    countLabel.textContent = `So bai: ${filteredTracks.reduce((sum, track) => sum + track.lessons.length, 0)}`;
+    contentEl.innerHTML = filteredTracks.map((track) => renderListeningTrack(track, level.level)).join("");
+    emptyEl.hidden = filteredTracks.length > 0;
+  }
+
+  searchEl.addEventListener("input", (event) => {
+    keyword = event.target.value;
+    renderListeningView();
+  });
+
+  renderLevels();
+  renderListeningView();
+}
+
 function renderProfile() {
   if (!currentSession?.user) {
     return `
@@ -1249,7 +1474,7 @@ async function renderRoute(route) {
     if (route === "home") return await renderHome();
     if (route === "grammar") return await renderGrammar();
     if (route === "vocab") return await renderVocab();
-    if (route === "listening") return await renderGenericModule("listening");
+    if (route === "listening") return await renderListening();
     if (route === "reading") return await renderGenericModule("reading");
     if (route === "test") return await renderGenericModule("test");
     if (route === "profile") return renderProfile();
@@ -1277,6 +1502,11 @@ async function mountRoute() {
   if (route === "vocab") {
     const vocabMeta = await loadApi("/api/vocab/meta");
     setupVocabInteractions(vocabMeta);
+  }
+
+  if (route === "listening") {
+    const listeningRes = await loadApi("/api/modules/listening");
+    setupListeningInteractions(listeningRes.item);
   }
 
   if (route === "profile") {

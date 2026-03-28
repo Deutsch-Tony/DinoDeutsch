@@ -1,12 +1,313 @@
 ﻿{
   "eyebrow": "Hören",
-  "title": "Nghe ít một nhưng đều sẽ hiểu tiếng Đức tự nhiên hơn.",
-  "description": "Module này dành cho bài nghe ngắn, transcript, shadowing và các chủ đề luyện nghe theo cấp độ.",
-  "highlights": [
-    { "title": "A1", "text": "Câu chào hỏi, mua đồ, hỏi đường, giờ giấc." },
-    { "title": "A2", "text": "Hội thoại có ngữ cảnh, đoạn hội thoại đời sống." },
-    { "title": "Transcript", "text": "Nghe trước, đối chiếu sau để tăng khả năng bắt âm." },
-    { "title": "Shadowing", "text": "Lặp lại từng cụm ngắn để tạo phản xạ." }
+  "title": "Nghe theo tình huống và cấp độ để tai quen dần với tiếng Đức thật.",
+  "description": "Module này gom các bài nghe ngắn theo level A1-B2, có transcript, mục tiêu nghe, shadowing và checklist để bạn luyện đều hơn mỗi ngày.",
+  "overview": {
+    "studyFlow": ["Chọn level", "Mở nhóm chủ đề", "Nghe theo mục tiêu", "Đối chiếu transcript", "Shadowing 2-3 vòng"],
+    "focusPoints": ["Nghe ý chính trước", "Bắt từ khóa", "Đối chiếu transcript sau", "Lặp lại thành cụm ngắn"]
+  },
+  "levels": [
+    {
+      "level": "A1",
+      "label": "A1 Einstieg",
+      "focus": "Chào hỏi, mua đồ, hỏi giờ, hội thoại chậm và rõ.",
+      "tracks": [
+        {
+          "group": "Alltag & Begruessung",
+          "lessons": [
+            {
+              "slug": "a1-vorstellen-im-kurs",
+              "title": "Sich im Kurs vorstellen",
+              "scenario": "Hai học viên mới làm quen trong lớp tiếng Đức.",
+              "goal": "Nghe tên, quê quán và ngôn ngữ người kia đang học.",
+              "duration": "00:42",
+              "transcript": [
+                "Hallo, ich heiße Linh und ich komme aus Viet Nam.",
+                "Ich wohne jetzt in Berlin und lerne Deutsch seit zwei Monaten.",
+                "Und du? Wie heißt du?",
+                "Ich bin Marco. Ich komme aus Italien und spreche ein bisschen Deutsch."
+              ],
+              "listenFor": ["Tên riêng", "Quốc gia", "Động từ heiße / komme / wohne", "Mốc thời gian đơn giản"],
+              "shadowing": ["Nghe một lượt không nhìn chữ", "Nghe lại và lặp từng câu", "Tự giới thiệu theo cùng mẫu trong 20 giây"],
+              "checklist": ["Bạn bắt được 2 tên chưa?", "Bạn nghe ra 2 quốc gia chưa?", "Bạn tự nói lại mẫu Ich heiße... chưa?"],
+              "sourceHint": "Dialog chậm để làm quen âm cơ bản"
+            },
+            {
+              "slug": "a1-im-cafe-bestellen",
+              "title": "Im Cafe bestellen",
+              "scenario": "Một khách gọi đồ uống và bánh trong quán cafe.",
+              "goal": "Nghe món gọi, số lượng và cách đáp lại lịch sự.",
+              "duration": "00:48",
+              "transcript": [
+                "Guten Morgen. Ich möchte einen Kaffee und ein Croissant, bitte.",
+                "Gerne. Möchten Sie sonst noch etwas?",
+                "Ja, ein Glas Wasser bitte.",
+                "Alles klar. Das macht sieben Euro zwanzig."
+              ],
+              "listenFor": ["Ich möchte", "ein / einen", "Giá tiền", "Câu lịch sự trong quán"],
+              "shadowing": ["Lặp lại đúng nhịp Ich möchte...", "Đọc vai khách rồi vai nhân viên", "Tự thay món khác vào mẫu câu"],
+              "checklist": ["Bạn nghe ra mấy món được gọi?", "Bạn bắt được tổng tiền chưa?", "Bạn phân biệt Kaffee và Wasser chưa?"],
+              "sourceHint": "Tập trung vào cụm gọi món cơ bản"
+            },
+            {
+              "slug": "a1-nach-der-uhrzeit-fragen",
+              "title": "Nach der Uhrzeit fragen",
+              "scenario": "Một người hỏi giờ ở nhà ga.",
+              "goal": "Nghe câu hỏi giờ và cách trả lời bằng giờ tròn, giờ rưỡi.",
+              "duration": "00:39",
+              "transcript": [
+                "Entschuldigung, wie spät ist es bitte?",
+                "Es ist halb drei.",
+                "Danke schön. Fährt der Zug um drei Uhr?",
+                "Ja, der Zug fährt pünktlich um drei Uhr."
+              ],
+              "listenFor": ["wie spät ist es", "halb drei", "um drei Uhr", "động từ fährt"],
+              "shadowing": ["Lặp lại các mốc giờ", "Tự đổi sang halb vier, vier Uhr", "Đọc lại cả hội thoại một nhịp"],
+              "checklist": ["Bạn nghe ra giờ hiện tại chưa?", "Bạn nghe ra giờ tàu chạy chưa?", "Bạn phân biệt halb drei với drei Uhr chưa?"],
+              "sourceHint": "Nghe mốc giờ trong tình huống thực tế"
+            }
+          ]
+        },
+        {
+          "group": "Einkauf & Wege",
+          "lessons": [
+            {
+              "slug": "a1-im-supermarkt",
+              "title": "Kurzes Gespraech im Supermarkt",
+              "scenario": "Khách hỏi vị trí một món hàng trong siêu thị.",
+              "goal": "Nghe chỉ dẫn trái, phải, hàng nào, khu nào.",
+              "duration": "00:44",
+              "transcript": [
+                "Entschuldigung, wo finde ich die Milch?",
+                "Die Milch ist links, im dritten Regal.",
+                "Und die Eier?",
+                "Die Eier sind hinten rechts neben dem Brot."
+              ],
+              "listenFor": ["wo finde ich", "links / rechts", "im dritten Regal", "neben"],
+              "shadowing": ["Lặp cụm chỉ vị trí", "Tự thay Milch bằng Obst, Reis", "Mô tả lại đường đi bằng tiếng Đức"],
+              "checklist": ["Bạn nghe ra 2 vị trí khác nhau chưa?", "Bạn phân biệt links và rechts chưa?", "Bạn nghe được neben dem Brot chưa?"],
+              "sourceHint": "Cụm định vị đồ vật trong không gian"
+            },
+            {
+              "slug": "a1-weg-zur-bushaltestelle",
+              "title": "Weg zur Bushaltestelle",
+              "scenario": "Một người dân chỉ đường đến trạm xe buýt gần nhất.",
+              "goal": "Nghe các bước chỉ đường ngắn và mốc rẽ.",
+              "duration": "00:46",
+              "transcript": [
+                "Gehen Sie hier geradeaus und dann an der Ampel nach links.",
+                "Dann sehen Sie schon die Bushaltestelle.",
+                "Ist es weit?",
+                "Nein, nur drei Minuten zu Fuß."
+              ],
+              "listenFor": ["geradeaus", "an der Ampel", "nach links", "drei Minuten zu Fuß"],
+              "shadowing": ["Lặp lại từng bước chỉ đường", "Vừa nói vừa tưởng tượng bản đồ", "Đổi nach links thành nach rechts và nói lại"],
+              "checklist": ["Bạn nghe ra mốc rẽ chưa?", "Bạn nghe được thời gian đi bộ chưa?", "Bạn nhớ được cụm geradeaus chưa?"],
+              "sourceHint": "Mẫu chỉ đường cực hay gặp ở A1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "level": "A2",
+      "label": "A2 Alltag",
+      "focus": "Hội thoại đời sống dài hơn, có mục đích và thêm chi tiết thực tế.",
+      "tracks": [
+        {
+          "group": "Wohnen & Freizeit",
+          "lessons": [
+            {
+              "slug": "a2-wohnung-besichtigen",
+              "title": "Eine Wohnung besichtigen",
+              "scenario": "Một người đi xem nhà và hỏi về căn hộ.",
+              "goal": "Nghe thông tin về phòng, giá thuê và đồ nội thất.",
+              "duration": "01:05",
+              "transcript": [
+                "Die Wohnung hat zwei Zimmer, eine kleine Küche und einen Balkon.",
+                "Die Miete beträgt achthundert Euro warm.",
+                "Ist eine Waschmaschine schon da?",
+                "Nein, aber im Keller gibt es einen Waschraum für alle Bewohner."
+              ],
+              "listenFor": ["số phòng", "Miete beträgt", "warm", "thiết bị có sẵn / không có sẵn"],
+              "shadowing": ["Lặp lại câu mô tả căn hộ", "Gạch từ khóa về giá và tiện nghi", "Tự tóm tắt căn hộ trong 3 câu"],
+              "checklist": ["Bạn nghe được giá chưa?", "Bạn biết căn hộ có ban công không?", "Bạn phân biệt Waschmaschine và Waschraum chưa?"],
+              "sourceHint": "Nghe thông tin nhà ở theo ngữ cảnh thực"
+            },
+            {
+              "slug": "a2-wochenend-plan",
+              "title": "Plaene fuer das Wochenende",
+              "scenario": "Hai người bạn bàn kế hoạch cuối tuần.",
+              "goal": "Nghe đề xuất, đồng ý, đổi kế hoạch và thời gian hẹn.",
+              "duration": "00:58",
+              "transcript": [
+                "Hast du am Samstag Zeit? Wir koennen ins Kino gehen.",
+                "Am Nachmittag nicht, aber am Abend passt es gut.",
+                "Super, dann treffen wir uns um halb acht vor dem Kino.",
+                "Perfekt, ich bringe auch noch zwei Freunde mit."
+              ],
+              "listenFor": ["Zeit haben", "passt es", "trreffen wir uns", "halb acht"],
+              "shadowing": ["Đọc lại câu mời và câu phản hồi", "Bắt nhịp âm nối trong wir koennen ins Kino", "Tự đổi hoạt động và giờ hẹn"],
+              "checklist": ["Bạn nghe được thời gian gặp chưa?", "Bạn nghe ra thay đổi từ Nachmittag sang Abend chưa?", "Bạn nghe được có thêm mấy người không?"],
+              "sourceHint": "Nghe kế hoạch và điều chỉnh lịch"
+            }
+          ]
+        },
+        {
+          "group": "Arbeit & Termine",
+          "lessons": [
+            {
+              "slug": "a2-termin-verschieben",
+              "title": "Einen Termin verschieben",
+              "scenario": "Một nhân viên gọi điện đổi lịch hẹn.",
+              "goal": "Nghe lý do đổi lịch và thời gian hẹn mới.",
+              "duration": "01:02",
+              "transcript": [
+                "Guten Tag, ich muss unseren Termin am Montag leider verschieben.",
+                "Kein Problem. Passt Ihnen Dienstag um zehn Uhr?",
+                "Dienstag geht leider nicht. Mittwoch am Vormittag waere ideal.",
+                "Gut, dann notiere ich Mittwoch um neun Uhr dreißig."
+              ],
+              "listenFor": ["verschieben", "Passt Ihnen", "geht nicht", "mốc giờ mới"],
+              "shadowing": ["Nhấn đúng giọng lịch sự qua điện thoại", "Lặp lại các cách đề xuất giờ hẹn", "Tự tạo một đoạn đổi lịch mới"],
+              "checklist": ["Bạn nghe ra lịch cũ và lịch mới chưa?", "Bạn nghe được câu từ chối lịch mới chưa?", "Bạn bắt được Mittwoch um neun Uhr dreißig chưa?"],
+              "sourceHint": "Tình huống công việc rất hay gặp ở A2"
+            },
+            {
+              "slug": "a2-im-buero-kurze-anweisungen",
+              "title": "Kurze Anweisungen im Buero",
+              "scenario": "Trưởng nhóm dặn nhanh một vài việc trong văn phòng.",
+              "goal": "Nghe yêu cầu theo thứ tự và việc cần ưu tiên trước.",
+              "duration": "00:55",
+              "transcript": [
+                "Bitte schicken Sie zuerst die E-Mail an den Kunden.",
+                "Danach drucken Sie die Unterlagen fuer das Meeting aus.",
+                "Und vergessen Sie bitte nicht, den Raum zu reservieren.",
+                "Wenn Sie fertig sind, sagen Sie mir kurz Bescheid."
+              ],
+              "listenFor": ["zuerst", "danach", "vergessen Sie nicht", "Bescheid sagen"],
+              "shadowing": ["Lặp lại theo đúng thứ tự hành động", "Gạch 3 động từ chính", "Nói lại quy trình bằng lời của bạn"],
+              "checklist": ["Bạn nghe được việc làm đầu tiên chưa?", "Bạn nghe được 3 đầu việc chưa?", "Bạn nhớ cụm Bescheid sagen chưa?"],
+              "sourceHint": "Nghe mệnh lệnh lịch sự trong môi trường văn phòng"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "level": "B1",
+      "label": "B1 Verstehen",
+      "focus": "Nghe đoạn dài hơn, có quan điểm, lý do và vài lớp thông tin phụ.",
+      "tracks": [
+        {
+          "group": "Gesellschaft & Alltag",
+          "lessons": [
+            {
+              "slug": "b1-homeoffice-erfahrungen",
+              "title": "Erfahrungen mit Homeoffice",
+              "scenario": "Một nhân viên nói về ưu và nhược điểm khi làm việc tại nhà.",
+              "goal": "Nghe ý chính, lý do và ví dụ minh họa.",
+              "duration": "01:28",
+              "transcript": [
+                "Seit einem Jahr arbeite ich an drei Tagen pro Woche im Homeoffice.",
+                "Das spart mir jeden Tag fast zwei Stunden Fahrzeit, und ich kann konzentrierter arbeiten.",
+                "Allerdings fehlt mir manchmal der direkte Austausch mit meinen Kollegen.",
+                "Darum versuche ich, mindestens einmal pro Woche ins Buero zu gehen."
+              ],
+              "listenFor": ["ý chính về lợi ích", "điểm bất lợi", "tần suất pro Woche", "từ nối allerdings / darum"],
+              "shadowing": ["Nghe để bắt mạch câu dài", "Lặp lại từng câu theo cụm", "Tóm tắt lợi - hại bằng 2 câu"],
+              "checklist": ["Bạn nghe được 1 lợi ích lớn chưa?", "Bạn nghe được 1 bất lợi chưa?", "Bạn hiểu vì sao người nói vẫn đến văn phòng chưa?"],
+              "sourceHint": "Nghe ý kiến cá nhân có lý do đi kèm"
+            },
+            {
+              "slug": "b1-gesund-leben-im-alltag",
+              "title": "Gesund leben im Alltag",
+              "scenario": "Một podcast ngắn nói về thói quen sống lành mạnh.",
+              "goal": "Nghe lời khuyên, thói quen lặp lại và từ nối lập luận.",
+              "duration": "01:34",
+              "transcript": [
+                "Viele Menschen denken, dass ein gesundes Leben sehr kompliziert ist.",
+                "Dabei reichen oft kleine Schritte, zum Beispiel mehr Wasser trinken und regelmaessig spazieren gehen.",
+                "Wichtig ist vor allem, dass man realistische Ziele setzt.",
+                "Nur so bleibt man langfristig motiviert und gibt nicht nach wenigen Tagen auf."
+              ],
+              "listenFor": ["lập luận chính", "ví dụ minh họa", "cụm Nur so", "trạng từ lập luận"],
+              "shadowing": ["Lặp lại các câu dài có nhịp podcast", "Đọc lại 2 câu kết thật mượt", "Tự nói 3 lời khuyên tương tự"],
+              "checklist": ["Bạn bắt được 2 ví dụ cụ thể chưa?", "Bạn hiểu câu kết luận chưa?", "Bạn nghe ra tính logic giữa câu 2 và câu 4 chưa?"],
+              "sourceHint": "Podcast ngắn kiểu B1 để tập nghe liên mạch"
+            }
+          ]
+        },
+        {
+          "group": "Arbeit & Meinung",
+          "lessons": [
+            {
+              "slug": "b1-feedback-im-team",
+              "title": "Feedback im Teamgespraech",
+              "scenario": "Một trưởng nhóm góp ý sau khi kết thúc dự án.",
+              "goal": "Nghe nhận xét tích cực, điểm cần cải thiện và hướng hành động.",
+              "duration": "01:22",
+              "transcript": [
+                "Insgesamt bin ich mit dem Projekt sehr zufrieden, besonders mit der guten Zusammenarbeit im Team.",
+                "Beim Zeitmanagement hatten wir allerdings am Anfang einige Probleme.",
+                "Fuer das naechste Projekt sollten wir die Aufgaben frueher verteilen und die Deadlines klarer festlegen.",
+                "Dann koennen wir noch effizienter arbeiten."
+              ],
+              "listenFor": ["nhận xét tích cực", "vấn đề chính", "đề xuất cải thiện", "sollten wir"],
+              "shadowing": ["Bắt nhịp câu nhận xét dài", "Lặp lại câu đề xuất", "Tự nói feedback cho một nhóm tưởng tượng"],
+              "checklist": ["Bạn nghe được điểm mạnh chưa?", "Bạn nghe được vấn đề ở đầu dự án chưa?", "Bạn nghe được hai hành động cải thiện chưa?"],
+              "sourceHint": "Nghe feedback có cấu trúc rõ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "level": "B2",
+      "label": "B2 Argumentation",
+      "focus": "Nghe đoạn có quan điểm, sắc thái lập luận và nhiều lớp thông tin hơn.",
+      "tracks": [
+        {
+          "group": "Medien & Gesellschaft",
+          "lessons": [
+            {
+              "slug": "b2-soziale-medien-im-alltag",
+              "title": "Soziale Medien im Alltag",
+              "scenario": "Một đoạn thảo luận ngắn về tác động của mạng xã hội.",
+              "goal": "Nghe quan điểm cân bằng, ví dụ và kết luận mở.",
+              "duration": "01:46",
+              "transcript": [
+                "Soziale Medien erleichtern ohne Zweifel den schnellen Austausch von Informationen.",
+                "Gleichzeitig fuehren sie aber auch dazu, dass viele Menschen nur noch sehr oberflaechlich lesen.",
+                "Besonders problematisch ist, dass sich falsche Informationen oft schneller verbreiten als korrigierte Meldungen.",
+                "Deshalb ist Medienkompetenz heute wichtiger denn je."
+              ],
+              "listenFor": ["lập luận hai mặt", "từ nối gleichzeitig / deshalb", "vấn đề chính", "kết luận trọng tâm"],
+              "shadowing": ["Nghe và chia câu thành cụm logic", "Lặp lại hai câu giữa thật rõ", "Tóm tắt quan điểm trong 30 giây"],
+              "checklist": ["Bạn nghe ra mặt lợi chưa?", "Bạn nghe ra mặt hại chưa?", "Bạn hiểu Medienkompetenz được dùng như kết luận chưa?"],
+              "sourceHint": "Kiểu nghe B2 có nhịp tranh luận ngắn"
+            },
+            {
+              "slug": "b2-lernen-im-erwachsenenalter",
+              "title": "Lernen im Erwachsenenalter",
+              "scenario": "Một bài nói ngắn về việc học khi đã đi làm.",
+              "goal": "Nghe luận điểm, ví dụ thực tế và sắc thái khích lệ.",
+              "duration": "01:39",
+              "transcript": [
+                "Viele Erwachsene glauben, dass Lernen mit zunehmendem Alter automatisch schwieriger wird.",
+                "Zwar brauchen sie oft mehr Zeit als juengere Menschen, dafuer lernen sie meist zielgerichteter und mit mehr Disziplin.",
+                "Entscheidend ist nicht das Alter, sondern die Regelmaessigkeit und die passende Lernstrategie.",
+                "Wer kontinuierlich lernt, kann auch spaeter sehr gute Fortschritte machen."
+              ],
+              "listenFor": ["nhượng bộ Zwar...dafuer...", "ý chính quyết định", "giọng điệu khích lệ", "câu kết"],
+              "shadowing": ["Lặp lại câu Zwar...dafuer thật tròn", "Đánh dấu từ nối lập luận", "Nói lại thông điệp cuối bằng lời mình"],
+              "checklist": ["Bạn hiểu câu nhượng bộ chưa?", "Bạn nghe được điều gì là quan trọng nhất chưa?", "Bạn nghe được giọng điệu khích lệ ở câu cuối chưa?"],
+              "sourceHint": "Nghe luận điểm có sắc thái B2"
+            }
+          ]
+        }
+      ]
+    }
   ],
   "resourceCategory": "listening"
 }
