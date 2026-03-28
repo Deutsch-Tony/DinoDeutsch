@@ -79,6 +79,18 @@ function goToRoute(routeKey) {
   void mountRoute();
 }
 
+function bindRouteLinks() {
+  document.querySelectorAll('a[href^="/"]').forEach((link) => {
+    link.addEventListener("click", (event) => {
+      const href = link.getAttribute("href") || "/";
+      const route = ROUTES.find((item) => item.path === href);
+      if (!route) return;
+      event.preventDefault();
+      goToRoute(route.key);
+    });
+  });
+}
+
 function escapeAttr(value) {
   return String(value)
     .replace(/&/g, "&amp;")
@@ -1251,9 +1263,11 @@ async function mountRoute() {
   const route = routeFromLocation();
   updateSeo(route);
   updateActiveNav(route);
+  bindRouteLinks();
   const app = document.getElementById("app");
   if (!app) return;
   app.innerHTML = await renderRoute(route);
+  bindRouteLinks();
 
   if (route === "grammar") {
     const grammarRes = await loadApi("/api/modules/grammar");
