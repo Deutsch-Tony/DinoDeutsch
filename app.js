@@ -2,13 +2,13 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2?bundle";
 import { SUPABASE_CONFIG } from "./supabase-config.js";
 
 const ROUTES = [
-  { key: "home", selector: "#home" },
-  { key: "grammar", selector: "#grammar" },
-  { key: "vocab", selector: "#vocab" },
-  { key: "listening", selector: "#listening" },
-  { key: "reading", selector: "#reading" },
-  { key: "test", selector: "#test" },
-  { key: "profile", selector: "#profile" }
+  { key: "home", path: "/" },
+  { key: "grammar", path: "/grammar" },
+  { key: "vocab", path: "/vocab" },
+  { key: "listening", path: "/listening" },
+  { key: "reading", path: "/reading" },
+  { key: "test", path: "/test" },
+  { key: "profile", path: "/profile" }
 ];
 
 const SEO = {
@@ -54,9 +54,29 @@ let currentProfile = null;
 let syncStatus = "Tien do hien dang luu tren trinh duyet.";
 let syncPromise = null;
 
-function routeFromHash() {
-  const key = (location.hash || "#home").replace("#", "");
-  return ROUTES.some((route) => route.key === key) ? key : "home";
+function routeFromLocation() {
+  const hashKey = (location.hash || "").replace("#", "");
+  if (ROUTES.some((route) => route.key === hashKey)) {
+    history.replaceState({}, "", hashKey === "home" ? "/" : `/${hashKey}`);
+    return hashKey;
+  }
+
+  const cleanPath = location.pathname.replace(/\/+$/, "") || "/";
+  const match = ROUTES.find((route) => route.path === cleanPath);
+  return match ? match.key : "home";
+}
+
+function routeToPath(routeKey) {
+  const match = ROUTES.find((route) => route.key === routeKey);
+  return match ? match.path : "/";
+}
+
+function goToRoute(routeKey) {
+  const nextPath = routeToPath(routeKey);
+  if (location.pathname !== nextPath) {
+    history.pushState({}, "", nextPath);
+  }
+  void mountRoute();
 }
 
 function escapeAttr(value) {
@@ -129,7 +149,7 @@ async function persistVocabState() {
     })
     .finally(() => {
       syncPromise = null;
-      if (routeFromHash() === "profile") void mountRoute();
+      if (routeFromLocation() === "profile") void mountRoute();
     });
 
   return syncPromise;
@@ -250,15 +270,16 @@ async function loadApi(path) {
 
 function updateActiveNav(route) {
   document.querySelectorAll(".topbar-item").forEach((item) => {
-    const href = (item.getAttribute("href") || "").replace("#", "");
-    item.classList.toggle("is-active", href === route);
+    const href = item.getAttribute("href") || "/";
+    const normalized = href === "/" ? "home" : href.replace(/^\//, "");
+    item.classList.toggle("is-active", normalized === route);
   });
 }
 
 function updateSeo(route) {
   const seo = SEO[route] || SEO.home;
-  const baseUrl = SUPABASE_CONFIG.redirectTo || "https://deutsch-easy.pages.dev/";
-  const routeUrl = route === "home" ? baseUrl : `${baseUrl}#${route}`;
+  const baseUrl = (SUPABASE_CONFIG.redirectTo || "https://deutsch-easy.pages.dev").replace(/\/+$/, "");
+  const routeUrl = route === "home" ? `${baseUrl}/` : `${baseUrl}${routeToPath(route)}`;
   document.title = seo.title;
 
   const descriptionEl = document.getElementById("meta-description");
@@ -373,7 +394,7 @@ function renderTopbarAuth() {
   `;
 
   document.getElementById("openProfileButton")?.addEventListener("click", () => {
-    location.hash = "#profile";
+    goToRoute("profile");
   });
   document.getElementById("logoutButton")?.addEventListener("click", async () => {
     if (!supabase) return;
@@ -483,7 +504,7 @@ async function initAuth() {
     }
 
     renderTopbarAuth();
-    if (routeFromHash() === "profile") void mountRoute();
+    if (routeFromLocation() === "profile") void mountRoute();
   });
 
   bindAuthTriggers();
@@ -518,8 +539,8 @@ function renderHero({ eyebrow, title, description, sideTitle, sideStats = [] }) 
         <h1>${title}</h1>
         <p>${description}</p>
         <div class="hero-actions">
-          <a class="hero-primary" href="#vocab">Mo Wortschatz</a>
-          <a class="hero-secondary" href="#grammar">Xem Grammatik</a>
+          <a class="hero-primary" href="/vocab">Mo Wortschatz</a>
+          <a class="hero-secondary" href="/grammar">Xem Grammatik</a>
         </div>
       </div>
       <div class="card glass-card">
@@ -1102,7 +1123,7 @@ function setupProfileInteractions() {
   document.getElementById("profileLogoutButton")?.addEventListener("click", async () => {
     if (!supabase) return;
     await supabase.auth.signOut();
-    location.hash = "#home";
+    goToRoute("home");
   });
   bindAuthTriggers();
 }
@@ -1227,7 +1248,7 @@ async function renderRoute(route) {
 }
 
 async function mountRoute() {
-  const route = routeFromHash();
+  const route = routeFromLocation();
   updateSeo(route);
   updateActiveNav(route);
   const app = document.getElementById("app");
@@ -1249,7 +1270,7 @@ async function mountRoute() {
   }
 }
 
-window.addEventListener("hashchange", mountRoute);
+window.addEventListener("popstate", mountRoute);
 window.addEventListener("DOMContentLoaded", async () => {
   initAuthUI();
   await initAuth();
