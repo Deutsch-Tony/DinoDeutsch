@@ -55,13 +55,16 @@ let syncStatus = "Tien do hien dang luu tren trinh duyet.";
 let syncPromise = null;
 let listeningPlayback = {
   lessonId: null,
-  text: "",
+  lines: [],
   duration: 0,
   currentTime: 0,
-  startedAt: 0,
-  startOffset: 0,
+  sentenceIndex: 0,
+  sentenceStartedAt: 0,
+  sentenceOffset: 0,
+  sentenceDurations: [],
   utterance: null,
   timer: null,
+  timeout: null,
   playing: false
 };
 
@@ -719,6 +722,7 @@ function getListeningLessonCount(listening) {
 
 function renderListeningLessonCard(lesson) {
   const transcriptText = lesson.transcript.join(" ");
+  const encodedLines = escapeAttr(JSON.stringify(lesson.transcript));
   return `
     <details class="listening-lesson">
       <summary>
@@ -743,12 +747,12 @@ function renderListeningLessonCard(lesson) {
         <div class="listening-panel listening-transcript">
           <p class="mini-kicker">Transcript</p>
           <ol class="listening-lines">
-            ${lesson.transcript.map((line) => `<li>${line}</li>`).join("")}
+            ${lesson.transcript.map((line, index) => `<li data-line-index="${index}">${line}</li>`).join("")}
           </ol>
         </div>
         <div class="listening-panel listening-audio-panel">
           <p class="mini-kicker">Audio player</p>
-          <div class="listening-player" data-lesson="${lesson.slug}" data-text="${escapeAttr(transcriptText)}">
+          <div class="listening-player" data-lesson="${lesson.slug}" data-text="${escapeAttr(transcriptText)}" data-lines="${encodedLines}">
             <div class="listening-player-controls">
               <button class="listening-control" type="button" data-listening-action="back">-5s</button>
               <button class="listening-control listening-play" type="button" data-listening-action="toggle">Play</button>
@@ -887,6 +891,13 @@ function estimateListeningDuration(text) {
   return Math.max(12000, words * 430);
 }
 
+function estimateListeningDurations(lines) {
+  return lines.map((line) => {
+    const words = line.trim().split(/\s+/).filter(Boolean).length;
+    return Math.max(1800, words * 420 + 350);
+  });
+}
+
 function formatListeningTime(ms) {
   const totalSeconds = Math.max(0, Math.floor(ms / 1000));
   const minutes = Math.floor(totalSeconds / 60)
@@ -908,6 +919,42 @@ function stopListeningTimer() {
   }
 }
 
+function stopListeningTimeout() {
+  if (listeningPlayback.timeout) {
+    clearTimeout(listeningPlayback.timeout);
+    listeningPlayback.timeout = null;
+  }
+}
+
+function getListeningCurrentTime() {
+  if (!listeningPlayback.playing) return listeningPlayback.currentTime;
+  const sentenceBase = listeningPlayback.sentenceDurations
+    .slice(0, listeningPlayback.sentenceIndex)
+    .reduce((sum, value) => sum + value, 0);
+  const sentenceProgress = Math.max(
+    0,
+    Math.min(
+      listeningPlayback.sentenceDurations[listeningPlayback.sentenceIndex] || 0,
+      listeningPlayback.sentenceOffset + (Date.now() - listeningPlayback.sentenceStartedAt)
+    )
+  );
+  return Math.min(listeningPlayback.duration, sentenceBase + sentenceProgress);
+}
+
+function updateListeningTranscriptHighlight() {
+  document.querySelectorAll(".listening-player").forEach((player) => {
+    const lessonId = player.dataset.lesson;
+    const isActive = listeningPlayback.lessonId === lessonId;
+    const activeIndex = isActive ? listeningPlayback.sentenceIndex : -1;
+    player
+      .closest(".listening-lesson-body")
+      ?.querySelectorAll(".listening-lines [data-line-index]")
+      .forEach((line) => {
+        line.classList.toggle("is-active", Number(line.dataset.lineIndex) === activeIndex && isActive);
+      });
+  });
+}
+
 function syncListeningPlayers() {
   document.querySelectorAll(".listening-player").forEach((player) => {
     const lessonId = player.dataset.lesson;
@@ -917,37 +964,44 @@ function syncListeningPlayers() {
     const playButton = player.querySelector(".listening-play");
     if (!currentEl || !totalEl || !progressEl || !playButton) return;
 
+    const lines = JSON.parse(player.dataset.lines || "[]");
     const isActive = listeningPlayback.lessonId === lessonId;
-    const duration = isActive ? listeningPlayback.duration : estimateListeningDuration(player.dataset.text || "");
-    const currentTime = isActive ? listeningPlayback.currentTime : 0;
+    const duration = isActive ? listeningPlayback.duration : estimateListeningDurations(lines).reduce((sum, value) => sum + value, 0);
+    const currentTime = isActive ? getListeningCurrentTime() : 0;
 
     currentEl.textContent = formatListeningTime(currentTime);
     totalEl.textContent = formatListeningTime(duration);
     progressEl.value = duration ? Math.round((currentTime / duration) * 1000) : 0;
     playButton.textContent = isActive && listeningPlayback.playing ? "Pause" : "Play";
   });
+  updateListeningTranscriptHighlight();
 }
 
 function stopListeningPlayback({ reset = false } = {}) {
   stopListeningTimer();
+  stopListeningTimeout();
   if ("speechSynthesis" in window) {
     speechSynthesis.cancel();
   }
   listeningPlayback.playing = false;
   listeningPlayback.utterance = null;
-  listeningPlayback.startedAt = 0;
-  listeningPlayback.startOffset = listeningPlayback.currentTime;
+  listeningPlayback.currentTime = getListeningCurrentTime();
+  listeningPlayback.sentenceStartedAt = 0;
+  listeningPlayback.sentenceOffset = 0;
 
   if (reset) {
     listeningPlayback = {
       lessonId: null,
-      text: "",
+      lines: [],
       duration: 0,
       currentTime: 0,
-      startedAt: 0,
-      startOffset: 0,
+      sentenceIndex: 0,
+      sentenceStartedAt: 0,
+      sentenceOffset: 0,
+      sentenceDurations: [],
       utterance: null,
       timer: null,
+      timeout: null,
       playing: false
     };
   }
@@ -955,54 +1009,64 @@ function stopListeningPlayback({ reset = false } = {}) {
   syncListeningPlayers();
 }
 
-function playListeningTranscript(lessonId, text) {
+function playListeningSentence(lessonId, lines) {
   if (!("speechSynthesis" in window)) {
     alert("Trinh duyet nay chua ho tro phat am transcript.");
     return;
   }
 
-  const duration = estimateListeningDuration(text);
-  const words = text.trim().split(/\s+/).filter(Boolean);
-  const safeCurrentTime = Math.min(listeningPlayback.currentTime, duration);
-  const startWordIndex = Math.min(words.length - 1, Math.max(0, Math.floor((safeCurrentTime / duration) * words.length)));
-  const remainingText = words.slice(startWordIndex).join(" ");
-
-  if (!remainingText) {
-    listeningPlayback.currentTime = duration;
+  const sentence = lines[listeningPlayback.sentenceIndex];
+  if (!sentence) {
+    listeningPlayback.currentTime = listeningPlayback.duration;
     listeningPlayback.playing = false;
     syncListeningPlayers();
     return;
   }
 
   stopListeningTimer();
+  stopListeningTimeout();
   speechSynthesis.cancel();
 
-  const utterance = new SpeechSynthesisUtterance(remainingText);
+  const utterance = new SpeechSynthesisUtterance(sentence);
   utterance.lang = "de-DE";
+  utterance.rate = 0.92;
+  utterance.pitch = 1;
   const voice = getListeningVoice();
   if (voice) utterance.voice = voice;
 
   listeningPlayback.lessonId = lessonId;
-  listeningPlayback.text = text;
-  listeningPlayback.duration = duration;
-  listeningPlayback.currentTime = safeCurrentTime;
-  listeningPlayback.startOffset = safeCurrentTime;
-  listeningPlayback.startedAt = Date.now();
+  listeningPlayback.lines = lines;
+  listeningPlayback.duration = listeningPlayback.sentenceDurations.reduce((sum, value) => sum + value, 0);
+  listeningPlayback.currentTime = listeningPlayback.sentenceDurations
+    .slice(0, listeningPlayback.sentenceIndex)
+    .reduce((sum, value) => sum + value, 0);
+  listeningPlayback.sentenceStartedAt = Date.now();
   listeningPlayback.utterance = utterance;
   listeningPlayback.playing = true;
   listeningPlayback.timer = setInterval(() => {
-    listeningPlayback.currentTime = Math.min(
-      listeningPlayback.duration,
-      listeningPlayback.startOffset + (Date.now() - listeningPlayback.startedAt)
-    );
     syncListeningPlayers();
   }, 250);
 
   utterance.onend = () => {
     stopListeningTimer();
-    listeningPlayback.currentTime = listeningPlayback.duration;
-    listeningPlayback.playing = false;
+    const finishedSentenceDuration = listeningPlayback.sentenceDurations[listeningPlayback.sentenceIndex] || 0;
+    listeningPlayback.currentTime =
+      listeningPlayback.sentenceDurations
+        .slice(0, listeningPlayback.sentenceIndex)
+        .reduce((sum, value) => sum + value, 0) + finishedSentenceDuration;
+    listeningPlayback.sentenceOffset = 0;
     listeningPlayback.utterance = null;
+
+    if (listeningPlayback.sentenceIndex >= lines.length - 1) {
+      listeningPlayback.playing = false;
+      syncListeningPlayers();
+      return;
+    }
+
+    listeningPlayback.sentenceIndex += 1;
+    listeningPlayback.timeout = setTimeout(() => {
+      playListeningSentence(lessonId, lines);
+    }, 220);
     syncListeningPlayers();
   };
 
@@ -1016,44 +1080,65 @@ function playListeningTranscript(lessonId, text) {
 
 function pauseListeningTranscript() {
   if (!listeningPlayback.playing) return;
-  listeningPlayback.currentTime = Math.min(
-    listeningPlayback.duration,
-    listeningPlayback.startOffset + (Date.now() - listeningPlayback.startedAt)
-  );
   stopListeningPlayback();
 }
 
-function toggleListeningTranscript(lessonId, text) {
+function getSentenceIndexFromTime(durations, time) {
+  let sum = 0;
+  for (let i = 0; i < durations.length; i += 1) {
+    const next = sum + durations[i];
+    if (time < next) return { index: i, offset: Math.max(0, time - sum) };
+    sum = next;
+  }
+  return { index: Math.max(0, durations.length - 1), offset: 0 };
+}
+
+function toggleListeningTranscript(lessonId, lines) {
   if (listeningPlayback.lessonId === lessonId && listeningPlayback.playing) {
     pauseListeningTranscript();
     return;
   }
 
+  const durations = estimateListeningDurations(lines);
+
   if (listeningPlayback.lessonId !== lessonId) {
     stopListeningPlayback({ reset: true });
     listeningPlayback.lessonId = lessonId;
-    listeningPlayback.text = text;
-    listeningPlayback.duration = estimateListeningDuration(text);
+    listeningPlayback.lines = lines;
+    listeningPlayback.sentenceDurations = durations;
+    listeningPlayback.duration = durations.reduce((sum, value) => sum + value, 0);
     listeningPlayback.currentTime = 0;
+    listeningPlayback.sentenceIndex = 0;
+    listeningPlayback.sentenceOffset = 0;
+  } else {
+    const nextPosition = getSentenceIndexFromTime(durations, listeningPlayback.currentTime);
+    listeningPlayback.sentenceDurations = durations;
+    listeningPlayback.sentenceIndex = nextPosition.index;
+    listeningPlayback.sentenceOffset = nextPosition.offset;
   }
 
-  playListeningTranscript(lessonId, text);
+  playListeningSentence(lessonId, lines);
 }
 
-function seekListeningTranscript(lessonId, text, nextTime) {
-  const duration = estimateListeningDuration(text);
+function seekListeningTranscript(lessonId, lines, nextTime) {
+  const durations = estimateListeningDurations(lines);
+  const duration = durations.reduce((sum, value) => sum + value, 0);
   const clamped = Math.max(0, Math.min(duration, nextTime));
+  const nextPosition = getSentenceIndexFromTime(durations, clamped);
 
   if (listeningPlayback.lessonId !== lessonId) {
     listeningPlayback.lessonId = lessonId;
-    listeningPlayback.text = text;
+    listeningPlayback.lines = lines;
     listeningPlayback.duration = duration;
+    listeningPlayback.sentenceDurations = durations;
   }
 
   listeningPlayback.currentTime = clamped;
+  listeningPlayback.sentenceIndex = nextPosition.index;
+  listeningPlayback.sentenceOffset = nextPosition.offset;
 
   if (listeningPlayback.playing) {
-    playListeningTranscript(lessonId, text);
+    playListeningSentence(lessonId, lines);
   } else {
     syncListeningPlayers();
   }
@@ -1062,36 +1147,36 @@ function seekListeningTranscript(lessonId, text, nextTime) {
 function setupListeningPlayers() {
   document.querySelectorAll(".listening-player").forEach((player) => {
     const lessonId = player.dataset.lesson;
-    const text = player.dataset.text || "";
+    const lines = JSON.parse(player.dataset.lines || "[]");
 
     player.querySelectorAll("[data-listening-action]").forEach((control) => {
       const action = control.dataset.listeningAction;
 
       if (action === "toggle") {
-        control.addEventListener("click", () => toggleListeningTranscript(lessonId, text));
+        control.addEventListener("click", () => toggleListeningTranscript(lessonId, lines));
       }
 
       if (action === "back") {
         control.addEventListener("click", () => {
           const base =
-            listeningPlayback.lessonId === lessonId ? listeningPlayback.currentTime : 0;
-          seekListeningTranscript(lessonId, text, base - 5000);
+            listeningPlayback.lessonId === lessonId ? getListeningCurrentTime() : 0;
+          seekListeningTranscript(lessonId, lines, base - 5000);
         });
       }
 
       if (action === "forward") {
         control.addEventListener("click", () => {
           const base =
-            listeningPlayback.lessonId === lessonId ? listeningPlayback.currentTime : 0;
-          seekListeningTranscript(lessonId, text, base + 5000);
+            listeningPlayback.lessonId === lessonId ? getListeningCurrentTime() : 0;
+          seekListeningTranscript(lessonId, lines, base + 5000);
         });
       }
 
       if (action === "seek") {
         control.addEventListener("input", (event) => {
-          const duration = estimateListeningDuration(text);
+          const duration = estimateListeningDurations(lines).reduce((sum, value) => sum + value, 0);
           const ratio = Number(event.target.value) / 1000;
-          seekListeningTranscript(lessonId, text, duration * ratio);
+          seekListeningTranscript(lessonId, lines, duration * ratio);
         });
       }
     });

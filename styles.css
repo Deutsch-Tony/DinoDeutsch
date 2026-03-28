@@ -848,6 +848,10 @@ p, li {
 .listening-player {
   display: grid;
   gap: 14px;
+  padding: 14px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0.36));
+  border: 1px solid rgba(18, 27, 45, 0.08);
 }
 
 .listening-player-controls {
@@ -865,6 +869,10 @@ p, li {
   font: inherit;
   font-weight: 700;
   cursor: pointer;
+}
+
+.listening-control:hover {
+  background: rgba(255, 255, 255, 0.92);
 }
 
 .listening-play {
@@ -909,6 +917,19 @@ p, li {
   padding-left: 20px;
   display: grid;
   gap: 8px;
+}
+
+.listening-lines li {
+  padding: 8px 10px;
+  border-radius: 12px;
+  transition: background 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.listening-lines li.is-active {
+  background: rgba(35, 39, 46, 0.08);
+  color: #23272e;
+  transform: translateX(2px);
+  font-weight: 700;
 }
 
 .grammar-pattern {
