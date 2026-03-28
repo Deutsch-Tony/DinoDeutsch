@@ -218,74 +218,83 @@ body {
 }
 
 .site-footer {
-  padding-top: 84px;
-  padding-bottom: 36px;
+  margin-top: 84px;
+  background: #1f252d;
+  color: rgba(241, 236, 229, 0.92);
 }
 
-.footer-shell,
-.footer-bottom {
-  border: 1px solid var(--line);
-  background: var(--panel);
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(18px);
+.footer-accent {
+  height: 8px;
+  background: linear-gradient(90deg, #9f8c78, #b7a596, #c9b9ab);
 }
 
-.footer-shell {
+.footer-inner {
+  padding-top: 48px;
+  padding-bottom: 34px;
+}
+
+.footer-grid {
   display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: 28px;
-  padding: 28px;
-  border-radius: 32px 32px 22px 22px;
+  grid-template-columns: 1.2fr 0.8fr 0.8fr 0.8fr;
+  gap: 36px;
+  padding-bottom: 34px;
 }
 
 .footer-brand {
   display: grid;
-  gap: 16px;
+  align-content: start;
+  gap: 18px;
 }
 
-.footer-brand-link {
+.footer-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
   width: fit-content;
+  color: #f6f2ec;
+  text-decoration: none;
+  font-weight: 700;
 }
 
 .footer-brand p {
   margin: 0;
-  max-width: 52ch;
-}
-
-.footer-links {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
+  max-width: 30ch;
+  color: rgba(227, 219, 210, 0.82);
 }
 
 .footer-col {
   display: grid;
   align-content: start;
-  gap: 10px;
+  gap: 12px;
+}
+
+.footer-col h3 {
+  margin: 0 0 6px;
+  font-size: 1.08rem;
+  color: #f7f3ed;
 }
 
 .footer-col a,
 .footer-col span {
-  color: var(--muted);
+  color: rgba(223, 214, 205, 0.8);
   text-decoration: none;
   font-weight: 600;
 }
 
 .footer-col a:hover {
-  color: #2d3339;
+  color: #ffffff;
 }
 
 .footer-bottom {
-  margin-top: 10px;
-  padding: 14px 18px;
-  border-radius: 0 0 22px 22px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  color: #5f5750;
+  color: rgba(210, 201, 193, 0.78);
   font-size: 0.92rem;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .hero {
@@ -1101,8 +1110,7 @@ p, li {
   .feature-grid,
   .profile-grid,
   .grammar-lesson-body,
-  .footer-shell,
-  .footer-links {
+  .footer-grid {
     grid-template-columns: 1fr;
   }
 
