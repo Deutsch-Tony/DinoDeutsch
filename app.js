@@ -53,6 +53,7 @@ let currentSession = null;
 let currentProfile = null;
 let syncStatus = "Tien do hien dang luu tren trinh duyet.";
 let syncPromise = null;
+let activeListeningAudio = null;
 let listeningPlayback = {
   lessonId: null,
   lines: [],
@@ -723,6 +724,48 @@ function getListeningLessonCount(listening) {
 function renderListeningLessonCard(lesson) {
   const transcriptText = lesson.transcript.join(" ");
   const encodedLines = escapeAttr(JSON.stringify(lesson.transcript));
+  const audioPanel = lesson.audioUrl
+    ? `
+        <div class="listening-panel listening-audio-panel">
+          <p class="mini-kicker">${lesson.audioLabel || "Audio that"}</p>
+          <div class="listening-player listening-player-audio" data-lesson="${lesson.slug}">
+            <audio preload="none" src="${escapeAttr(lesson.audioUrl)}"></audio>
+            <div class="listening-player-controls">
+              <button class="listening-control" type="button" data-audio-action="back">-5s</button>
+              <button class="listening-control listening-play" type="button" data-audio-action="toggle">Play</button>
+              <button class="listening-control" type="button" data-audio-action="forward">+5s</button>
+            </div>
+            <div class="listening-progress-wrap">
+              <input class="listening-progress" type="range" min="0" max="1000" value="0" step="1" data-audio-action="seek" />
+              <div class="listening-time">
+                <span data-role="current">00:00</span>
+                <span data-role="total">00:00</span>
+              </div>
+            </div>
+            <p class="listening-player-note">${lesson.audioSource || "Audio gan tu nguon hoc ben ngoai."}</p>
+          </div>
+        </div>
+      `
+    : `
+        <div class="listening-panel listening-audio-panel">
+          <p class="mini-kicker">Audio player</p>
+          <div class="listening-player" data-lesson="${lesson.slug}" data-text="${escapeAttr(transcriptText)}" data-lines="${encodedLines}">
+            <div class="listening-player-controls">
+              <button class="listening-control" type="button" data-listening-action="back">-5s</button>
+              <button class="listening-control listening-play" type="button" data-listening-action="toggle">Play</button>
+              <button class="listening-control" type="button" data-listening-action="forward">+5s</button>
+            </div>
+            <div class="listening-progress-wrap">
+              <input class="listening-progress" type="range" min="0" max="1000" value="0" step="1" data-listening-action="seek" />
+              <div class="listening-time">
+                <span data-role="current">00:00</span>
+                <span data-role="total">00:00</span>
+              </div>
+            </div>
+            <p class="listening-player-note">Dang dung voice cua trinh duyet de phat transcript. Sau nay co the doi sang audio that.</p>
+          </div>
+        </div>
+      `;
   return `
     <details class="listening-lesson">
       <summary>
@@ -750,24 +793,7 @@ function renderListeningLessonCard(lesson) {
             ${lesson.transcript.map((line, index) => `<li data-line-index="${index}">${line}</li>`).join("")}
           </ol>
         </div>
-        <div class="listening-panel listening-audio-panel">
-          <p class="mini-kicker">Audio player</p>
-          <div class="listening-player" data-lesson="${lesson.slug}" data-text="${escapeAttr(transcriptText)}" data-lines="${encodedLines}">
-            <div class="listening-player-controls">
-              <button class="listening-control" type="button" data-listening-action="back">-5s</button>
-              <button class="listening-control listening-play" type="button" data-listening-action="toggle">Play</button>
-              <button class="listening-control" type="button" data-listening-action="forward">+5s</button>
-            </div>
-            <div class="listening-progress-wrap">
-              <input class="listening-progress" type="range" min="0" max="1000" value="0" step="1" data-listening-action="seek" />
-              <div class="listening-time">
-                <span data-role="current">00:00</span>
-                <span data-role="total">00:00</span>
-              </div>
-            </div>
-            <p class="listening-player-note">Dang dung voice cua trinh duyet de phat transcript. Sau nay co the doi sang audio that.</p>
-          </div>
-        </div>
+        ${audioPanel}
         <div class="listening-panel">
           <p class="mini-kicker">Can nghe ra</p>
           <ul class="grammar-list">
@@ -926,6 +952,32 @@ function stopListeningTimeout() {
   }
 }
 
+function stopActiveListeningAudio() {
+  if (activeListeningAudio) {
+    activeListeningAudio.pause();
+    activeListeningAudio.currentTime = activeListeningAudio.currentTime || 0;
+    activeListeningAudio = null;
+  }
+}
+
+function syncNativeAudioPlayers() {
+  document.querySelectorAll(".listening-player-audio").forEach((player) => {
+    const audio = player.querySelector("audio");
+    const currentEl = player.querySelector('[data-role="current"]');
+    const totalEl = player.querySelector('[data-role="total"]');
+    const progressEl = player.querySelector(".listening-progress");
+    const playButton = player.querySelector(".listening-play");
+    if (!audio || !currentEl || !totalEl || !progressEl || !playButton) return;
+
+    const durationMs = Number.isFinite(audio.duration) ? audio.duration * 1000 : 0;
+    const currentMs = (audio.currentTime || 0) * 1000;
+    currentEl.textContent = formatListeningTime(currentMs);
+    totalEl.textContent = formatListeningTime(durationMs);
+    progressEl.value = durationMs ? Math.round((currentMs / durationMs) * 1000) : 0;
+    playButton.textContent = !audio.paused ? "Pause" : "Play";
+  });
+}
+
 function getListeningCurrentTime() {
   if (!listeningPlayback.playing) return listeningPlayback.currentTime;
   const sentenceBase = listeningPlayback.sentenceDurations
@@ -957,6 +1009,7 @@ function updateListeningTranscriptHighlight() {
 
 function syncListeningPlayers() {
   document.querySelectorAll(".listening-player").forEach((player) => {
+    if (player.classList.contains("listening-player-audio")) return;
     const lessonId = player.dataset.lesson;
     const currentEl = player.querySelector('[data-role="current"]');
     const totalEl = player.querySelector('[data-role="total"]');
@@ -974,12 +1027,14 @@ function syncListeningPlayers() {
     progressEl.value = duration ? Math.round((currentTime / duration) * 1000) : 0;
     playButton.textContent = isActive && listeningPlayback.playing ? "Pause" : "Play";
   });
+  syncNativeAudioPlayers();
   updateListeningTranscriptHighlight();
 }
 
 function stopListeningPlayback({ reset = false } = {}) {
   stopListeningTimer();
   stopListeningTimeout();
+  stopActiveListeningAudio();
   if ("speechSynthesis" in window) {
     speechSynthesis.cancel();
   }
@@ -1145,7 +1200,76 @@ function seekListeningTranscript(lessonId, lines, nextTime) {
 }
 
 function setupListeningPlayers() {
+  document.querySelectorAll(".listening-player-audio").forEach((player) => {
+    const audio = player.querySelector("audio");
+    if (!audio) return;
+
+    const playButton = player.querySelector('.listening-play');
+    const progressEl = player.querySelector(".listening-progress");
+
+    audio.addEventListener("loadedmetadata", () => syncNativeAudioPlayers());
+    audio.addEventListener("timeupdate", () => syncNativeAudioPlayers());
+    audio.addEventListener("ended", () => {
+      if (activeListeningAudio === audio) activeListeningAudio = null;
+      syncNativeAudioPlayers();
+    });
+    audio.addEventListener("pause", () => syncNativeAudioPlayers());
+    audio.addEventListener("play", () => syncNativeAudioPlayers());
+
+    player.querySelectorAll("[data-audio-action]").forEach((control) => {
+      const action = control.dataset.audioAction;
+
+      if (action === "toggle") {
+        control.addEventListener("click", async () => {
+          stopListeningPlayback({ reset: true });
+          if (activeListeningAudio && activeListeningAudio !== audio) {
+            activeListeningAudio.pause();
+          }
+
+          if (audio.paused) {
+            activeListeningAudio = audio;
+            try {
+              await audio.play();
+            } catch {
+              if (playButton) playButton.textContent = "Play";
+            }
+          } else {
+            audio.pause();
+            if (activeListeningAudio === audio) activeListeningAudio = null;
+          }
+          syncNativeAudioPlayers();
+        });
+      }
+
+      if (action === "back") {
+        control.addEventListener("click", () => {
+          audio.currentTime = Math.max(0, (audio.currentTime || 0) - 5);
+          syncNativeAudioPlayers();
+        });
+      }
+
+      if (action === "forward") {
+        control.addEventListener("click", () => {
+          const duration = Number.isFinite(audio.duration) ? audio.duration : audio.currentTime + 5;
+          audio.currentTime = Math.min(duration, (audio.currentTime || 0) + 5);
+          syncNativeAudioPlayers();
+        });
+      }
+
+      if (action === "seek") {
+        control.addEventListener("input", (event) => {
+          const duration = Number.isFinite(audio.duration) ? audio.duration : 0;
+          if (!duration) return;
+          const ratio = Number(event.target.value) / 1000;
+          audio.currentTime = duration * ratio;
+          syncNativeAudioPlayers();
+        });
+      }
+    });
+  });
+
   document.querySelectorAll(".listening-player").forEach((player) => {
+    if (player.classList.contains("listening-player-audio")) return;
     const lessonId = player.dataset.lesson;
     const lines = JSON.parse(player.dataset.lines || "[]");
 

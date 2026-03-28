@@ -30,7 +30,10 @@
               "listenFor": ["Tên riêng", "Quốc gia", "Động từ heiße / komme / wohne", "Mốc thời gian đơn giản"],
               "shadowing": ["Nghe một lượt không nhìn chữ", "Nghe lại và lặp từng câu", "Tự giới thiệu theo cùng mẫu trong 20 giây"],
               "checklist": ["Bạn bắt được 2 tên chưa?", "Bạn nghe ra 2 quốc gia chưa?", "Bạn tự nói lại mẫu Ich heiße... chưa?"],
-              "sourceHint": "Dialog chậm để làm quen âm cơ bản"
+              "sourceHint": "Dialog chậm để làm quen âm cơ bản",
+              "audioUrl": "https://phraseguides.com/German/introductions/introductions.mp3",
+              "audioLabel": "Audio tham khảo",
+              "audioSource": "PhraseGuides - Introductory Phrases"
             },
             {
               "slug": "a1-im-cafe-bestellen",
@@ -47,7 +50,10 @@
               "listenFor": ["Ich möchte", "ein / einen", "Giá tiền", "Câu lịch sự trong quán"],
               "shadowing": ["Lặp lại đúng nhịp Ich möchte...", "Đọc vai khách rồi vai nhân viên", "Tự thay món khác vào mẫu câu"],
               "checklist": ["Bạn nghe ra mấy món được gọi?", "Bạn bắt được tổng tiền chưa?", "Bạn phân biệt Kaffee và Wasser chưa?"],
-              "sourceHint": "Tập trung vào cụm gọi món cơ bản"
+              "sourceHint": "Tập trung vào cụm gọi món cơ bản",
+              "audioUrl": "https://phraseguides.com/German/basics/basics.mp3",
+              "audioLabel": "Audio tham khảo",
+              "audioSource": "PhraseGuides - Basic Phrases"
             },
             {
               "slug": "a1-nach-der-uhrzeit-fragen",
@@ -64,7 +70,10 @@
               "listenFor": ["wie spät ist es", "halb drei", "um drei Uhr", "động từ fährt"],
               "shadowing": ["Lặp lại các mốc giờ", "Tự đổi sang halb vier, vier Uhr", "Đọc lại cả hội thoại một nhịp"],
               "checklist": ["Bạn nghe ra giờ hiện tại chưa?", "Bạn nghe ra giờ tàu chạy chưa?", "Bạn phân biệt halb drei với drei Uhr chưa?"],
-              "sourceHint": "Nghe mốc giờ trong tình huống thực tế"
+              "sourceHint": "Nghe mốc giờ trong tình huống thực tế",
+              "audioUrl": "https://phraseguides.com/German/around_town/around_town.mp3",
+              "audioLabel": "Audio tham khảo",
+              "audioSource": "PhraseGuides - Phrases Around Town"
             }
           ]
         },
