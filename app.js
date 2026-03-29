@@ -700,9 +700,6 @@ async function renderGenericModule(moduleName) {
       sideStats: moduleItem.highlights
     })}
     <section class="section">
-      ${renderCompactCards(moduleItem.highlights, moduleItem.eyebrow)}
-    </section>
-    <section class="section">
       <div class="section-head">
         <p class="eyebrow">Nguon hoc lien quan</p>
         <h2>Cac nguon nen xem cho ${moduleItem.eyebrow}</h2>
@@ -861,17 +858,6 @@ async function renderListening() {
         { title: "Flow", text: "nghe -> doc -> shadowing" }
       ]
     })}
-    <section class="section">
-      ${renderCompactCards(
-        [
-          { title: "Theo level", text: "Moi level di theo toc do nghe va do phuc tap cua thong tin." },
-          { title: "Transcript", text: "Nghe truoc, doi chieu transcript sau de tranh phu thuoc vao text." },
-          { title: "Shadowing", text: "Moi bai deu co goi y lap lai de giu nhip noi va bat am tot hon." },
-          { title: "API data", text: "Tat ca bai nghe di qua /api/modules/listening, sau nay mo rong JSON la xong." }
-        ],
-        "Horen"
-      )}
-    </section>
     <section class="section">
       <div class="section-head">
         <p class="eyebrow">Hoer-Bibliothek</p>
@@ -1397,17 +1383,6 @@ async function renderGrammar() {
       ]
     })}
     <section class="section">
-      ${renderCompactCards(
-        [
-          { title: "Theo level", text: "Tu A1 den B2, moi level co nhom bai ro rang de tranh hoc lan muc." },
-          { title: "Search nhanh", text: "Tim theo ten bai, diem grammar, vi du va loi hay gap." },
-          { title: "Mo bai tai cho", text: "Bam tung bai de xem cong thuc, vi du va note ngay tren cung trang." },
-          { title: "De mo rong", text: "Sau nay ban chi can them lesson vao grammar.json la UI tu render." }
-        ],
-        "Grammatik"
-      )}
-    </section>
-    <section class="section">
       <div class="section-head">
         <p class="eyebrow">Grammatik-Bibliothek</p>
         <h2>Chon level roi mo tung diem ngu phap can hoc hoac can on lai</h2>
@@ -1531,17 +1506,6 @@ async function renderVocab() {
         { title: currentSession?.user ? "Cloud sync" : "Local", text: currentSession?.user ? "da bat dong bo" : "nho tien do hoc" }
       ]
     })}
-    <section class="section">
-      ${renderCompactCards(
-        [
-          { title: "A1-B2", text: "Di theo level truoc, roi moi chia nho theo tung chu de." },
-          { title: "Search", text: "Tim theo tu Duc, nghia Viet, nghia Anh va ca vi du." },
-          { title: "Progress", text: "Danh dau Favorit, Da hoc va Can on ngay trong bang." },
-          { title: "Audio", text: "Bam loa de nghe phat am nhanh khi trinh duyet ho tro voice Duc." }
-        ],
-        "Wortschatz"
-      )}
-    </section>
     <section class="section">
       <div class="section-head">
         <p class="eyebrow">Wortschatz-Bibliothek</p>
