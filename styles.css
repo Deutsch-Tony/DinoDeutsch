@@ -186,12 +186,18 @@ body {
 }
 
 .auth-link {
-  color: rgba(243, 239, 234, 0.84);
+  background: rgba(255, 255, 255, 0.92);
+  color: #2b3138;
+  box-shadow: 0 8px 20px rgba(18, 21, 27, 0.08);
 }
 
 .auth-button {
   background: var(--signup);
   color: var(--signup-text);
+}
+
+.auth-link:hover {
+  background: #ffffff;
 }
 
 .icon {
