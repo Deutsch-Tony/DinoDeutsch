@@ -45,6 +45,8 @@ const SEO = {
 
 const dataCache = new Map();
 const VOCAB_STATE_KEY = "deutschSprint.vocabState";
+const AUTH_RETURN_ROUTE_KEY = "deutschSprint.authReturnRoute";
+const AUTH_EXPECT_REDIRECT_KEY = "deutschSprint.authExpectRedirect";
 const hasSupabaseConfig = Boolean(SUPABASE_CONFIG.url && SUPABASE_CONFIG.anonKey);
 const supabase = hasSupabaseConfig ? createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey) : null;
 
@@ -332,6 +334,36 @@ function getRedirectTo() {
   return SUPABASE_CONFIG.redirectTo || window.location.origin;
 }
 
+function rememberAuthReturnRoute(route = routeFromLocation()) {
+  sessionStorage.setItem(AUTH_RETURN_ROUTE_KEY, route);
+}
+
+function consumeAuthReturnRoute() {
+  const route = sessionStorage.getItem(AUTH_RETURN_ROUTE_KEY);
+  sessionStorage.removeItem(AUTH_RETURN_ROUTE_KEY);
+  return route || "home";
+}
+
+function markAuthExpectRedirect() {
+  sessionStorage.setItem(AUTH_EXPECT_REDIRECT_KEY, "1");
+}
+
+function consumeAuthExpectRedirect() {
+  const expected = sessionStorage.getItem(AUTH_EXPECT_REDIRECT_KEY) === "1";
+  sessionStorage.removeItem(AUTH_EXPECT_REDIRECT_KEY);
+  return expected;
+}
+
+function normalizeAuthError(message = "") {
+  const lower = message.toLowerCase();
+  if (lower.includes("invalid login credentials")) return "Email hoặc mật khẩu chưa đúng.";
+  if (lower.includes("email not confirmed")) return "Email này chưa xác nhận. Hãy kiểm tra hộp thư để xác nhận tài khoản.";
+  if (lower.includes("user already registered")) return "Email này đã có tài khoản. Bạn thử đăng nhập nhé.";
+  if (lower.includes("password should be at least")) return "Mật khẩu cần tối thiểu 6 ký tự.";
+  if (lower.includes("provider is not enabled")) return "Provider đăng nhập này chưa được bật trong Supabase.";
+  return message || "Đã có lỗi xảy ra khi đăng nhập.";
+}
+
 function setAuthStatus(message, type = "") {
   const statusEl = document.getElementById("authStatus");
   if (!statusEl) return;
@@ -373,12 +405,14 @@ function syncAuthTabUI() {
 
 function openAuthModal(mode = "signin") {
   authMode = mode;
+  rememberAuthReturnRoute();
   syncAuthTabUI();
   const modal = document.getElementById("authModal");
   if (!modal) return;
   modal.hidden = false;
   document.body.style.overflow = "hidden";
   setAuthStatus("");
+  document.getElementById("authEmail")?.focus();
 }
 
 function closeAuthModal() {
@@ -448,24 +482,27 @@ async function handleEmailAuth(event) {
   const password = document.getElementById("authPassword")?.value || "";
 
   if (!email || !password) {
-    setAuthStatus("Hay nhap du email va mat khau.", "error");
+    setAuthStatus("Hãy nhập đủ email và mật khẩu.", "error");
     return;
   }
 
-  setAuthStatus("Dang xu ly...", "success");
+  setAuthStatus("Đang xử lý...", "success");
 
   if (authMode === "signin") {
+    markAuthExpectRedirect();
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
-      setAuthStatus(error.message, "error");
+      consumeAuthExpectRedirect();
+      setAuthStatus(normalizeAuthError(error.message), "error");
       return;
     }
-    setAuthStatus("Dang nhap thanh cong.", "success");
+    setAuthStatus("Đăng nhập thành công.", "success");
     closeAuthModal();
     return;
   }
 
-  const { error } = await supabase.auth.signUp({
+  markAuthExpectRedirect();
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -474,19 +511,32 @@ async function handleEmailAuth(event) {
   });
 
   if (error) {
-    setAuthStatus(error.message, "error");
+    consumeAuthExpectRedirect();
+    setAuthStatus(normalizeAuthError(error.message), "error");
     return;
   }
 
-  setAuthStatus("Dang ky thanh cong. Kiem tra email de xac nhan neu Supabase dang bat email confirmation.", "success");
+  if (data.session?.user) {
+    setAuthStatus("Đăng ký thành công. Đang vào tài khoản của bạn...", "success");
+    closeAuthModal();
+    return;
+  }
+
+  consumeAuthExpectRedirect();
+  authMode = "signin";
+  syncAuthTabUI();
+  setAuthStatus("Đăng ký thành công. Hãy kiểm tra email để xác nhận tài khoản trước khi đăng nhập.", "success");
 }
 
 async function handleGoogleAuth() {
   if (!supabase) {
-    setAuthStatus("Ban chua cau hinh Supabase nen chua dung duoc Google login.", "error");
+    setAuthStatus("Bạn chưa cấu hình Supabase nên chưa dùng được Google login.", "error");
     return;
   }
 
+  rememberAuthReturnRoute();
+  markAuthExpectRedirect();
+  setAuthStatus("Đang chuyển sang Google...", "success");
   const { error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
@@ -495,7 +545,8 @@ async function handleGoogleAuth() {
   });
 
   if (error) {
-    setAuthStatus(error.message, "error");
+    consumeAuthExpectRedirect();
+    setAuthStatus(normalizeAuthError(error.message), "error");
   }
 }
 
@@ -520,7 +571,7 @@ async function initAuth() {
 
   renderTopbarAuth();
 
-  supabase.auth.onAuthStateChange(async (_event, session) => {
+  supabase.auth.onAuthStateChange(async (event, session) => {
     currentSession = session;
     currentProfile = null;
 
@@ -528,12 +579,25 @@ async function initAuth() {
       await upsertProfile(session.user);
       await loadProfile(session.user);
       await loadRemoteState();
+      closeAuthModal();
     } else {
-      syncStatus = "Ban da dang xuat. Tien do hien chi con tren trinh duyet nay.";
+      syncStatus = "Bạn đã đăng xuất. Tiến độ hiện chỉ còn trên trình duyệt này.";
     }
 
     renderTopbarAuth();
-    if (routeFromLocation() === "profile") void mountRoute();
+
+    if (session?.user && consumeAuthExpectRedirect()) {
+      const nextRoute = consumeAuthReturnRoute();
+      goToRoute(nextRoute === "home" ? "profile" : nextRoute);
+      return;
+    }
+
+    if (!session?.user && routeFromLocation() === "profile") {
+      goToRoute("home");
+      return;
+    }
+
+    if (event === "SIGNED_IN" || routeFromLocation() === "profile") void mountRoute();
   });
 
   bindAuthTriggers();
