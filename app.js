@@ -76,8 +76,10 @@ function routeFromLocation() {
     return hashKey;
   }
 
-  const cleanPath = location.pathname.replace(/\/+$/, "") || "/";
-  const match = ROUTES.find((route) => route.path === cleanPath);
+  const normalizedPath = (location.pathname || "/")
+    .replace(/index\.html$/i, "")
+    .replace(/\/+$/, "") || "/";
+  const match = ROUTES.find((route) => route.path === normalizedPath || `${route.path}/` === `${normalizedPath}/`);
   return match ? match.key : "home";
 }
 
