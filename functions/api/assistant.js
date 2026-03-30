@@ -1,2 +1,2 @@
-export { onRequestOptions, onRequestGet, onRequestPost } from '../../website/functions/api/assistant.js';
+export { onRequestOptions, onRequestPost } from '../../website/functions/api/assistant.js';
 
