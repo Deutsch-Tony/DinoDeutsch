@@ -7,6 +7,7 @@ from typing import Literal, Optional
 import agentscope
 from fastapi import FastAPI, Header, HTTPException
 from fastapi.responses import StreamingResponse
+from openai import OpenAI
 from pydantic import BaseModel, Field
 
 from agentscope.agents import DialogAgent
@@ -90,6 +91,11 @@ def build_system_prompt() -> str:
 
 
 @lru_cache(maxsize=1)
+def get_openai_client() -> OpenAI:
+    return OpenAI(api_key=env_required("OPENAI_API_KEY"))
+
+
+@lru_cache(maxsize=1)
 def get_agent() -> DialogAgent:
     agentscope.init(
         model_configs=[build_model_config()],
@@ -168,7 +174,57 @@ def build_suggestions(route: str) -> list[str]:
     )
 
 
+def use_native_openai() -> bool:
+    return os.getenv("AGENT_MODEL_TYPE", "openai_chat").strip().startswith(
+        "openai",
+    )
+
+
+def build_openai_messages(payload: ChatRequest) -> list[dict]:
+    messages = [{"role": "system", "content": build_system_prompt()}]
+
+    for turn in payload.conversation[-8:]:
+        messages.append(
+            {
+                "role": turn.role,
+                "content": turn.content,
+            },
+        )
+
+    messages.append(
+        {
+            "role": "user",
+            "content": build_user_message(payload),
+        },
+    )
+    return messages
+
+
+def build_openai_chat_response(payload: ChatRequest) -> ChatResponse:
+    client = get_openai_client()
+    model_name = os.getenv("AGENT_MODEL_NAME", "").strip()
+    temperature = float(os.getenv("AGENT_TEMPERATURE", "0.35"))
+
+    completion = client.chat.completions.create(
+        model=model_name,
+        messages=build_openai_messages(payload),
+        temperature=temperature,
+        stream=False,
+    )
+
+    reply = completion.choices[0].message.content or ""
+    return ChatResponse(
+        reply=reply.strip(),
+        model=model_name,
+        route=payload.route,
+        suggestions=build_suggestions(payload.route),
+    )
+
+
 def build_chat_response(payload: ChatRequest) -> ChatResponse:
+    if use_native_openai():
+        return build_openai_chat_response(payload)
+
     agent = get_agent()
     msg = Msg(
         name="user",
@@ -232,6 +288,63 @@ async def chat_stream(
     authorization: Optional[str] = Header(default=None),
 ) -> StreamingResponse:
     ensure_authorized(authorization)
+
+    if use_native_openai():
+
+        async def openai_event_generator():
+            try:
+                model_name = os.getenv("AGENT_MODEL_NAME", "").strip()
+                temperature = float(os.getenv("AGENT_TEMPERATURE", "0.35"))
+                suggestions = build_suggestions(payload.route)
+
+                yield sse_frame(
+                    "meta",
+                    {
+                        "model": model_name,
+                        "route": payload.route,
+                        "suggestions": suggestions,
+                    },
+                )
+
+                stream = get_openai_client().chat.completions.create(
+                    model=model_name,
+                    messages=build_openai_messages(payload),
+                    temperature=temperature,
+                    stream=True,
+                )
+
+                full_reply = ""
+                for chunk in stream:
+                    delta = ""
+                    if chunk.choices and chunk.choices[0].delta:
+                        delta = chunk.choices[0].delta.content or ""
+                    if not delta:
+                        continue
+
+                    full_reply += delta
+                    yield sse_frame("token", {"delta": delta})
+
+                yield sse_frame(
+                    "final",
+                    {
+                        "reply": full_reply.strip(),
+                        "model": model_name,
+                        "route": payload.route,
+                        "suggestions": suggestions,
+                    },
+                )
+            except Exception as exc:
+                yield sse_frame("error", {"error": str(exc)})
+
+        return StreamingResponse(
+            openai_event_generator(),
+            media_type="text/event-stream",
+            headers={
+                "Cache-Control": "no-cache",
+                "Connection": "keep-alive",
+                "X-Accel-Buffering": "no",
+            },
+        )
 
     try:
         result = build_chat_response(payload)

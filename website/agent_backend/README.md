@@ -7,6 +7,7 @@ Nho gon FastAPI service de website goi agent qua `POST /chat`.
 - Website frontend goi `POST /api/assistant`
 - Cloudflare Pages Function proxy request sang backend Python
 - Backend Python dung AgentScope de tao cau tra loi
+- Neu `AGENT_MODEL_TYPE=openai_chat`, endpoint stream se dung OpenAI native streaming
 
 ## Cai dat local
 
@@ -92,3 +93,8 @@ Streaming endpoint `POST /chat/stream` tra ve SSE voi cac event:
 - `meta`
 - `token`
 - `final`
+
+Ghi chu:
+
+- `POST /chat` se tra JSON thuong
+- `POST /chat/stream` se uu tien OpenAI native streaming khi `AGENT_MODEL_TYPE` la OpenAI

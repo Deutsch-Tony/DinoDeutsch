@@ -370,13 +370,87 @@ async function loadProfile(user) {
   if (!error) currentProfile = data;
 }
 
+async function loadStaticJson(path) {
+  const response = await fetch(path);
+  if (!response.ok) throw new Error(`Failed to load fallback ${path}`);
+  return await response.json();
+}
+
+async function loadApiFallback(path) {
+  const url = new URL(path, window.location.origin);
+
+  if (url.pathname.startsWith("/api/modules/")) {
+    const moduleName = url.pathname.split("/").pop();
+    const fileName = moduleName === "test" ? "tests" : moduleName;
+    const data = await loadStaticJson(`/data/${fileName}.json`);
+    return { ok: true, item: data };
+  }
+
+  if (url.pathname === "/api/resources") {
+    const data = await loadStaticJson("/data/resources.json");
+    const category = url.searchParams.get("category");
+    return {
+      ok: true,
+      items: category ? data.filter((item) => item.category === category) : data
+    };
+  }
+
+  if (url.pathname === "/api/vocab/meta") {
+    const vocab = await loadStaticJson("/data/vocab.json");
+    const levels = Object.entries(vocab).map(([level, topics]) => {
+      const topicEntries = Object.entries(topics).map(([topic, items]) => ({
+        topic,
+        count: items.length
+      }));
+
+      return {
+        level,
+        count: topicEntries.reduce((sum, item) => sum + item.count, 0),
+        topics: topicEntries
+      };
+    });
+
+    return {
+      total: levels.reduce((sum, item) => sum + item.count, 0),
+      levels
+    };
+  }
+
+  if (url.pathname === "/api/vocab") {
+    const vocab = await loadStaticJson("/data/vocab.json");
+    const level = url.searchParams.get("level");
+    const topic = url.searchParams.get("topic");
+    const search = (url.searchParams.get("search") || "").trim().toLowerCase();
+
+    const topicData = vocab?.[level]?.[topic] || [];
+    const items = !search
+      ? topicData
+      : topicData.filter((item) =>
+          [item.word, item.gender, item.pos, item.vi, item.en, item.ipa, item.example]
+            .join(" ")
+            .toLowerCase()
+            .includes(search)
+        );
+
+    return { ok: true, items };
+  }
+
+  throw new Error(`No fallback available for ${path}`);
+}
+
 async function loadApi(path) {
   if (dataCache.has(path)) return dataCache.get(path);
-  const response = await fetch(path);
-  if (!response.ok) throw new Error(`Failed to load ${path}`);
-  const data = await response.json();
-  dataCache.set(path, data);
-  return data;
+  try {
+    const response = await fetch(path);
+    if (!response.ok) throw new Error(`Failed to load ${path}`);
+    const data = await response.json();
+    dataCache.set(path, data);
+    return data;
+  } catch (error) {
+    const fallback = await loadApiFallback(path);
+    dataCache.set(path, fallback);
+    return fallback;
+  }
 }
 
 function updateActiveNav(route) {
