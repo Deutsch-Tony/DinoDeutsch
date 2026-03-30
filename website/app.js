@@ -8,6 +8,7 @@ const ROUTES = [
   { key: "listening", path: "/listening" },
   { key: "reading", path: "/reading" },
   { key: "test", path: "/test" },
+  { key: "assistant", path: "/assistant" },
   { key: "profile", path: "/profile" }
 ];
 
@@ -36,6 +37,10 @@ const SEO = {
   test: {
     title: "Tests | Deutsch Sprint",
     description: "Mini test va checkpoint de tu danh gia trinh do tieng Duc theo tung muc hoc."
+  },
+  assistant: {
+    title: "KI Tutor | Deutsch Sprint",
+    description: "Kien truc de tich hop AI tutor cho website hoc tieng Duc voi frontend Cloudflare Pages va agent backend rieng."
   },
   profile: {
     title: "Ho so tai khoan | Deutsch Sprint",
@@ -1841,6 +1846,142 @@ function renderProfile() {
   `;
 }
 
+function renderAssistantArchitecture() {
+  return `
+    <section class="section assistant-shell">
+      <div class="hero assistant-hero">
+        <div>
+          <p class="eyebrow">KI Tutor</p>
+          <h1>Kiến trúc AI phù hợp nhất cho DinoDeutsch hiện tại</h1>
+          <p class="hero-copy">
+            Site của bạn đang là Cloudflare Pages + SPA + Pages Functions. Cách tích hợp đúng là giữ frontend nhẹ,
+            để agent chạy ở một backend Python riêng, rồi chỉ nối qua API chat.
+          </p>
+        </div>
+        <div class="assistant-hero-note">
+          <span class="assistant-badge">Khuyen nghi</span>
+          <strong>Frontend tĩnh + API mỏng + Agent service riêng</strong>
+          <p>De deploy, de scale, khong nhot logic AgentScope vao browser hay Cloudflare function JS.</p>
+        </div>
+      </div>
+
+      <div class="assistant-diagram">
+        <article class="assistant-node">
+          <p class="mini-kicker">1. User</p>
+          <h3>Hoc vien tren web</h3>
+          <p>Hoi bang tieng Duc, xin giai thich ngu phap, yeu cau bai tap, hoi tu vung theo chu de.</p>
+        </article>
+
+        <div class="assistant-arrow" aria-hidden="true">→</div>
+
+        <article class="assistant-node">
+          <p class="mini-kicker">2. Frontend</p>
+          <h3>DinoDeutsch SPA</h3>
+          <p>UI hien tai giu nguyen. Them mot khu chat "KI Tutor" trong site de gui cau hoi va hien phan hoi.</p>
+        </article>
+
+        <div class="assistant-arrow" aria-hidden="true">→</div>
+
+        <article class="assistant-node">
+          <p class="mini-kicker">3. Edge API</p>
+          <h3>Cloudflare Pages Function</h3>
+          <p>Chi dong vai tro proxy nhe: nhan request, check auth/rate limit, forward sang agent backend.</p>
+        </article>
+
+        <div class="assistant-arrow" aria-hidden="true">→</div>
+
+        <article class="assistant-node accent">
+          <p class="mini-kicker">4. Agent Backend</p>
+          <h3>Python + AgentScope</h3>
+          <p>Xu ly hoi dap, prompt routing, tool calling, RAG, memory va tra loi hoc tieng Duc theo ngu canh.</p>
+        </article>
+      </div>
+
+      <div class="assistant-grid">
+        <article class="card assistant-card">
+          <p class="mini-kicker">Nguon du lieu cho agent</p>
+          <h3>Agent co the doc gi</h3>
+          <ul class="assistant-list">
+            <li>JSON hoc lieu hien co trong <code>data/</code></li>
+            <li>Tien do hoc cua user tu Supabase</li>
+            <li>FAQ/noi dung soan rieng cho A1-B2</li>
+            <li>Knowledge base vector neu sau nay can RAG that</li>
+          </ul>
+        </article>
+
+        <article class="card assistant-card">
+          <p class="mini-kicker">Nhiem vu phu hop</p>
+          <h3>Agent nen lam gi</h3>
+          <ul class="assistant-list">
+            <li>Giai thich ngu phap bang tieng Viet hoac tieng Duc don gian</li>
+            <li>Tao mini quiz dua tren bai hoc hien tai</li>
+            <li>Goi y tu vung theo chu de va level</li>
+            <li>Chua cau, giai nghia, viet vi du ngan</li>
+          </ul>
+        </article>
+
+        <article class="card assistant-card">
+          <p class="mini-kicker">Khong nen lam ngay</p>
+          <h3>De tranh qua tai stack hien tai</h3>
+          <ul class="assistant-list">
+            <li>Khong chay AgentScope trong browser</li>
+            <li>Khong nhet model API key vao frontend</li>
+            <li>Khong de Cloudflare Function JS ganh toan bo orchestration</li>
+            <li>Khong build memory phuc tap truoc khi co use case that</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="assistant-flow card">
+        <div class="assistant-flow-head">
+          <p class="mini-kicker">Luong xu ly de build truoc</p>
+          <h2>Ban MVP gon va de ship</h2>
+        </div>
+        <div class="assistant-flow-steps">
+          <div class="assistant-step">
+            <span>01</span>
+            <strong>User mo KI Tutor</strong>
+            <p>Frontend mo drawer hoac page chat rieng trong DinoDeutsch.</p>
+          </div>
+          <div class="assistant-step">
+            <span>02</span>
+            <strong>Gui POST /api/assistant</strong>
+            <p>Pages Function nhan message, user id, route hien tai, level dang hoc.</p>
+          </div>
+          <div class="assistant-step">
+            <span>03</span>
+            <strong>Proxy sang Python service</strong>
+            <p>Agent backend dung AgentScope + model + hoc lieu de tao cau tra loi.</p>
+          </div>
+          <div class="assistant-step">
+            <span>04</span>
+            <strong>Tra ket qua ve UI</strong>
+            <p>Frontend render answer, follow-up actions va goi y bai hoc tiep theo.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="assistant-stack">
+        <article class="card assistant-stack-card">
+          <p class="mini-kicker">Giu nguyen</p>
+          <h3>Nhung phan da dung</h3>
+          <p><code>index.html</code>, <code>app.js</code>, <code>styles.css</code>, <code>functions/api</code>, Supabase auth va data JSON.</p>
+        </article>
+        <article class="card assistant-stack-card">
+          <p class="mini-kicker">Them nhe</p>
+          <h3>Phan nen them tiep</h3>
+          <p>Một endpoint <code>/api/assistant</code> o Cloudflare va mot service Python rieng de chay AgentScope.</p>
+        </article>
+        <article class="card assistant-stack-card">
+          <p class="mini-kicker">Sau nay</p>
+          <h3>Neu can nang cap</h3>
+          <p>Them RAG, profile-aware tutoring, adaptive quiz generation, memory ngan han theo user session.</p>
+        </article>
+      </div>
+    </section>
+  `;
+}
+
 function setupProfileInteractions() {
   document.getElementById("forceSyncButton")?.addEventListener("click", async () => {
     await persistVocabState();
@@ -1966,6 +2107,7 @@ async function renderRoute(route) {
     if (route === "listening") return await renderListening();
     if (route === "reading") return await renderGenericModule("reading");
     if (route === "test") return await renderGenericModule("test");
+    if (route === "assistant") return renderAssistantArchitecture();
     if (route === "profile") return renderProfile();
     return await renderHome();
   } catch (error) {
