@@ -74,23 +74,38 @@ export async function onRequestPost(context) {
     locale: typeof body.locale === "string" ? body.locale : "vi-VN",
     level: typeof body.level === "string" ? body.level : null,
     user: body.user && typeof body.user === "object" ? body.user : null,
-    conversation: normalizeConversation(body.conversation)
+    conversation: normalizeConversation(body.conversation),
+    stream: Boolean(body.stream)
   };
 
   try {
     const headers = {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      Accept: payload.stream ? "text/event-stream" : "application/json"
     };
 
     if (backendToken) {
       headers.Authorization = `Bearer ${backendToken}`;
     }
 
-    const upstream = await fetch(`${backendUrl.replace(/\/+$/, "")}/chat`, {
+    const endpoint = payload.stream ? "/chat/stream" : "/chat";
+    const upstream = await fetch(`${backendUrl.replace(/\/+$/, "")}${endpoint}`, {
       method: "POST",
       headers,
       body: JSON.stringify(payload)
     });
+
+    if (payload.stream && upstream.ok) {
+      const responseHeaders = new Headers(corsHeaders);
+      responseHeaders.set("Content-Type", "text/event-stream; charset=utf-8");
+      responseHeaders.set("Cache-Control", "no-cache");
+      responseHeaders.set("Connection", "keep-alive");
+
+      return new Response(upstream.body, {
+        status: 200,
+        headers: responseHeaders
+      });
+    }
 
     const upstreamText = await upstream.text();
     let upstreamJson = null;

@@ -53,6 +53,15 @@ curl -X POST http://127.0.0.1:8788/chat `
   -d "{\"message\":\"Giai thich cho toi Akkusativ de hieu\",\"route\":\"grammar\",\"locale\":\"vi-VN\",\"conversation\":[]}"
 ```
 
+Stream test:
+
+```powershell
+curl -N -X POST http://127.0.0.1:8788/chat/stream `
+  -H "Content-Type: application/json" `
+  -H "Authorization: Bearer change-me" `
+  -d "{\"message\":\"Tao 1 mini quiz A1 ve chao hoi tieng Duc\",\"route\":\"test\",\"locale\":\"vi-VN\",\"conversation\":[]}"
+```
+
 ## Cloudflare Pages Function can cau hinh
 
 Set 2 environment variables cho project Pages:
@@ -77,3 +86,9 @@ Backend tra ve JSON dang:
   ]
 }
 ```
+
+Streaming endpoint `POST /chat/stream` tra ve SSE voi cac event:
+
+- `meta`
+- `token`
+- `final`

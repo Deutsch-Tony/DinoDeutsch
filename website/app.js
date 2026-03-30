@@ -50,6 +50,7 @@ const SEO = {
 
 const dataCache = new Map();
 const VOCAB_STATE_KEY = "deutschSprint.vocabState";
+const ASSISTANT_THREAD_KEY = "deutschSprint.assistantThread";
 const AUTH_RETURN_ROUTE_KEY = "deutschSprint.authReturnRoute";
 const AUTH_EXPECT_REDIRECT_KEY = "deutschSprint.authExpectRedirect";
 const hasSupabaseConfig = Boolean(SUPABASE_CONFIG.url && SUPABASE_CONFIG.anonKey);
@@ -60,6 +61,8 @@ let currentSession = null;
 let currentProfile = null;
 let syncStatus = "Tien do hien dang luu tren trinh duyet.";
 let syncPromise = null;
+let assistantConversation = [];
+let assistantRequestController = null;
 let activeListeningAudio = null;
 let listeningPlayback = {
   lessonId: null,
@@ -121,6 +124,78 @@ function escapeAttr(value) {
     .replace(/"/g, "&quot;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function loadAssistantConversation() {
+  try {
+    const raw = localStorage.getItem(ASSISTANT_THREAD_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .filter((item) => item && typeof item.role === "string" && typeof item.content === "string")
+      .slice(-20);
+  } catch {
+    return [];
+  }
+}
+
+function saveAssistantConversation() {
+  localStorage.setItem(ASSISTANT_THREAD_KEY, JSON.stringify(assistantConversation.slice(-20)));
+}
+
+function inferAssistantLevel() {
+  const route = routeFromLocation();
+  if (route === "vocab") {
+    const state = loadVocabState();
+    const entries = Object.keys(state);
+    if (entries.some((key) => key.startsWith("B2__"))) return "B2";
+    if (entries.some((key) => key.startsWith("B1__"))) return "B1";
+  }
+  return "A1-A2";
+}
+
+function getAssistantUserContext() {
+  if (!currentSession?.user) return null;
+  const display = getUserDisplay(currentSession.user);
+  return {
+    id: currentSession.user.id,
+    email: display.email,
+    name: display.name
+  };
+}
+
+function renderAssistantMessages(messages) {
+  if (!messages.length) {
+    return `
+      <div class="assistant-empty">
+        <strong>Chua co hoi thoai.</strong>
+        <p>Thu hoi ve Akkusativ, tu vung theo chu de, hoac nho tao mini quiz ngan.</p>
+      </div>
+    `;
+  }
+
+  return messages
+    .map((message) => {
+      const isUser = message.role === "user";
+      const roleLabel = isUser ? "Ban" : "KI Tutor";
+      return `
+        <article class="assistant-message ${isUser ? "is-user" : "is-assistant"}">
+          <div class="assistant-message-head">
+            <span class="assistant-message-role">${roleLabel}</span>
+          </div>
+          <div class="assistant-message-body">${escapeHtml(message.content).replace(/\n/g, "<br />")}</div>
+        </article>
+      `;
+    })
+    .join("");
 }
 
 function getVocabId(level, topic, word) {
@@ -1847,6 +1922,8 @@ function renderProfile() {
 }
 
 function renderAssistantArchitecture() {
+  assistantConversation = loadAssistantConversation();
+  const messages = renderAssistantMessages(assistantConversation);
   return `
     <section class="section assistant-shell">
       <div class="hero assistant-hero">
@@ -1863,6 +1940,58 @@ function renderAssistantArchitecture() {
           <strong>Frontend tĩnh + API mỏng + Agent service riêng</strong>
           <p>De deploy, de scale, khong nhot logic AgentScope vao browser hay Cloudflare function JS.</p>
         </div>
+      </div>
+
+      <div class="assistant-chat-grid">
+        <article class="card assistant-chat-card">
+          <div class="assistant-chat-head">
+            <div>
+              <p class="mini-kicker">Chat that</p>
+              <h2>Hoi KI Tutor ngay trong website</h2>
+            </div>
+            <button class="hero-secondary assistant-clear" type="button" id="assistantClearButton">Xoa thread</button>
+          </div>
+
+          <div class="assistant-messages" id="assistantMessages">${messages}</div>
+
+          <div class="assistant-status" id="assistantStatus">San sang. Backend se stream cau tra loi qua SSE.</div>
+
+          <form class="assistant-form" id="assistantForm">
+            <label class="auth-field assistant-field">
+              <span>Cau hoi</span>
+              <textarea
+                id="assistantInput"
+                rows="4"
+                placeholder="Vi du: Giai thich cho toi Akkusativ de hieu, cho 2 vi du va 1 bai tap nho."
+                required
+              ></textarea>
+            </label>
+            <div class="assistant-actions">
+              <button class="hero-primary" type="submit" id="assistantSendButton">Gui cau hoi</button>
+              <button class="hero-secondary" type="button" id="assistantStopButton">Dung stream</button>
+            </div>
+          </form>
+        </article>
+
+        <article class="card assistant-chat-card">
+          <p class="mini-kicker">Prompt nhanh</p>
+          <h2>3 cach dung hop voi DinoDeutsch</h2>
+          <div class="assistant-prompt-list">
+            <button class="assistant-prompt" type="button" data-assistant-prompt="Giai thich cho toi Akkusativ bang tieng Viet de hieu, kem 2 vi du rat don gian.">
+              Giai thich ngu phap
+            </button>
+            <button class="assistant-prompt" type="button" data-assistant-prompt="Tao mini quiz 5 cau ve tu vung chu de gia dinh trinh do A1.">
+              Tao mini quiz
+            </button>
+            <button class="assistant-prompt" type="button" data-assistant-prompt="Sua cau tieng Duc nay va giai thich loi sai: Ich gehe in die Schule gestern.">
+              Sua cau sai
+            </button>
+          </div>
+          <div class="assistant-chat-note">
+            <strong>Flow hien tai</strong>
+            <p>SPA -> <code>/api/assistant</code> -> Python AgentScope service -> stream token ve lai UI.</p>
+          </div>
+        </article>
       </div>
 
       <div class="assistant-diagram">
@@ -1980,6 +2109,189 @@ function renderAssistantArchitecture() {
       </div>
     </section>
   `;
+}
+
+function updateAssistantUI() {
+  const messagesEl = document.getElementById("assistantMessages");
+  if (messagesEl) {
+    messagesEl.innerHTML = renderAssistantMessages(assistantConversation);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+}
+
+function setAssistantStatus(message, isError = false) {
+  const statusEl = document.getElementById("assistantStatus");
+  if (!statusEl) return;
+  statusEl.textContent = message;
+  statusEl.classList.toggle("is-error", Boolean(isError));
+}
+
+function appendAssistantMessage(role, content) {
+  assistantConversation.push({ role, content });
+  saveAssistantConversation();
+  updateAssistantUI();
+}
+
+function updateLastAssistantMessage(content) {
+  const last = assistantConversation[assistantConversation.length - 1];
+  if (last && last.role === "assistant") {
+    last.content = content;
+    saveAssistantConversation();
+    updateAssistantUI();
+  }
+}
+
+async function streamAssistantReply(message) {
+  if (assistantRequestController) {
+    assistantRequestController.abort();
+  }
+
+  assistantRequestController = new AbortController();
+  appendAssistantMessage("user", message);
+  appendAssistantMessage("assistant", "");
+  setAssistantStatus("Dang ket noi backend va stream cau tra loi...");
+
+  const payload = {
+    message,
+    route: routeFromLocation(),
+    locale: "vi-VN",
+    level: inferAssistantLevel(),
+    user: getAssistantUserContext(),
+    conversation: assistantConversation.slice(0, -1),
+    stream: true
+  };
+
+  const response = await fetch("/api/assistant", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "text/event-stream"
+    },
+    body: JSON.stringify(payload),
+    signal: assistantRequestController.signal
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(errorText || "Assistant request failed");
+  }
+
+  const contentType = response.headers.get("Content-Type") || "";
+  if (!contentType.includes("text/event-stream")) {
+    const data = await response.json();
+    updateLastAssistantMessage(data.reply || "Khong co phan hoi.");
+    setAssistantStatus("Da nhan phan hoi khong streaming.");
+    return;
+  }
+
+  const reader = response.body?.getReader();
+  if (!reader) {
+    throw new Error("Streaming body is not available");
+  }
+
+  const decoder = new TextDecoder();
+  let buffer = "";
+  let streamedReply = "";
+
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) break;
+
+    buffer += decoder.decode(value, { stream: true });
+    const frames = buffer.split("\n\n");
+    buffer = frames.pop() || "";
+
+    for (const frame of frames) {
+      const lines = frame.split("\n");
+      let eventName = "message";
+      const dataLines = [];
+
+      for (const line of lines) {
+        if (line.startsWith("event:")) eventName = line.slice(6).trim();
+        if (line.startsWith("data:")) dataLines.push(line.slice(5).trim());
+      }
+
+      if (!dataLines.length) continue;
+      let payloadData = null;
+      try {
+        payloadData = JSON.parse(dataLines.join("\n"));
+      } catch {
+        payloadData = null;
+      }
+
+      if (eventName === "token" && payloadData?.delta) {
+        streamedReply += payloadData.delta;
+        updateLastAssistantMessage(streamedReply);
+      }
+
+      if (eventName === "final") {
+        streamedReply = payloadData?.reply || streamedReply;
+        updateLastAssistantMessage(streamedReply);
+        setAssistantStatus("Da nhan xong phan hoi tu KI Tutor.");
+      }
+
+      if (eventName === "error") {
+        throw new Error(payloadData?.error || "Streaming error");
+      }
+    }
+  }
+
+  if (!streamedReply.trim()) {
+    updateLastAssistantMessage("Tam thoi chua co noi dung tra loi.");
+  }
+}
+
+function setupAssistantInteractions() {
+  assistantConversation = loadAssistantConversation();
+  updateAssistantUI();
+
+  const form = document.getElementById("assistantForm");
+  const input = document.getElementById("assistantInput");
+  const clearButton = document.getElementById("assistantClearButton");
+  const stopButton = document.getElementById("assistantStopButton");
+
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const message = input?.value.trim();
+    if (!message) return;
+
+    if (input) input.value = "";
+
+    try {
+      await streamAssistantReply(message);
+    } catch (error) {
+      if (error?.name === "AbortError") {
+        setAssistantStatus("Da dung stream hien tai.");
+        return;
+      }
+      setAssistantStatus("Khong goi duoc assistant backend. Kiem tra Pages env va Python service.", true);
+      updateLastAssistantMessage(
+        "Mình chưa ket noi duoc toi AI backend. Hay kiem tra AGENT_BACKEND_URL, token va service Python."
+      );
+    } finally {
+      assistantRequestController = null;
+    }
+  });
+
+  clearButton?.addEventListener("click", () => {
+    assistantConversation = [];
+    saveAssistantConversation();
+    updateAssistantUI();
+    setAssistantStatus("Da xoa thread local.");
+  });
+
+  stopButton?.addEventListener("click", () => {
+    assistantRequestController?.abort();
+    assistantRequestController = null;
+  });
+
+  document.querySelectorAll("[data-assistant-prompt]").forEach((button) => {
+    button.addEventListener("click", () => {
+      if (!input) return;
+      input.value = button.dataset.assistantPrompt || "";
+      input.focus();
+    });
+  });
 }
 
 function setupProfileInteractions() {
@@ -2143,6 +2455,10 @@ async function mountRoute() {
 
   if (route === "profile") {
     setupProfileInteractions();
+  }
+
+  if (route === "assistant") {
+    setupAssistantInteractions();
   }
 }
 

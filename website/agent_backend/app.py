@@ -1,9 +1,12 @@
+import json
 import os
+import asyncio
 from functools import lru_cache
 from typing import Literal, Optional
 
 import agentscope
 from fastapi import FastAPI, Header, HTTPException
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
 from agentscope.agents import DialogAgent
@@ -165,6 +168,43 @@ def build_suggestions(route: str) -> list[str]:
     )
 
 
+def build_chat_response(payload: ChatRequest) -> ChatResponse:
+    agent = get_agent()
+    msg = Msg(
+        name="user",
+        role="user",
+        content=build_user_message(payload),
+    )
+    response = agent(msg)
+    if isinstance(response.content, str):
+        reply = response.content
+    else:
+        reply = response.get_text_content() or ""
+
+    return ChatResponse(
+        reply=reply.strip(),
+        model=os.getenv("AGENT_MODEL_NAME", ""),
+        route=payload.route,
+        suggestions=build_suggestions(payload.route),
+    )
+
+
+def ensure_authorized(authorization: Optional[str]) -> None:
+    expected_token = os.getenv("AGENT_BACKEND_TOKEN", "").strip()
+    if expected_token and authorization != f"Bearer {expected_token}":
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+
+def iter_reply_chunks(text: str, chunk_size: int = 24) -> list[str]:
+    if not text:
+        return []
+    return [text[i : i + chunk_size] for i in range(0, len(text), chunk_size)]
+
+
+def sse_frame(event: str, data: dict) -> str:
+    return f"event: {event}\ndata: {json.dumps(data, ensure_ascii=True)}\n\n"
+
+
 app = FastAPI(title="DinoDeutsch Agent Backend")
 
 
@@ -178,28 +218,55 @@ def chat(
     payload: ChatRequest,
     authorization: Optional[str] = Header(default=None),
 ) -> ChatResponse:
-    expected_token = os.getenv("AGENT_BACKEND_TOKEN", "").strip()
-    if expected_token and authorization != f"Bearer {expected_token}":
-        raise HTTPException(status_code=401, detail="Unauthorized")
+    ensure_authorized(authorization)
 
     try:
-        agent = get_agent()
-        msg = Msg(
-            name="user",
-            role="user",
-            content=build_user_message(payload),
-        )
-        response = agent(msg)
-        if isinstance(response.content, str):
-            reply = response.content
-        else:
-            reply = response.get_text_content() or ""
+        return build_chat_response(payload)
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
-    return ChatResponse(
-        reply=reply.strip(),
-        model=os.getenv("AGENT_MODEL_NAME", ""),
-        route=payload.route,
-        suggestions=build_suggestions(payload.route),
+
+@app.post("/chat/stream")
+async def chat_stream(
+    payload: ChatRequest,
+    authorization: Optional[str] = Header(default=None),
+) -> StreamingResponse:
+    ensure_authorized(authorization)
+
+    try:
+        result = build_chat_response(payload)
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+    async def event_generator():
+        yield sse_frame(
+            "meta",
+            {
+                "model": result.model,
+                "route": result.route,
+                "suggestions": result.suggestions,
+            },
+        )
+        for chunk in iter_reply_chunks(result.reply):
+            yield sse_frame("token", {"delta": chunk})
+            await asyncio.sleep(0.02)
+
+        yield sse_frame(
+            "final",
+            {
+                "reply": result.reply,
+                "model": result.model,
+                "route": result.route,
+                "suggestions": result.suggestions,
+            },
+        )
+
+    return StreamingResponse(
+        event_generator(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no",
+        },
     )
