@@ -51,6 +51,7 @@ const SEO = {
 const dataCache = new Map();
 const VOCAB_STATE_KEY = "deutschSprint.vocabState";
 const ASSISTANT_THREAD_KEY = "deutschSprint.assistantThread";
+const ASSISTANT_SOURCE_ROUTE_KEY = "deutschSprint.assistantSourceRoute";
 const AUTH_RETURN_ROUTE_KEY = "deutschSprint.authReturnRoute";
 const AUTH_EXPECT_REDIRECT_KEY = "deutschSprint.authExpectRedirect";
 const hasSupabaseConfig = Boolean(SUPABASE_CONFIG.url && SUPABASE_CONFIG.anonKey);
@@ -63,6 +64,7 @@ let syncStatus = "Tien do hien dang luu tren trinh duyet.";
 let syncPromise = null;
 let assistantConversation = [];
 let assistantRequestController = null;
+let assistantSuggestions = [];
 let activeListeningAudio = null;
 let listeningPlayback = {
   lessonId: null,
@@ -98,7 +100,34 @@ function routeToPath(routeKey) {
   return match ? match.path : "/";
 }
 
+function isLearningRoute(routeKey) {
+  return ["grammar", "vocab", "listening", "reading", "test"].includes(routeKey);
+}
+
+function rememberAssistantSourceRoute(routeKey) {
+  if (!isLearningRoute(routeKey)) return;
+  sessionStorage.setItem(ASSISTANT_SOURCE_ROUTE_KEY, routeKey);
+}
+
+function getAssistantSourceRoute() {
+  const currentRoute = routeFromLocation();
+  if (isLearningRoute(currentRoute)) {
+    rememberAssistantSourceRoute(currentRoute);
+    return currentRoute;
+  }
+
+  const storedRoute = sessionStorage.getItem(ASSISTANT_SOURCE_ROUTE_KEY);
+  return isLearningRoute(storedRoute) ? storedRoute : "grammar";
+}
+
 function goToRoute(routeKey) {
+  const currentRoute = routeFromLocation();
+  if (routeKey === "assistant" && isLearningRoute(currentRoute)) {
+    rememberAssistantSourceRoute(currentRoute);
+  } else if (isLearningRoute(routeKey)) {
+    rememberAssistantSourceRoute(routeKey);
+  }
+
   const nextPath = routeToPath(routeKey);
   if (location.pathname !== nextPath) {
     history.pushState({}, "", nextPath);
@@ -152,7 +181,9 @@ function saveAssistantConversation() {
 }
 
 function inferAssistantLevel() {
-  const route = routeFromLocation();
+  const currentRoute = routeFromLocation();
+  const route = currentRoute === "assistant" ? getAssistantSourceRoute() : currentRoute;
+  if (route === "grammar" || route === "listening" || route === "test") return "A1-B2";
   if (route === "vocab") {
     const state = loadVocabState();
     const entries = Object.keys(state);
@@ -160,6 +191,20 @@ function inferAssistantLevel() {
     if (entries.some((key) => key.startsWith("B1__"))) return "B1";
   }
   return "A1-A2";
+}
+
+function getRouteLabel(route) {
+  const labels = {
+    home: "Tong quan",
+    grammar: "Grammatik",
+    vocab: "Wortschatz",
+    listening: "Horen",
+    reading: "Lesen",
+    test: "Tests",
+    assistant: "KI Tutor",
+    profile: "Ho so"
+  };
+  return labels[route] || "Tong quan";
 }
 
 function getAssistantUserContext() {
@@ -196,6 +241,69 @@ function renderAssistantMessages(messages) {
       `;
     })
     .join("");
+}
+
+function renderAssistantSuggestions() {
+  if (!assistantSuggestions.length) {
+    return `
+      <div class="assistant-suggestions assistant-suggestions-empty">
+        <span>Goi y se hien sau khi agent tra loi hoac khi ban chon prompt nhanh.</span>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="assistant-suggestions" id="assistantSuggestions">
+      ${assistantSuggestions
+        .map(
+          (item) =>
+            `<button class="assistant-suggestion-chip" type="button" data-assistant-prompt="${escapeAttr(item)}">${escapeHtml(
+              item
+            )}</button>`
+        )
+        .join("")}
+    </div>
+  `;
+}
+
+function getDefaultAssistantSuggestions(sourceRoute) {
+  if (sourceRoute === "grammar") {
+    return [
+      "Giai thich nhanh diem ngu phap dang hoc kem 2 vi du de nho.",
+      "Tao 3 cau dien vao cho trong theo level hien tai.",
+      "Chi ra loi sai thuong gap cua chu diem nay."
+    ];
+  }
+
+  if (sourceRoute === "vocab") {
+    return [
+      "Cho toi 8 tu cung chu de nay kem vi du ngan.",
+      "Tao mini quiz 5 cau de on lai tu vung.",
+      "Gom cac tu nay thanh mot doan hoi thoai ngan."
+    ];
+  }
+
+  if (sourceRoute === "listening") {
+    return [
+      "Tom tat bai nghe nay bang tieng Viet ngan gon.",
+      "Chi ra 5 tu khoa can bat khi nghe lai.",
+      "Tao checklist shadowing trong 5 phut cho bai nay."
+    ];
+  }
+
+  if (sourceRoute === "reading") {
+    return [
+      "Tom tat bai doc nay theo y chinh.",
+      "Hoi toi 3 cau kiem tra doc hieu.",
+      "Rut ra cac cum tu nen ghi nho trong bai."
+    ];
+  }
+
+  return [
+    "Tao mini test theo trinh do hien tai.",
+    "Chi ra diem yeu nen on tiep.",
+    "Goi y lo trinh hoc tiep theo cho buoi nay."
+  ];
 }
 
 function getVocabId(level, topic, word) {
@@ -1998,37 +2106,65 @@ function renderProfile() {
 function renderAssistantArchitecture() {
   assistantConversation = loadAssistantConversation();
   const messages = renderAssistantMessages(assistantConversation);
+  const sourceRoute = getAssistantSourceRoute();
+  const userDisplay = currentSession?.user ? getUserDisplay(currentSession.user) : null;
   return `
     <section class="section assistant-shell">
-      <div class="hero assistant-hero">
-        <div>
+      <div class="assistant-hero-shell">
+        <div class="assistant-hero-main">
           <p class="eyebrow">KI Tutor</p>
-          <h1>Kiến trúc AI phù hợp nhất cho DinoDeutsch hiện tại</h1>
+          <h1>Hoi, nhan goi y va hoc tiep ngay trong dung ngu canh bai hoc.</h1>
           <p class="hero-copy">
-            Site của bạn đang là Cloudflare Pages + SPA + Pages Functions. Cách tích hợp đúng là giữ frontend nhẹ,
-            để agent chạy ở một backend Python riêng, rồi chỉ nối qua API chat.
+            KI Tutor hien doc route ban dang hoc, level suy ra tu giao dien, va hoc lieu that tu Grammatik, Wortschatz, Horen
+            de tra loi bam sat website hon.
           </p>
+          <div class="assistant-context-row">
+            <span class="assistant-context-pill">Ngu canh bai hoc: ${getRouteLabel(sourceRoute)}</span>
+            <span class="assistant-context-pill">Level suy ra: ${inferAssistantLevel()}</span>
+            <span class="assistant-context-pill">${currentSession?.user ? "Da dang nhap" : "Dang hoc local"}</span>
+          </div>
         </div>
-        <div class="assistant-hero-note">
-          <span class="assistant-badge">Khuyen nghi</span>
-          <strong>Frontend tĩnh + API mỏng + Agent service riêng</strong>
-          <p>De deploy, de scale, khong nhot logic AgentScope vao browser hay Cloudflare function JS.</p>
-        </div>
+        <aside class="assistant-hero-side">
+          <div class="assistant-side-card">
+            <p class="mini-kicker">Agent dang doc</p>
+            <h3>Hoc lieu that cua web</h3>
+            <ul class="assistant-side-list">
+              <li>Grammar lessons A1-B2</li>
+              <li>Vocab theo level, chu de, vi du</li>
+              <li>Listening transcript, goal, checklist</li>
+            </ul>
+          </div>
+          <div class="assistant-side-card">
+            <p class="mini-kicker">Nguoi hoc</p>
+            <h3>${userDisplay ? escapeHtml(userDisplay.name) : "Khach"}</h3>
+            <p>${userDisplay ? escapeHtml(userDisplay.email) : "Dang nhap de agent nho them profile va tien do."}</p>
+          </div>
+        </aside>
       </div>
 
       <div class="assistant-chat-grid">
-        <article class="card assistant-chat-card">
+        <article class="card assistant-chat-card assistant-chat-primary">
           <div class="assistant-chat-head">
             <div>
-              <p class="mini-kicker">Chat that</p>
-              <h2>Hoi KI Tutor ngay trong website</h2>
+              <p class="mini-kicker">Hoi dap</p>
+              <h2>Chat voi KI Tutor</h2>
             </div>
             <button class="hero-secondary assistant-clear" type="button" id="assistantClearButton">Xoa thread</button>
           </div>
 
+          <div class="assistant-toolbar">
+            <span class="assistant-toolbar-pill">SSE streaming</span>
+            <span class="assistant-toolbar-pill">Context-aware</span>
+            <span class="assistant-toolbar-pill">Route nguon: ${getRouteLabel(sourceRoute)}</span>
+          </div>
+
           <div class="assistant-messages" id="assistantMessages">${messages}</div>
 
-          <div class="assistant-status" id="assistantStatus">San sang. Backend se stream cau tra loi qua SSE.</div>
+          <div class="assistant-status" id="assistantStatus">San sang. Hay hoi ngu phap, tu vung, nghe, doc hoac nho tao mini quiz.</div>
+
+          <div id="assistantSuggestionsWrap">
+            ${renderAssistantSuggestions()}
+          </div>
 
           <form class="assistant-form" id="assistantForm">
             <label class="auth-field assistant-field">
@@ -2036,7 +2172,7 @@ function renderAssistantArchitecture() {
               <textarea
                 id="assistantInput"
                 rows="4"
-                placeholder="Vi du: Giai thich cho toi Akkusativ de hieu, cho 2 vi du va 1 bai tap nho."
+                placeholder="Vi du: Giai thich Akkusativ cho toi bang tieng Viet, kem 2 vi du A1 va 1 bai tap ngan."
                 required
               ></textarea>
             </label>
@@ -2047,9 +2183,9 @@ function renderAssistantArchitecture() {
           </form>
         </article>
 
-        <article class="card assistant-chat-card">
+        <article class="card assistant-chat-card assistant-chat-secondary">
           <p class="mini-kicker">Prompt nhanh</p>
-          <h2>3 cach dung hop voi DinoDeutsch</h2>
+          <h2>Bat dau nhanh theo kieu hoc thuc te</h2>
           <div class="assistant-prompt-list">
             <button class="assistant-prompt" type="button" data-assistant-prompt="Giai thich cho toi Akkusativ bang tieng Viet de hieu, kem 2 vi du rat don gian.">
               Giai thich ngu phap
@@ -2057,128 +2193,27 @@ function renderAssistantArchitecture() {
             <button class="assistant-prompt" type="button" data-assistant-prompt="Tao mini quiz 5 cau ve tu vung chu de gia dinh trinh do A1.">
               Tao mini quiz
             </button>
+            <button class="assistant-prompt" type="button" data-assistant-prompt="Tom tat bai nghe nay va chi ra 5 tu khoa can bat.">
+              Tom tat bai nghe
+            </button>
             <button class="assistant-prompt" type="button" data-assistant-prompt="Sua cau tieng Duc nay va giai thich loi sai: Ich gehe in die Schule gestern.">
               Sua cau sai
             </button>
           </div>
-          <div class="assistant-chat-note">
+          <div class="assistant-chat-note assistant-compact-note">
             <strong>Flow hien tai</strong>
-            <p>SPA -> <code>/api/assistant</code> -> Python AgentScope service -> stream token ve lai UI.</p>
+            <p>SPA -> <code>/api/assistant</code> -> Python backend -> stream cau tra loi ve giao dien.</p>
           </div>
-        </article>
-      </div>
-
-      <div class="assistant-diagram">
-        <article class="assistant-node">
-          <p class="mini-kicker">1. User</p>
-          <h3>Hoc vien tren web</h3>
-          <p>Hoi bang tieng Duc, xin giai thich ngu phap, yeu cau bai tap, hoi tu vung theo chu de.</p>
-        </article>
-
-        <div class="assistant-arrow" aria-hidden="true">→</div>
-
-        <article class="assistant-node">
-          <p class="mini-kicker">2. Frontend</p>
-          <h3>DinoDeutsch SPA</h3>
-          <p>UI hien tai giu nguyen. Them mot khu chat "KI Tutor" trong site de gui cau hoi va hien phan hoi.</p>
-        </article>
-
-        <div class="assistant-arrow" aria-hidden="true">→</div>
-
-        <article class="assistant-node">
-          <p class="mini-kicker">3. Edge API</p>
-          <h3>Cloudflare Pages Function</h3>
-          <p>Chi dong vai tro proxy nhe: nhan request, check auth/rate limit, forward sang agent backend.</p>
-        </article>
-
-        <div class="assistant-arrow" aria-hidden="true">→</div>
-
-        <article class="assistant-node accent">
-          <p class="mini-kicker">4. Agent Backend</p>
-          <h3>Python + AgentScope</h3>
-          <p>Xu ly hoi dap, prompt routing, tool calling, RAG, memory va tra loi hoc tieng Duc theo ngu canh.</p>
-        </article>
-      </div>
-
-      <div class="assistant-grid">
-        <article class="card assistant-card">
-          <p class="mini-kicker">Nguon du lieu cho agent</p>
-          <h3>Agent co the doc gi</h3>
-          <ul class="assistant-list">
-            <li>JSON hoc lieu hien co trong <code>data/</code></li>
-            <li>Tien do hoc cua user tu Supabase</li>
-            <li>FAQ/noi dung soan rieng cho A1-B2</li>
-            <li>Knowledge base vector neu sau nay can RAG that</li>
-          </ul>
-        </article>
-
-        <article class="card assistant-card">
-          <p class="mini-kicker">Nhiem vu phu hop</p>
-          <h3>Agent nen lam gi</h3>
-          <ul class="assistant-list">
-            <li>Giai thich ngu phap bang tieng Viet hoac tieng Duc don gian</li>
-            <li>Tao mini quiz dua tren bai hoc hien tai</li>
-            <li>Goi y tu vung theo chu de va level</li>
-            <li>Chua cau, giai nghia, viet vi du ngan</li>
-          </ul>
-        </article>
-
-        <article class="card assistant-card">
-          <p class="mini-kicker">Khong nen lam ngay</p>
-          <h3>De tranh qua tai stack hien tai</h3>
-          <ul class="assistant-list">
-            <li>Khong chay AgentScope trong browser</li>
-            <li>Khong nhet model API key vao frontend</li>
-            <li>Khong de Cloudflare Function JS ganh toan bo orchestration</li>
-            <li>Khong build memory phuc tap truoc khi co use case that</li>
-          </ul>
-        </article>
-      </div>
-
-      <div class="assistant-flow card">
-        <div class="assistant-flow-head">
-          <p class="mini-kicker">Luong xu ly de build truoc</p>
-          <h2>Ban MVP gon va de ship</h2>
-        </div>
-        <div class="assistant-flow-steps">
-          <div class="assistant-step">
-            <span>01</span>
-            <strong>User mo KI Tutor</strong>
-            <p>Frontend mo drawer hoac page chat rieng trong DinoDeutsch.</p>
+          <div class="assistant-mini-grid">
+            <div class="assistant-mini-card">
+              <span>${assistantConversation.length}</span>
+              <p>Tin nhan dang luu trong thread</p>
+            </div>
+            <div class="assistant-mini-card">
+              <span>3 kho</span>
+              <p>Grammar, vocab, listening dang duoc backend doc that</p>
+            </div>
           </div>
-          <div class="assistant-step">
-            <span>02</span>
-            <strong>Gui POST /api/assistant</strong>
-            <p>Pages Function nhan message, user id, route hien tai, level dang hoc.</p>
-          </div>
-          <div class="assistant-step">
-            <span>03</span>
-            <strong>Proxy sang Python service</strong>
-            <p>Agent backend dung AgentScope + model + hoc lieu de tao cau tra loi.</p>
-          </div>
-          <div class="assistant-step">
-            <span>04</span>
-            <strong>Tra ket qua ve UI</strong>
-            <p>Frontend render answer, follow-up actions va goi y bai hoc tiep theo.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="assistant-stack">
-        <article class="card assistant-stack-card">
-          <p class="mini-kicker">Giu nguyen</p>
-          <h3>Nhung phan da dung</h3>
-          <p><code>index.html</code>, <code>app.js</code>, <code>styles.css</code>, <code>functions/api</code>, Supabase auth va data JSON.</p>
-        </article>
-        <article class="card assistant-stack-card">
-          <p class="mini-kicker">Them nhe</p>
-          <h3>Phan nen them tiep</h3>
-          <p>Một endpoint <code>/api/assistant</code> o Cloudflare va mot service Python rieng de chay AgentScope.</p>
-        </article>
-        <article class="card assistant-stack-card">
-          <p class="mini-kicker">Sau nay</p>
-          <h3>Neu can nang cap</h3>
-          <p>Them RAG, profile-aware tutoring, adaptive quiz generation, memory ngan han theo user session.</p>
         </article>
       </div>
     </section>
@@ -2190,6 +2225,11 @@ function updateAssistantUI() {
   if (messagesEl) {
     messagesEl.innerHTML = renderAssistantMessages(assistantConversation);
     messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  const suggestionsWrap = document.getElementById("assistantSuggestionsWrap");
+  if (suggestionsWrap) {
+    suggestionsWrap.innerHTML = renderAssistantSuggestions();
   }
 }
 
@@ -2221,13 +2261,14 @@ async function streamAssistantReply(message) {
   }
 
   assistantRequestController = new AbortController();
+  assistantSuggestions = [];
   appendAssistantMessage("user", message);
   appendAssistantMessage("assistant", "");
   setAssistantStatus("Dang ket noi backend va stream cau tra loi...");
 
   const payload = {
     message,
-    route: routeFromLocation(),
+    route: getAssistantSourceRoute(),
     locale: "vi-VN",
     level: inferAssistantLevel(),
     user: getAssistantUserContext(),
@@ -2298,8 +2339,16 @@ async function streamAssistantReply(message) {
         updateLastAssistantMessage(streamedReply);
       }
 
+      if (eventName === "meta" && Array.isArray(payloadData?.suggestions)) {
+        assistantSuggestions = payloadData.suggestions.slice(0, 4);
+        updateAssistantUI();
+      }
+
       if (eventName === "final") {
         streamedReply = payloadData?.reply || streamedReply;
+        if (Array.isArray(payloadData?.suggestions)) {
+          assistantSuggestions = payloadData.suggestions.slice(0, 4);
+        }
         updateLastAssistantMessage(streamedReply);
         setAssistantStatus("Da nhan xong phan hoi tu KI Tutor.");
       }
@@ -2317,6 +2366,10 @@ async function streamAssistantReply(message) {
 
 function setupAssistantInteractions() {
   assistantConversation = loadAssistantConversation();
+  const sourceRoute = getAssistantSourceRoute();
+  if (!assistantSuggestions.length) {
+    assistantSuggestions = getDefaultAssistantSuggestions(sourceRoute);
+  }
   updateAssistantUI();
 
   const form = document.getElementById("assistantForm");
@@ -2340,7 +2393,7 @@ function setupAssistantInteractions() {
       }
       setAssistantStatus("Khong goi duoc assistant backend. Kiem tra Pages env va Python service.", true);
       updateLastAssistantMessage(
-        "Mình chưa ket noi duoc toi AI backend. Hay kiem tra AGENT_BACKEND_URL, token va service Python."
+        "Minh chua ket noi duoc toi AI backend. Hay kiem tra AGENT_BACKEND_URL, token va Python service."
       );
     } finally {
       assistantRequestController = null;
@@ -2349,6 +2402,7 @@ function setupAssistantInteractions() {
 
   clearButton?.addEventListener("click", () => {
     assistantConversation = [];
+    assistantSuggestions = getDefaultAssistantSuggestions(sourceRoute);
     saveAssistantConversation();
     updateAssistantUI();
     setAssistantStatus("Da xoa thread local.");
@@ -2542,3 +2596,4 @@ window.addEventListener("DOMContentLoaded", async () => {
   await initAuth();
   await mountRoute();
 });
+

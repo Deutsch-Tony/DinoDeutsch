@@ -2,6 +2,7 @@ import json
 import os
 import asyncio
 from functools import lru_cache
+from pathlib import Path
 from typing import Literal, Optional
 
 import agentscope
@@ -39,6 +40,9 @@ class ChatResponse(BaseModel):
     model: str
     route: str
     suggestions: list[str] = Field(default_factory=list)
+
+
+DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 
 
 def env_required(name: str) -> str:
@@ -86,8 +90,203 @@ def build_system_prompt() -> str:
         "examples simple and level-appropriate. If the request is tied to a "
         "learning area such as grammar, vocab, listening, reading, or tests, "
         "adapt the answer to that area. Prefer practical teaching: explain, "
-        "give one or two examples, then suggest a next step."
+        "give one or two examples, then suggest a next step. When study context "
+        "from the website is provided, prioritize it over generic textbook knowledge "
+        "and stay aligned with the level and material already shown in the UI."
     )
+
+
+@lru_cache(maxsize=1)
+def load_learning_data() -> dict:
+    def read_json(file_name: str) -> dict:
+        with (DATA_DIR / file_name).open("r", encoding="utf-8") as handle:
+            return json.load(handle)
+
+    return {
+        "grammar": read_json("grammar.json"),
+        "vocab": read_json("vocab.json"),
+        "listening": read_json("listening.json"),
+    }
+
+
+def normalize_keyword_tokens(text: str) -> list[str]:
+    lowered = text.lower()
+    cleaned = []
+    for char in lowered:
+        cleaned.append(char if char.isalnum() or char in {" ", "-", "_"} else " ")
+    return [token for token in "".join(cleaned).split() if len(token) >= 2][:10]
+
+
+def filter_by_level(items: list[dict], level: Optional[str]) -> list[dict]:
+    if not level:
+        return items
+    return [item for item in items if item.get("level") == level]
+
+
+def build_vocab_context(vocab_data: dict, payload: ChatRequest, tokens: list[str]) -> str:
+    matches: list[dict] = []
+    for level, topics in vocab_data.items():
+        if payload.level and payload.level not in {level, "A1-A2", "B1-B2"} and level != payload.level:
+            continue
+        for topic, items in topics.items():
+            for item in items:
+                haystack = " ".join(
+                    [
+                        level,
+                        topic,
+                        item.get("word", ""),
+                        item.get("vi", ""),
+                        item.get("en", ""),
+                        item.get("example", ""),
+                    ]
+                ).lower()
+                if not tokens or any(token in haystack for token in tokens):
+                    matches.append(
+                        {
+                            "level": level,
+                            "topic": topic,
+                            "word": item.get("word", ""),
+                            "vi": item.get("vi", ""),
+                            "en": item.get("en", ""),
+                            "example": item.get("example", ""),
+                        }
+                    )
+                if len(matches) >= 10:
+                    break
+            if len(matches) >= 10:
+                break
+        if len(matches) >= 10:
+            break
+
+    if not matches:
+        return "No matching vocab entries found."
+
+    lines = []
+    for item in matches:
+        lines.append(
+            f"- [{item['level']} | {item['topic']}] {item['word']} = {item['vi']} / {item['en']} | Example: {item['example']}"
+        )
+    return "\n".join(lines)
+
+
+def build_grammar_context(grammar_data: dict, payload: ChatRequest, tokens: list[str]) -> str:
+    matches: list[dict] = []
+    for level in grammar_data.get("levels", []):
+        if payload.level and payload.level not in {level.get("level"), "A1-A2", "B1-B2"}:
+            continue
+        for section in level.get("sections", []):
+            for lesson in section.get("lessons", []):
+                haystack = " ".join(
+                    [
+                        level.get("level", ""),
+                        section.get("group", ""),
+                        lesson.get("title", ""),
+                        lesson.get("summary", ""),
+                        lesson.get("pattern", ""),
+                        *lesson.get("examples", []),
+                        *lesson.get("mistakes", []),
+                    ]
+                ).lower()
+                if not tokens or any(token in haystack for token in tokens):
+                    matches.append(
+                        {
+                            "level": level.get("level", ""),
+                            "group": section.get("group", ""),
+                            "title": lesson.get("title", ""),
+                            "summary": lesson.get("summary", ""),
+                            "pattern": lesson.get("pattern", ""),
+                            "examples": lesson.get("examples", [])[:2],
+                        }
+                    )
+                if len(matches) >= 8:
+                    break
+            if len(matches) >= 8:
+                break
+        if len(matches) >= 8:
+            break
+
+    if not matches:
+        return "No matching grammar lessons found."
+
+    lines = []
+    for item in matches:
+        example_text = " | ".join(item["examples"])
+        lines.append(
+            f"- [{item['level']} | {item['group']}] {item['title']}: {item['summary']} | Pattern: {item['pattern']} | Examples: {example_text}"
+        )
+    return "\n".join(lines)
+
+
+def build_listening_context(listening_data: dict, payload: ChatRequest, tokens: list[str]) -> str:
+    matches: list[dict] = []
+    for level in listening_data.get("levels", []):
+        if payload.level and payload.level not in {level.get("level"), "A1-A2", "B1-B2"}:
+            continue
+        for track in level.get("tracks", []):
+            for lesson in track.get("lessons", []):
+                haystack = " ".join(
+                    [
+                        level.get("level", ""),
+                        track.get("group", ""),
+                        lesson.get("title", ""),
+                        lesson.get("scenario", ""),
+                        lesson.get("goal", ""),
+                        *lesson.get("transcript", []),
+                        *lesson.get("listenFor", []),
+                    ]
+                ).lower()
+                if not tokens or any(token in haystack for token in tokens):
+                    matches.append(
+                        {
+                            "level": level.get("level", ""),
+                            "group": track.get("group", ""),
+                            "title": lesson.get("title", ""),
+                            "scenario": lesson.get("scenario", ""),
+                            "goal": lesson.get("goal", ""),
+                            "transcript": lesson.get("transcript", [])[:2],
+                            "listen_for": lesson.get("listenFor", [])[:3],
+                        }
+                    )
+                if len(matches) >= 6:
+                    break
+            if len(matches) >= 6:
+                break
+        if len(matches) >= 6:
+            break
+
+    if not matches:
+        return "No matching listening lessons found."
+
+    lines = []
+    for item in matches:
+        transcript_text = " / ".join(item["transcript"])
+        focus_text = ", ".join(item["listen_for"])
+        lines.append(
+            f"- [{item['level']} | {item['group']}] {item['title']}: {item['scenario']} | Goal: {item['goal']} | Focus: {focus_text} | Transcript sample: {transcript_text}"
+        )
+    return "\n".join(lines)
+
+
+def build_study_context(payload: ChatRequest) -> str:
+    learning_data = load_learning_data()
+    tokens = normalize_keyword_tokens(payload.message)
+    route = payload.route
+
+    sections: list[str] = []
+
+    if route in {"grammar", "home", "assistant"}:
+        sections.append("Grammar context:\n" + build_grammar_context(learning_data["grammar"], payload, tokens))
+    if route in {"vocab", "home", "assistant"}:
+        sections.append("Vocab context:\n" + build_vocab_context(learning_data["vocab"], payload, tokens))
+    if route in {"listening", "home", "assistant"}:
+        sections.append("Listening context:\n" + build_listening_context(learning_data["listening"], payload, tokens))
+
+    if route == "reading":
+        sections.append("Reading route is active. Prefer reading-comprehension style explanations and short checks.")
+    if route == "test":
+        sections.append("Test route is active. Prefer quiz-like, checkpoint-like, or correction-first responses.")
+
+    return "\n\n".join(sections)
 
 
 @lru_cache(maxsize=1)
@@ -131,12 +330,15 @@ def build_user_message(payload: ChatRequest) -> str:
         history.append(f"{turn.role.upper()}: {turn.content}")
 
     history_block = "\n".join(history) if history else "No prior conversation."
+    study_context = build_study_context(payload)
 
     return (
         "Website tutor context:\n"
         + "\n".join(profile_bits)
         + "\n\nRecent conversation:\n"
         + history_block
+        + "\n\nRelevant study material from the website:\n"
+        + study_context
         + "\n\nLatest user message:\n"
         + payload.message
     )
