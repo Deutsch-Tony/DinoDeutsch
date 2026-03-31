@@ -1,13 +1,23 @@
 # DinoDeutsch Agent Backend
 
-Nho gon FastAPI service de website goi agent qua `POST /chat`.
+FastAPI backend nho gon de website goi agent qua `POST /api/assistant`.
 
 ## Kien truc
 
-- Website frontend goi `POST /api/assistant`
-- Cloudflare Pages Function proxy request sang backend Python
-- Backend Python dung AgentScope de tao cau tra loi
+- Frontend tren Cloudflare Pages goi `POST /api/assistant`
+- Pages Function proxy request sang backend Python
+- Backend Python doc hoc lieu that trong `../data`
 - Neu `AGENT_MODEL_TYPE=openai_chat`, endpoint stream se dung OpenAI native streaming
+
+## Doc du lieu hoc that
+
+Backend hien doc truc tiep:
+
+- `grammar.json`
+- `vocab.json`
+- `listening.json`
+
+Muc tieu la de KI Tutor bam sat noi dung dang co tren website, khong tra loi chung chung.
 
 ## Cai dat local
 
@@ -16,7 +26,6 @@ cd C:\Users\adminn\Desktop\code\website\agent_backend
 py -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-pip install -e C:\Users\adminn\Desktop\code\AI-agent
 Copy-Item .env.example .env
 ```
 
@@ -24,10 +33,10 @@ Sau do dien gia tri trong `.env`:
 
 - `AGENT_MODEL_TYPE`
 - `AGENT_MODEL_NAME`
-- api key tuong ung, vi du `OPENAI_API_KEY`
+- `OPENAI_API_KEY`
 - `AGENT_BACKEND_TOKEN`
 
-## Chay service
+## Chay service local
 
 ```powershell
 cd C:\Users\adminn\Desktop\code\website\agent_backend
@@ -45,32 +54,45 @@ Health check:
 curl http://127.0.0.1:8788/health
 ```
 
-Chat test:
+## Deploy len Render
 
-```powershell
-curl -X POST http://127.0.0.1:8788/chat `
-  -H "Content-Type: application/json" `
-  -H "Authorization: Bearer change-me" `
-  -d "{\"message\":\"Giai thich cho toi Akkusativ de hieu\",\"route\":\"grammar\",\"locale\":\"vi-VN\",\"conversation\":[]}"
-```
+Repo da co san file:
 
-Stream test:
+- [render.yaml](C:\Users\adminn\Desktop\code\render.yaml)
 
-```powershell
-curl -N -X POST http://127.0.0.1:8788/chat/stream `
-  -H "Content-Type: application/json" `
-  -H "Authorization: Bearer change-me" `
-  -d "{\"message\":\"Tao 1 mini quiz A1 ve chao hoi tieng Duc\",\"route\":\"test\",\"locale\":\"vi-VN\",\"conversation\":[]}"
-```
+Ban lam nhu sau:
 
-## Cloudflare Pages Function can cau hinh
+1. Push code moi nhat len GitHub
+2. Vao Render
+3. Chon `New +` -> `Blueprint`
+4. Noi repo GitHub `DinoDeutsch`
+5. Render se doc `render.yaml` va tao service `dinodeutsch-agent-backend`
 
-Set 2 environment variables cho project Pages:
+Can dien 2 secret env tren Render:
+
+- `OPENAI_API_KEY`
+- `AGENT_BACKEND_TOKEN`
+
+Sau khi deploy xong, ban se co URL dang:
+
+- `https://dinodeutsch-agent-backend.onrender.com`
+
+Test nhanh:
+
+- `https://dinodeutsch-agent-backend.onrender.com/health`
+
+Neu ra JSON `{"ok": true, ...}` la backend song.
+
+## Cloudflare Pages can cau hinh
+
+Sau khi co URL backend production, vao project Pages va set:
 
 - `AGENT_BACKEND_URL`
-  vi du `http://127.0.0.1:8788` khi dev local, hoac URL production cua Python service
+  - vi du `https://dinodeutsch-agent-backend.onrender.com`
 - `AGENT_BACKEND_TOKEN`
-  phai trung voi token trong backend Python
+  - phai trung voi token da set tren Render
+
+Sau do redeploy Pages.
 
 ## Contract response
 
