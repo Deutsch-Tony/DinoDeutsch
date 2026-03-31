@@ -5,14 +5,10 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal, Optional
 
-import agentscope
 from fastapi import FastAPI, Header, HTTPException
 from fastapi.responses import StreamingResponse
 from openai import OpenAI
 from pydantic import BaseModel, Field
-
-from agentscope.agents import DialogAgent
-from agentscope.message import Msg
 
 
 class ConversationTurn(BaseModel):
@@ -50,35 +46,6 @@ def env_required(name: str) -> str:
     if not value:
         raise RuntimeError(f"Missing required environment variable: {name}")
     return value
-
-
-def build_model_config() -> dict:
-    model_type = os.getenv("AGENT_MODEL_TYPE", "openai_chat").strip()
-    model_name = os.getenv("AGENT_MODEL_NAME", "").strip()
-    config_name = os.getenv("AGENT_CONFIG_NAME", "website_assistant").strip()
-
-    if not model_name:
-        raise RuntimeError(
-            "Missing required environment variable: AGENT_MODEL_NAME",
-        )
-
-    config = {
-        "model_type": model_type,
-        "config_name": config_name,
-        "model_name": model_name,
-        "generate_args": {
-            "temperature": float(os.getenv("AGENT_TEMPERATURE", "0.35")),
-        },
-    }
-
-    if model_type.startswith("openai"):
-        config["api_key"] = env_required("OPENAI_API_KEY")
-    elif model_type.startswith("dashscope"):
-        config["api_key"] = env_required("DASHSCOPE_API_KEY")
-    elif model_type.startswith("anthropic"):
-        config["api_key"] = env_required("ANTHROPIC_API_KEY")
-
-    return config
 
 
 def build_system_prompt() -> str:
@@ -294,27 +261,6 @@ def get_openai_client() -> OpenAI:
     return OpenAI(api_key=env_required("OPENAI_API_KEY"))
 
 
-@lru_cache(maxsize=1)
-def get_agent() -> DialogAgent:
-    agentscope.init(
-        model_configs=[build_model_config()],
-        project="DinoDeutsch Agent Backend",
-        save_api_invoke=False,
-        save_code=False,
-        save_log=False,
-        disable_saving=True,
-    )
-
-    return DialogAgent(
-        name="DinoDeutsch KI Tutor",
-        sys_prompt=build_system_prompt(),
-        model_config_name=os.getenv(
-            "AGENT_CONFIG_NAME",
-            "website_assistant",
-        ).strip(),
-    )
-
-
 def build_user_message(payload: ChatRequest) -> str:
     profile_bits = [
         f"Current route: {payload.route}",
@@ -377,9 +323,7 @@ def build_suggestions(route: str) -> list[str]:
 
 
 def use_native_openai() -> bool:
-    return os.getenv("AGENT_MODEL_TYPE", "openai_chat").strip().startswith(
-        "openai",
-    )
+    return True
 
 
 def build_openai_messages(payload: ChatRequest) -> list[dict]:
@@ -424,27 +368,7 @@ def build_openai_chat_response(payload: ChatRequest) -> ChatResponse:
 
 
 def build_chat_response(payload: ChatRequest) -> ChatResponse:
-    if use_native_openai():
-        return build_openai_chat_response(payload)
-
-    agent = get_agent()
-    msg = Msg(
-        name="user",
-        role="user",
-        content=build_user_message(payload),
-    )
-    response = agent(msg)
-    if isinstance(response.content, str):
-        reply = response.content
-    else:
-        reply = response.get_text_content() or ""
-
-    return ChatResponse(
-        reply=reply.strip(),
-        model=os.getenv("AGENT_MODEL_NAME", ""),
-        route=payload.route,
-        suggestions=build_suggestions(payload.route),
-    )
+    return build_openai_chat_response(payload)
 
 
 def ensure_authorized(authorization: Optional[str]) -> None:

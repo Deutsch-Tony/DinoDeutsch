@@ -7,7 +7,7 @@ FastAPI backend nho gon de website goi agent qua `POST /api/assistant`.
 - Frontend tren Cloudflare Pages goi `POST /api/assistant`
 - Pages Function proxy request sang backend Python
 - Backend Python doc hoc lieu that trong `../data`
-- Neu `AGENT_MODEL_TYPE=openai_chat`, endpoint stream se dung OpenAI native streaming
+- Backend goi truc tiep OpenAI Chat Completions va stream token ve frontend
 
 ## Doc du lieu hoc that
 
@@ -31,7 +31,6 @@ Copy-Item .env.example .env
 
 Sau do dien gia tri trong `.env`:
 
-- `AGENT_MODEL_TYPE`
 - `AGENT_MODEL_NAME`
 - `OPENAI_API_KEY`
 - `AGENT_BACKEND_TOKEN`
@@ -41,7 +40,6 @@ Sau do dien gia tri trong `.env`:
 ```powershell
 cd C:\Users\adminn\Desktop\code\website\agent_backend
 .\.venv\Scripts\Activate.ps1
-$env:AGENT_MODEL_TYPE="openai_chat"
 $env:AGENT_MODEL_NAME="gpt-4o-mini"
 $env:OPENAI_API_KEY="YOUR_KEY"
 $env:AGENT_BACKEND_TOKEN="change-me"
@@ -119,4 +117,4 @@ Streaming endpoint `POST /chat/stream` tra ve SSE voi cac event:
 Ghi chu:
 
 - `POST /chat` se tra JSON thuong
-- `POST /chat/stream` se uu tien OpenAI native streaming khi `AGENT_MODEL_TYPE` la OpenAI
+- `POST /chat/stream` stream token truc tiep tu OpenAI ve frontend
