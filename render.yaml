@@ -8,6 +8,8 @@ services:
     plan: free
     healthCheckPath: /health
     envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.11
       - key: AGENT_MODEL_TYPE
         value: openai_chat
       - key: AGENT_MODEL_NAME
