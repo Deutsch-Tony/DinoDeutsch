@@ -1,15 +1,10 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2?bundle";
-import { SUPABASE_CONFIG } from "./supabase-config.js";
-
 const ROUTES = [
   { key: "home", path: "/" },
   { key: "grammar", path: "/grammar" },
   { key: "vocab", path: "/vocab" },
   { key: "listening", path: "/listening" },
   { key: "reading", path: "/reading" },
-  { key: "test", path: "/test" },
-  { key: "assistant", path: "/assistant" },
-  { key: "profile", path: "/profile" }
+  { key: "test", path: "/test" }
 ];
 
 const SEO = {
@@ -37,34 +32,11 @@ const SEO = {
   test: {
     title: "Tests | Deutsch Sprint",
     description: "Mini test va checkpoint de tu danh gia trinh do tieng Duc theo tung muc hoc."
-  },
-  assistant: {
-    title: "KI Tutor | Deutsch Sprint",
-    description: "Kien truc de tich hop AI tutor cho website hoc tieng Duc voi frontend Cloudflare Pages va agent backend rieng."
-  },
-  profile: {
-    title: "Ho so tai khoan | Deutsch Sprint",
-    description: "Thong tin tai khoan, trang thai dong bo va tien do hoc cua ban tren Deutsch Sprint."
   }
 };
 
 const dataCache = new Map();
 const VOCAB_STATE_KEY = "deutschSprint.vocabState";
-const ASSISTANT_THREAD_KEY = "deutschSprint.assistantThread";
-const ASSISTANT_SOURCE_ROUTE_KEY = "deutschSprint.assistantSourceRoute";
-const AUTH_RETURN_ROUTE_KEY = "deutschSprint.authReturnRoute";
-const AUTH_EXPECT_REDIRECT_KEY = "deutschSprint.authExpectRedirect";
-const hasSupabaseConfig = Boolean(SUPABASE_CONFIG.url && SUPABASE_CONFIG.anonKey);
-const supabase = hasSupabaseConfig ? createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey) : null;
-
-let authMode = "signin";
-let currentSession = null;
-let currentProfile = null;
-let syncStatus = "Tien do hien dang luu tren trinh duyet.";
-let syncPromise = null;
-let assistantConversation = [];
-let assistantRequestController = null;
-let assistantSuggestions = [];
 let activeListeningAudio = null;
 let listeningPlayback = {
   lessonId: null,
@@ -104,30 +76,7 @@ function isLearningRoute(routeKey) {
   return ["grammar", "vocab", "listening", "reading", "test"].includes(routeKey);
 }
 
-function rememberAssistantSourceRoute(routeKey) {
-  if (!isLearningRoute(routeKey)) return;
-  sessionStorage.setItem(ASSISTANT_SOURCE_ROUTE_KEY, routeKey);
-}
-
-function getAssistantSourceRoute() {
-  const currentRoute = routeFromLocation();
-  if (isLearningRoute(currentRoute)) {
-    rememberAssistantSourceRoute(currentRoute);
-    return currentRoute;
-  }
-
-  const storedRoute = sessionStorage.getItem(ASSISTANT_SOURCE_ROUTE_KEY);
-  return isLearningRoute(storedRoute) ? storedRoute : "grammar";
-}
-
 function goToRoute(routeKey) {
-  const currentRoute = routeFromLocation();
-  if (routeKey === "assistant" && isLearningRoute(currentRoute)) {
-    rememberAssistantSourceRoute(currentRoute);
-  } else if (isLearningRoute(routeKey)) {
-    rememberAssistantSourceRoute(routeKey);
-  }
-
   const nextPath = routeToPath(routeKey);
   if (location.pathname !== nextPath) {
     history.pushState({}, "", nextPath);
@@ -162,37 +111,6 @@ function escapeHtml(value) {
     .replace(/>/g, "&gt;");
 }
 
-function loadAssistantConversation() {
-  try {
-    const raw = localStorage.getItem(ASSISTANT_THREAD_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
-    return parsed
-      .filter((item) => item && typeof item.role === "string" && typeof item.content === "string")
-      .slice(-20);
-  } catch {
-    return [];
-  }
-}
-
-function saveAssistantConversation() {
-  localStorage.setItem(ASSISTANT_THREAD_KEY, JSON.stringify(assistantConversation.slice(-20)));
-}
-
-function inferAssistantLevel() {
-  const currentRoute = routeFromLocation();
-  const route = currentRoute === "assistant" ? getAssistantSourceRoute() : currentRoute;
-  if (route === "grammar" || route === "listening" || route === "test") return "A1-B2";
-  if (route === "vocab") {
-    const state = loadVocabState();
-    const entries = Object.keys(state);
-    if (entries.some((key) => key.startsWith("B2__"))) return "B2";
-    if (entries.some((key) => key.startsWith("B1__"))) return "B1";
-  }
-  return "A1-A2";
-}
-
 function getRouteLabel(route) {
   const labels = {
     home: "Tong quan",
@@ -200,21 +118,9 @@ function getRouteLabel(route) {
     vocab: "Wortschatz",
     listening: "Horen",
     reading: "Lesen",
-    test: "Tests",
-    assistant: "KI Tutor",
-    profile: "Ho so"
+    test: "Tests"
   };
   return labels[route] || "Tong quan";
-}
-
-function getAssistantUserContext() {
-  if (!currentSession?.user) return null;
-  const display = getUserDisplay(currentSession.user);
-  return {
-    id: currentSession.user.id,
-    email: display.email,
-    name: display.name
-  };
 }
 
 function renderAssistantMessages(messages) {
