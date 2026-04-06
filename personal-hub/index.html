@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Life Ledger</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="background-mesh"></div>
+    <div class="background-orb orb-1"></div>
+    <div class="background-orb orb-2"></div>
+    <div class="background-orb orb-3"></div>
+
+    <div class="app-shell">
+      <header class="topbar glass-card">
+        <div>
+          <p class="eyebrow">Life Ledger</p>
+          <h1>Chi tieu thong minh, lich trinh ro rang, note khong that lac.</h1>
+          <p class="subtitle">
+            Ban nang cap moi cua dashboard ca nhan: calm, liquid, glassy va de
+            track cuoc song theo ngay, theo tuan, theo thang.
+          </p>
+        </div>
+        <div class="topbar-actions">
+          <button id="import-data" class="ghost-button" type="button">
+            Nhap du lieu
+          </button>
+          <button id="export-data" class="ghost-button" type="button">
+            Xuat du lieu
+          </button>
+          <button id="reset-demo" class="primary-button" type="button">
+            Khoi tao lai mau
+          </button>
+        </div>
+      </header>
+
+      <main class="dashboard-grid">
+        <nav class="module-nav glass-card" aria-label="Chon module">
+          <button
+            class="module-nav-button is-active"
+            data-action="switch-module"
+            data-module="money"
+            type="button"
+          >
+            Tien
+          </button>
+          <button
+            class="module-nav-button"
+            data-action="switch-module"
+            data-module="rhythm"
+            type="button"
+          >
+            Nhip Song
+          </button>
+        </nav>
+
+        <section id="module-money" class="module-section">
+          <section class="panel glass-card finance-panel">
+            <div class="panel-header">
+              <div>
+                <p class="eyebrow">Tien</p>
+                <h2>Tai san, tiet kiem va dong tien trong mot noi</h2>
+              </div>
+              <div class="budget-chip">
+                <span>Tong tai san track</span>
+                <strong id="net-worth-total">0 d</strong>
+              </div>
+            </div>
+
+            <div class="finance-summary" id="finance-summary"></div>
+
+            <div class="money-asset-grid">
+              <section class="glass-subcard asset-card savings-card">
+                <div class="asset-main">
+                  <div class="asset-side">
+                    <div class="section-title-row">
+                      <div>
+                        <p class="eyebrow">Tiet kiem</p>
+                        <h3>So tiet kiem 12 thang</h3>
+                      </div>
+                      <span class="tag">6.5% / nam</span>
+                    </div>
+                    <p class="hint">
+                      Cau hinh so 12 thang, lai 6.5%/nam, muc gui du kien
+                      2.000.000d/thang tu 08/12/2025. Lai chi tinh theo lich su gui
+                      thuc te ban nhap.
+                    </p>
+                    <div class="asset-action-row">
+                      <button
+                        class="primary-button"
+                        data-action="toggle-savings-form"
+                        type="button"
+                      >
+                        Gui tien
+                      </button>
+                      <button
+                        class="ghost-button"
+                        data-action="toggle-savings-history"
+                        type="button"
+                      >
+                        Lich su gui
+                      </button>
+                    </div>
+                    <div id="savings-inline-form"></div>
+                  </div>
+
+                  <div class="asset-body">
+                    <div id="savings-overview" class="asset-metrics-grid"></div>
+                    <div id="savings-history-preview"></div>
+                  </div>
+                </div>
+              </section>
+
+              <div id="investment-grid" class="investment-grid"></div>
+            </div>
+
+            <section class="expense-board">
+              <div class="section-title-row">
+                <div>
+                  <p class="eyebrow">Dong tien hang ngay</p>
+                  <h3>Chi tieu, thu nhap va budget</h3>
+                </div>
+                <div class="budget-chip soft-chip">
+                  <span>Budget thang</span>
+                  <strong id="budget-total">0 d</strong>
+                </div>
+              </div>
+
+              <div class="panel-split finance-ledger-split">
+                <form id="transaction-form" class="stack-form glass-subcard">
+                  <h3>Them giao dich</h3>
+                  <label>
+                    Loai
+                    <select name="type">
+                      <option value="expense">Chi tieu</option>
+                      <option value="income">Thu nhap</option>
+                    </select>
+                  </label>
+                  <label>
+                    So tien
+                    <input name="amount" type="number" min="0" step="1000" required />
+                  </label>
+                  <label>
+                    Danh muc
+                    <input
+                      name="category"
+                      type="text"
+                      maxlength="30"
+                      placeholder="an uong, di chuyen..."
+                      required
+                    />
+                  </label>
+                  <label>
+                    Ngay
+                    <input name="date" type="date" required />
+                  </label>
+                  <label>
+                    Ghi chu
+                    <input
+                      name="note"
+                      type="text"
+                      maxlength="60"
+                      placeholder="com van phong, xang xe..."
+                    />
+                  </label>
+                  <button class="primary-button" type="submit">Luu giao dich</button>
+                </form>
+
+                <div class="stack-panel">
+                  <form id="budget-form" class="inline-form glass-strip">
+                    <label>
+                      Cap nhat budget
+                      <input name="budget" type="number" min="0" step="100000" required />
+                    </label>
+                    <button class="ghost-button" type="submit">Luu</button>
+                  </form>
+
+                  <div class="glass-subcard content-panel">
+                    <div class="section-title-row">
+                      <h3>Chi nhieu nhat o dau?</h3>
+                      <span class="hint">Top danh muc thang nay</span>
+                    </div>
+                    <div id="category-breakdown" class="breakdown-list"></div>
+                  </div>
+
+                  <div class="glass-subcard content-panel">
+                    <div class="section-title-row">
+                      <h3>Lich su moi nhat</h3>
+                      <span class="hint">Toi da 6 muc</span>
+                    </div>
+                    <div id="transaction-list" class="list-stack"></div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </section>
+        </section>
+
+        <section id="module-rhythm" class="module-section" hidden>
+          <section class="panel glass-card rhythm-panel">
+            <div class="panel-header">
+              <div>
+                <p class="eyebrow">Nhip Song</p>
+                <h2>Lich trinh, idea va nho nho trong mot noi</h2>
+              </div>
+              <div class="module-chip-row">
+                <div class="budget-chip soft-chip">
+                  <span>Hom nay</span>
+                  <strong id="today-event-count">0 muc</strong>
+                </div>
+                <div class="budget-chip warm-chip">
+                  <span>Workspace</span>
+                  <strong id="notes-count">0 muc</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="rhythm-layout">
+              <aside class="quick-rail">
+                <form id="event-form" class="stack-form quick-form glass-subcard">
+                  <div class="quick-form-header">
+                    <div>
+                      <p class="eyebrow">Quick Add</p>
+                      <h3>Them lich moi</h3>
+                    </div>
+                    <span class="hint">Compact hon de them nhanh.</span>
+                  </div>
+
+                  <div class="compact-grid">
+                    <label class="full-span">
+                      Tieu de
+                      <input
+                        name="title"
+                        type="text"
+                        maxlength="50"
+                        placeholder="Gym, hoc tieng Anh, meeting..."
+                        required
+                      />
+                    </label>
+                    <label>
+                      Nhom
+                      <select name="tag">
+                        <option value="Focus">Focus</option>
+                        <option value="Health">Health</option>
+                        <option value="Social">Social</option>
+                        <option value="Study">Study</option>
+                      </select>
+                    </label>
+                    <label>
+                      Ngay
+                      <input name="date" type="date" required />
+                    </label>
+                    <label>
+                      Bat dau
+                      <input name="startTime" type="time" required />
+                    </label>
+                    <label>
+                      Ket thuc
+                      <input name="endTime" type="time" required />
+                    </label>
+                    <label class="full-span">
+                      Ghi chu
+                      <input
+                        name="detail"
+                        type="text"
+                        maxlength="120"
+                        placeholder="mang laptop, dat xe som..."
+                      />
+                    </label>
+                  </div>
+                  <button class="primary-button" type="submit">Them vao lich</button>
+                </form>
+
+                <form id="note-form" class="stack-form quick-form glass-subcard">
+                  <div class="quick-form-header">
+                    <div>
+                      <p class="eyebrow">Workspace</p>
+                      <h3>Them note nhanh</h3>
+                    </div>
+                    <span class="hint">Gan vao ngay de len lich luon.</span>
+                  </div>
+
+                  <div class="compact-grid">
+                    <label>
+                      Kieu block
+                      <select name="type">
+                        <option value="task">Task</option>
+                        <option value="idea">Idea</option>
+                        <option value="journal">Journal</option>
+                      </select>
+                    </label>
+                    <label>
+                      Gan vao ngay
+                      <input name="linkedDate" type="date" />
+                    </label>
+                    <label class="full-span">
+                      Tieu de
+                      <input
+                        name="title"
+                        type="text"
+                        maxlength="50"
+                        placeholder="Y tuong content, viec can xong..."
+                        required
+                      />
+                    </label>
+                    <label class="full-span">
+                      Noi dung
+                      <textarea
+                        name="content"
+                        rows="4"
+                        maxlength="260"
+                        placeholder="Ghi nhanh de khoi quen..."
+                        required
+                      ></textarea>
+                    </label>
+                  </div>
+                  <button class="primary-button" type="submit">Luu block</button>
+                </form>
+              </aside>
+
+              <div class="stack-panel">
+                <div class="calendar-shell glass-subcard">
+                  <div class="calendar-toolbar">
+                    <div>
+                      <h3 id="calendar-month-label">Thang 3, 2026</h3>
+                      <p id="calendar-range-label" class="hint">
+                        Bam vao mot ngay de xem chi tiet hon.
+                      </p>
+                    </div>
+
+                    <div class="calendar-toolbar-right">
+                      <div class="view-switch" role="tablist" aria-label="Chon view lich">
+                        <button
+                          class="view-switch-button is-active"
+                          data-action="switch-view"
+                          data-view="month"
+                          type="button"
+                        >
+                          Thang
+                        </button>
+                        <button
+                          class="view-switch-button"
+                          data-action="switch-view"
+                          data-view="week"
+                          type="button"
+                        >
+                          Tuan
+                        </button>
+                        <button
+                          class="view-switch-button"
+                          data-action="switch-view"
+                          data-view="day"
+                          type="button"
+                        >
+                          Ngay
+                        </button>
+                      </div>
+
+                      <div class="calendar-actions">
+                        <button id="calendar-prev" class="ghost-button calendar-nav" type="button">
+                          Truoc
+                        </button>
+                        <button id="calendar-today" class="ghost-button calendar-nav" type="button">
+                          Hom nay
+                        </button>
+                        <button id="calendar-next" class="ghost-button calendar-nav" type="button">
+                          Sau
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div id="calendar-body" class="calendar-body"></div>
+                </div>
+
+                <div class="glass-subcard content-panel">
+                  <div class="section-title-row">
+                    <h3>Kho ghi chu</h3>
+                    <span class="hint">Note, task va idea se song cung lich.</span>
+                  </div>
+                  <div id="notes-grid" class="notes-grid"></div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <div id="day-modal" class="modal-backdrop" hidden>
+      <div
+        class="modal-card glass-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="day-modal-title"
+      >
+        <button
+          id="day-modal-close"
+          class="ghost-button modal-close"
+          type="button"
+          data-action="close-day-modal"
+        >
+          Dong
+        </button>
+
+        <div class="modal-header">
+          <div>
+            <p class="eyebrow">Chi tiet theo ngay</p>
+            <h3 id="day-modal-title">Ngay duoc chon</h3>
+            <p id="day-modal-subtitle" class="hint">0 lich | 0 note</p>
+          </div>
+        </div>
+
+        <div id="day-modal-highlights" class="highlight-strip"></div>
+
+        <div class="modal-sections">
+          <section class="glass-subcard content-panel">
+            <div class="section-title-row">
+              <h3>Su kien</h3>
+              <span class="hint">Sua truc tiep trong popup</span>
+            </div>
+            <div id="day-modal-events" class="editor-stack"></div>
+            <div id="day-modal-event-create"></div>
+          </section>
+
+          <section class="glass-subcard content-panel">
+            <div class="section-title-row">
+              <h3>Notes da gan ngay</h3>
+              <span class="hint">Task, idea, journal</span>
+            </div>
+            <div id="day-modal-notes" class="editor-stack"></div>
+            <div id="day-modal-note-create"></div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <div id="money-modal" class="modal-backdrop" hidden>
+      <div
+        class="modal-card glass-card money-modal-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="money-modal-title"
+      >
+        <button
+          id="money-modal-close"
+          class="ghost-button modal-close"
+          type="button"
+          data-action="close-money-modal"
+        >
+          Dong
+        </button>
+
+        <div class="modal-header">
+          <div>
+            <p class="eyebrow">Money Detail</p>
+            <h3 id="money-modal-title">Chi tiet tai san</h3>
+            <p id="money-modal-subtitle" class="hint">
+              Quan ly lich su, nap them va cap nhat gia ngay tai day.
+            </p>
+          </div>
+        </div>
+
+        <div id="money-modal-content" class="modal-sections"></div>
+      </div>
+    </div>
+
+    <template id="empty-state-template">
+      <div class="empty-state">
+        <p>Chua co du lieu. Ban co the them muc dau tien ngay bay gio.</p>
+      </div>
+    </template>
+
+    <input id="import-data-file" type="file" accept="application/json" hidden />
+
+    <script src="./app.js"></script>
+  </body>
+</html>

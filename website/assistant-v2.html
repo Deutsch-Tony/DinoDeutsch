@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KI Tutor — DinoDeutsch</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0f0f0f;--s1:#1a1a1a;--s2:#222;--s3:#2a2a2a;
+  --b1:rgba(255,255,255,0.07);--b2:rgba(255,255,255,0.13);--b3:rgba(255,255,255,0.2);
+  --t1:#f0ede8;--t2:#888;--t3:#4a4a4a;
+  --gold:#d4a843;--gold-bg:rgba(212,168,67,0.1);--gold-bd:rgba(212,168,67,0.28);
+  --green:#4caf7d;--green-bg:rgba(76,175,125,0.1);--green-bd:rgba(76,175,125,0.25);
+  --red:#e05c5c;--red-bg:rgba(224,92,92,0.09);--red-bd:rgba(224,92,92,0.25);
+  --blue:#5b8dee;--blue-bg:rgba(91,141,238,0.1);--blue-bd:rgba(91,141,238,0.25);
+  --r:10px;--rs:6px;
+  --font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
+}
+html,body{height:100%;}
+body{font-family:var(--font);background:var(--bg);color:var(--t1);display:flex;flex-direction:column;height:100vh;overflow:hidden;font-size:15px;}
+
+/* NAV */
+nav{display:flex;align-items:center;gap:4px;padding:0 20px;height:52px;border-bottom:1px solid var(--b1);flex-shrink:0;}
+.logo{font-weight:600;font-size:14px;color:var(--t1);text-decoration:none;margin-right:8px;display:flex;align-items:center;gap:8px;}
+.logo-badge{background:var(--gold);color:#000;font-size:11px;font-weight:700;width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;}
+.nl{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:var(--rs);font-size:13px;color:var(--t2);text-decoration:none;transition:all .15s;}
+.nl:hover{color:var(--t1);background:rgba(255,255,255,0.05);}
+.nl.on{color:var(--gold);background:var(--gold-bg);}
+.nav-l{font-size:11px;font-weight:600;opacity:.45;}
+.nav-r{margin-left:auto;display:flex;gap:8px;}
+.nbtn{padding:5px 12px;border-radius:var(--rs);font-size:13px;font-family:var(--font);cursor:pointer;border:1px solid var(--b2);background:none;color:var(--t2);transition:all .15s;}
+.nbtn:hover{color:var(--t1);background:rgba(255,255,255,0.05);}
+.nbtn.p{background:var(--gold);color:#000;border-color:var(--gold);font-weight:500;}
+.nbtn.p:hover{opacity:.85;}
+
+/* LAYOUT */
+.app{display:flex;flex:1;overflow:hidden;}
+
+/* SIDEBAR */
+.sb{width:244px;border-right:1px solid var(--b1);display:flex;flex-direction:column;padding:14px 10px;gap:2px;flex-shrink:0;overflow-y:auto;}
+.sb-lbl{font-size:10px;font-weight:600;letter-spacing:.8px;color:var(--t3);text-transform:uppercase;padding:10px 8px 5px;}
+.sb-btn{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--rs);font-size:13px;color:var(--t2);cursor:pointer;border:none;background:none;font-family:var(--font);width:100%;text-align:left;transition:all .15s;}
+.sb-btn:hover{background:rgba(255,255,255,0.05);color:var(--t1);}
+.sb-btn.on{background:var(--gold-bg);color:var(--gold);border:1px solid var(--gold-bd);}
+.sb-icon{font-size:14px;width:18px;text-align:center;flex-shrink:0;}
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:0 4px;}
+.mode-btn{padding:8px 6px;border-radius:var(--rs);font-size:11.5px;color:var(--t2);background:var(--s1);border:1px solid var(--b1);cursor:pointer;font-family:var(--font);text-align:center;line-height:1.3;transition:all .15s;}
+.mode-btn:hover{border-color:var(--gold-bd);color:var(--t1);}
+.mode-btn.on{background:var(--gold-bg);border-color:var(--gold-bd);color:var(--gold);}
+.mode-icon{font-size:16px;display:block;margin-bottom:3px;}
+.qp-btn{display:block;width:100%;text-align:left;padding:7px 10px;margin-bottom:4px;border-radius:var(--rs);font-size:12px;color:var(--t2);background:var(--s1);border:1px solid var(--b1);cursor:pointer;font-family:var(--font);line-height:1.4;transition:all .15s;}
+.qp-btn:hover{border-color:var(--gold-bd);color:var(--t1);background:var(--s2);}
+.sb-bot{margin-top:auto;padding-top:12px;border-top:1px solid var(--b1);}
+.mem-card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);padding:12px;}
+.mc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.mc-name{font-size:12px;font-weight:500;}
+.mc-badge{font-size:10px;font-family:var(--mono);background:var(--gold-bg);color:var(--gold);border:1px solid var(--gold-bd);padding:2px 7px;border-radius:4px;}
+.xpw{height:4px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden;margin-bottom:6px;}
+.xpb{height:100%;background:var(--gold);border-radius:2px;transition:width .6s cubic-bezier(.34,1.56,.64,1);}
+.xp-sub{font-size:11px;color:var(--t3);}
+.mtags{display:flex;flex-wrap:wrap;gap:3px;margin-top:8px;}
+.mtag{font-size:10px;padding:2px 6px;border-radius:4px;font-family:var(--mono);}
+.mtag.w{background:var(--red-bg);color:#e08c8c;border:1px solid var(--red-bd);}
+.mtag.s{background:var(--green-bg);color:var(--green);border:1px solid var(--green-bd);}
+.mem-empty{font-size:11px;color:var(--t3);font-style:italic;}
+
+/* CHAT */
+.chat{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.ch{padding:14px 22px 12px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.ch-av{width:34px;height:34px;border-radius:8px;background:var(--gold-bg);border:1px solid var(--gold-bd);display:flex;align-items:center;justify-content:center;font-size:16px;}
+.ch-title{font-size:14px;font-weight:500;}
+.ch-sub{font-size:12px;color:var(--t2);}
+.ch-r{margin-left:auto;display:flex;gap:5px;}
+.ic-btn{width:30px;height:30px;border-radius:var(--rs);border:1px solid var(--b1);background:none;color:var(--t2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .15s;}
+.ic-btn:hover{background:rgba(255,255,255,0.06);color:var(--t1);}
+
+/* BANNER */
+.bnr{margin:0 22px 12px;border-radius:var(--rs);padding:9px 13px;font-size:12.5px;display:flex;align-items:center;gap:8px;}
+.bnr.warn{background:var(--red-bg);border:1px solid var(--red-bd);color:#e08c8c;}
+.bnr.info{background:var(--gold-bg);border:1px solid var(--gold-bd);color:var(--gold);}
+.bnr code{font-family:var(--mono);font-size:11px;background:rgba(255,255,255,0.07);padding:1px 5px;border-radius:3px;color:var(--gold);}
+.bnr.h{display:none;}
+
+/* MODE INDICATOR */
+.mode-bar{padding:8px 22px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:8px;flex-shrink:0;background:var(--s1);}
+.mode-pill{font-size:11.5px;font-weight:500;padding:3px 10px;border-radius:12px;border:1px solid;display:flex;align-items:center;gap:5px;}
+.mode-pill.chat{color:var(--gold);border-color:var(--gold-bd);background:var(--gold-bg);}
+.mode-pill.test{color:var(--blue);border-color:var(--blue-bd);background:var(--blue-bg);}
+.mode-pill.write{color:var(--green);border-color:var(--green-bd);background:var(--green-bg);}
+.mode-pill.role{color:#c084fc;border-color:rgba(192,132,252,0.3);background:rgba(192,132,252,0.08);}
+.mode-pill.daily{color:var(--red);border-color:var(--red-bd);background:var(--red-bg);}
+.mode-change{margin-left:auto;font-size:11.5px;color:var(--t2);cursor:pointer;border:none;background:none;font-family:var(--font);}
+.mode-change:hover{color:var(--t1);}
+
+/* MESSAGES */
+.msgs{flex:1;overflow-y:auto;padding:18px 22px;display:flex;flex-direction:column;gap:13px;scroll-behavior:smooth;}
+.msgs::-webkit-scrollbar{width:3px;}
+.msgs::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:2px;}
+.msg{display:flex;gap:9px;max-width:800px;animation:fu .2s ease;}
+@keyframes fu{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.msg.u{align-self:flex-end;flex-direction:row-reverse;}
+.av{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0;margin-top:2px;}
+.av.ai{background:var(--gold-bg);border:1px solid var(--gold-bd);color:var(--gold);font-size:10px;}
+.av.me{background:var(--s2);border:1px solid var(--b1);color:var(--t2);}
+.bub{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);padding:10px 14px;font-size:13.5px;line-height:1.68;max-width:100%;}
+.msg.u .bub{background:var(--gold-bg);border-color:var(--gold-bd);}
+.bub strong{font-weight:500;color:var(--gold);}
+.bub code{font-family:var(--mono);font-size:12px;background:rgba(255,255,255,0.07);padding:1px 5px;border-radius:3px;}
+.bub table{border-collapse:collapse;width:100%;margin:8px 0;font-size:12.5px;}
+.bub th{background:rgba(255,255,255,0.05);font-weight:500;padding:6px 10px;border:1px solid var(--b2);text-align:left;}
+.bub td{padding:6px 10px;border:1px solid var(--b1);}
+.bub hr{border:none;border-top:1px solid var(--b1);margin:10px 0;}
+.chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;}
+.chip{font-size:11px;font-family:var(--mono);padding:2px 8px;border-radius:4px;display:inline-flex;align-items:center;gap:4px;animation:fu .3s ease;}
+.chip.xp{background:var(--green-bg);color:var(--green);border:1px solid var(--green-bd);}
+.chip.mem{background:var(--gold-bg);color:var(--gold);border:1px solid var(--gold-bd);}
+.chip.mode{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-bd);}
+
+/* TYPING */
+.typing{display:flex;gap:4px;align-items:center;padding:13px 14px;}
+.typing span{width:5px;height:5px;background:var(--t3);border-radius:50%;animation:bl 1.2s infinite;}
+.typing span:nth-child(2){animation-delay:.2s;}
+.typing span:nth-child(3){animation-delay:.4s;}
+@keyframes bl{0%,80%,100%{transform:scale(1);opacity:.4}40%{transform:scale(1.3);opacity:1}}
+
+/* INPUT */
+.inp-area{padding:12px 22px 16px;border-top:1px solid var(--b1);flex-shrink:0;}
+.inp-box{display:flex;gap:7px;align-items:flex-end;background:var(--s1);border:1px solid var(--b2);border-radius:var(--r);padding:9px 9px 9px 14px;transition:border-color .15s;}
+.inp-box:focus-within{border-color:var(--gold-bd);}
+.ta{flex:1;background:none;border:none;outline:none;color:var(--t1);font-family:var(--font);font-size:13.5px;line-height:1.5;resize:none;height:22px;max-height:120px;overflow-y:auto;}
+.ta::placeholder{color:var(--t3);}
+.send{width:30px;height:30px;border-radius:7px;background:var(--gold);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .15s,transform .1s;color:#000;}
+.send:hover{opacity:.82;}
+.send:active{transform:scale(.93);}
+.send:disabled{opacity:.28;cursor:not-allowed;}
+.send svg{width:14px;height:14px;}
+.inp-hint{font-size:11px;color:var(--t3);margin-top:6px;text-align:center;}
+
+/* SCORE CARD */
+.score-card{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);padding:14px;margin-top:10px;}
+.sc-row{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+.sc-label{font-size:12px;color:var(--t2);min-width:90px;}
+.sc-bar{flex:1;height:5px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;}
+.sc-fill{height:100%;border-radius:3px;background:var(--gold);}
+.sc-val{font-size:12px;font-family:var(--mono);color:var(--gold);min-width:30px;text-align:right;}
+.sc-total{font-size:16px;font-weight:500;color:var(--gold);text-align:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--b1);}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo"><span class="logo-badge">DS</span>DinoDeutsch</a>
+  <a href="/grammar"   class="nl"><span class="nav-l">G</span>Grammatik</a>
+  <a href="/vocab"     class="nl"><span class="nav-l">W</span>Wortschatz</a>
+  <a href="/listening" class="nl"><span class="nav-l">H</span>Hören</a>
+  <a href="/reading"   class="nl"><span class="nav-l">L</span>Lesen</a>
+  <a href="/test"      class="nl"><span class="nav-l">T</span>Tests</a>
+  <a href="/assistant" class="nl on"><span class="nav-l">A</span>KI Tutor</a>
+  <div class="nav-r">
+    <button class="nbtn" id="authBtn">Đăng nhập</button>
+    <button class="nbtn p" id="regBtn">Đăng ký</button>
+  </div>
+</nav>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sb">
+    <div class="sb-lbl">Chế độ học</div>
+    <div class="mode-grid">
+      <button class="mode-btn on" onclick="setMode(this,'chat')" title="Hỏi đáp tự do">
+        <span class="mode-icon">💬</span>Hỏi đáp
+      </button>
+      <button class="mode-btn" onclick="setMode(this,'placement')" title="Xác định cấp độ">
+        <span class="mode-icon">🎯</span>Test cấp độ
+      </button>
+      <button class="mode-btn" onclick="setMode(this,'writing')" title="Nộp bài để chấm">
+        <span class="mode-icon">📝</span>Nộp bài viết
+      </button>
+      <button class="mode-btn" onclick="setMode(this,'roleplay')" title="Roleplay tình huống">
+        <span class="mode-icon">🎭</span>Roleplay
+      </button>
+      <button class="mode-btn" onclick="setMode(this,'daily')" title="Thử thách 5 phút">
+        <span class="mode-icon">🎮</span>Daily challenge
+      </button>
+      <button class="mode-btn" onclick="setMode(this,'compare')" title="So sánh 3 ngôn ngữ">
+        <span class="mode-icon">🔀</span>So sánh
+      </button>
+    </div>
+
+    <div class="sb-lbl" style="margin-top:6px">Chủ đề</div>
+    <button class="sb-btn on" onclick="setTopic(this,'Ngữ pháp')"><span class="sb-icon">📐</span>Ngữ pháp</button>
+    <button class="sb-btn" onclick="setTopic(this,'Từ vựng')"><span class="sb-icon">📚</span>Từ vựng</button>
+    <button class="sb-btn" onclick="setTopic(this,'Hội thoại')"><span class="sb-icon">🗣️</span>Hội thoại</button>
+    <button class="sb-btn" onclick="setTopic(this,'Luyện viết')"><span class="sb-icon">✍️</span>Luyện viết</button>
+    <button class="sb-btn" onclick="setTopic(this,'Văn hóa Đức')"><span class="sb-icon">🌍</span>Văn hóa Đức</button>
+
+    <div class="sb-lbl" style="margin-top:6px">Gợi ý nhanh</div>
+    <div style="padding:0 3px">
+      <button class="qp-btn" onclick="sendQ('Giải thích 4 cách (Kasus) trong tiếng Đức cho tôi')">📐 4 cách (Kasus)?</button>
+      <button class="qp-btn" onclick="sendQ('Dạy tôi 8 từ vựng về đồ ăn bằng tiếng Đức')">🍜 Từ vựng đồ ăn</button>
+      <button class="qp-btn" onclick="sendQ('sein vs haben khi chia Perfekt khác gì?')">⚡ sein vs haben</button>
+      <button class="qp-btn" onclick="sendQ('Cho tôi xem báo cáo cuối buổi học hôm nay')">📊 Báo cáo buổi học</button>
+      <button class="qp-btn" onclick="sendQ('Nhắc tôi lịch ôn từ theo spaced repetition')">🔁 Lịch ôn từ</button>
+    </div>
+
+    <div class="sb-bot">
+      <div class="mem-card">
+        <div class="mc-top">
+          <span class="mc-name">Hồ sơ học</span>
+          <span class="mc-badge" id="lvlBadge">A1</span>
+        </div>
+        <div class="xpw"><div class="xpb" id="xpBar" style="width:0%"></div></div>
+        <div class="xp-sub" id="xpSub">Đăng nhập để lưu tiến độ</div>
+        <div class="mtags" id="mTags"><span class="mem-empty">Chưa có dữ liệu</span></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- CHAT AREA -->
+  <div class="chat">
+    <div class="ch">
+      <div class="ch-av">🤖</div>
+      <div>
+        <div class="ch-title">KI Tutor — Tiếng Đức</div>
+        <div class="ch-sub" id="topicLbl">Ngữ pháp · A1–B2</div>
+      </div>
+      <div class="ch-r">
+        <button class="ic-btn" title="Báo cáo buổi học" onclick="sendQ('Cho tôi xem báo cáo tổng kết buổi học hôm nay')">📊</button>
+        <button class="ic-btn" title="Xóa hội thoại" onclick="clearChat()">🗑</button>
+      </div>
+    </div>
+
+    <div class="mode-bar" id="modeBar">
+      <div class="mode-pill chat" id="modePill">💬 Hỏi đáp tự do</div>
+      <button class="mode-change" onclick="resetMode()">Đổi chế độ</button>
+    </div>
+
+    <div class="bnr warn" id="cfgBnr">
+      ⚠️ Chưa cấu hình — thay <code>WORKER_URL</code> bằng URL Cloudflare Worker của bạn.
+    </div>
+    <div class="bnr info h" id="memBnr">🧠 Memory đang hoạt động — bot nhớ tiến độ của bạn!</div>
+
+    <div class="msgs" id="msgs">
+      <div class="msg">
+        <div class="av ai">KI</div>
+        <div class="bub">
+          Hallo! Tôi là <strong>KI Tutor</strong> của DinoDeutsch 👋<br><br>
+          Chọn chế độ học ở sidebar để bắt đầu:<br><br>
+          <strong>🎯 Test cấp độ</strong> — xác định A1/A2/B1... của bạn<br>
+          <strong>📝 Nộp bài viết</strong> — nhận điểm + nhận xét chi tiết<br>
+          <strong>🎭 Roleplay</strong> — luyện hội thoại tình huống thực<br>
+          <strong>🎮 Daily challenge</strong> — thử thách 5 phút mỗi ngày<br>
+          <strong>🔀 So sánh</strong> — Đức vs Anh vs Nhật cùng lúc<br>
+          <strong>💬 Hỏi đáp</strong> — hỏi bất cứ điều gì về tiếng Đức<br><br>
+          <span style="color:var(--t2);font-size:12.5px">💡 Đăng nhập để bot nhớ tiến độ giữa các phiên học</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="inp-area">
+      <div class="inp-box">
+        <textarea class="ta" id="ta" placeholder="Hỏi gì về tiếng Đức đi..." rows="1"
+          onkeydown="onKey(event)" oninput="resize(this)"></textarea>
+        <button class="send" id="sendBtn" onclick="send()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+        </button>
+      </div>
+      <div class="inp-hint">Enter gửi · Shift+Enter xuống dòng</div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+// ══════════════════════════════════════
+//  ⚙️ CẤU HÌNH — đổi 3 giá trị này
+// ══════════════════════════════════════
+const WORKER_URL   = 'https://YOUR_WORKER.YOUR_SUBDOMAIN.workers.dev';
+const SB_URL       = 'YOUR_SUPABASE_URL';
+const SB_KEY       = 'YOUR_SUPABASE_ANON_KEY';
+// ══════════════════════════════════════
+
+// Mode configs
+const MODES = {
+  chat:      { label:'💬 Hỏi đáp tự do',          cls:'chat',  ph:'Hỏi gì về tiếng Đức đi...',                        sys:'Chế độ hỏi đáp tự do. Trả lời theo phong cách giáo viên thân thiện.' },
+  placement: { label:'🎯 Placement Test',           cls:'test',  ph:'Nhập "bắt đầu" để làm placement test...',          sys:'Chạy placement test 5 câu từ A1→C1 để xác định cấp độ. Hỏi từng câu, chờ trả lời rồi mới hỏi câu tiếp. Kết thúc tổng kết điểm + cấp độ phù hợp.' },
+  writing:   { label:'📝 Chấm bài viết',            cls:'write', ph:'Paste bài viết của bạn vào đây...',                sys:'Chế độ chấm bài. Học viên paste bài viết. Chấm điểm theo rubric: Ngữ pháp/3, Từ vựng/3, Mạch lạc/2, Phong cách/2. Hiển thị điểm số dạng thanh bar, điểm mạnh, lỗi cần sửa (tối đa 3), phiên bản cải thiện.' },
+  roleplay:  { label:'🎭 Roleplay tình huống',      cls:'role',  ph:'Chọn tình huống: nhà hàng, sân bay, phỏng vấn...', sys:'Chế độ roleplay. Hỏi học viên muốn tình huống nào (nhà hàng/sân bay/phỏng vấn/bệnh viện/thuê nhà/mua sắm), sau đó đóng vai trực tiếp bằng tiếng Đức. Sửa lỗi sau mỗi lượt, tổng kết cuối.' },
+  daily:     { label:'🎮 Daily Challenge',          cls:'daily', ph:'Nhập "bắt đầu" để nhận thử thách hôm nay...',      sys:'Chế độ daily challenge 5 phút. Tạo 1 trong 5 dạng: dịch nhanh/điền từ/kể chuyện/roleplay ngắn/sửa lỗi. Chấm điểm công bố XP.' },
+  compare:   { label:'🔀 So sánh 3 ngôn ngữ',      cls:'chat',  ph:'Nhập chủ đề muốn so sánh (vd: cách đếm số)...',    sys:'Chế độ so sánh. Tạo bảng so sánh tiếng Đức vs Anh vs Nhật cho chủ đề học viên yêu cầu. Luôn dùng bảng markdown 4 cột: Chủ đề | Đức | Anh | Nhật.' },
+};
+
+const SYSTEM_BASE = `Bạn là KI Tutor của DinoDeutsch — chuyên gia dạy tiếng Đức cho người Việt.
+PHONG CÁCH: Ấm áp, kiên nhẫn, vui vẻ. Dạy bằng tiếng Việt, dùng tiếng Đức cho ví dụ.
+QUY TẮC: LUÔN ghi der/die/das kèm danh từ tiếng Đức. Tối đa 280 từ/câu trả lời.
+SAU MỖI REPLY, thêm tag ẩn: <!--MEMORY:{"weak":[],"strong":[],"errors":[],"words":0,"notes":""}-->`;
+
+// State
+let history=[], currentMode='chat', currentTopic='Ngữ pháp', busy=false;
+let xp=0, todayXP=0, sbClient=null, user=null, sbToken=null;
+
+// Configured?
+const configured = !WORKER_URL.includes('YOUR_WORKER');
+if (configured) document.getElementById('cfgBnr').classList.add('h');
+
+// Supabase init
+try {
+  sbClient = window.supabase.createClient(SB_URL, SB_KEY);
+  sbClient.auth.getSession().then(({data:{session}})=>{ if(session) onLogin(session); });
+  sbClient.auth.onAuthStateChange((_,s)=>{ if(s) onLogin(s); else onLogout(); });
+} catch(e){}
+
+async function onLogin(s) {
+  user=s.user; sbToken=s.access_token;
+  document.getElementById('authBtn').textContent='Đăng xuất';
+  document.getElementById('authBtn').onclick=()=>sbClient.auth.signOut();
+  document.getElementById('regBtn').classList.add('h');
+  document.getElementById('memBnr').classList.remove('h');
+  await loadMem();
+}
+function onLogout() {
+  user=null; sbToken=null;
+  document.getElementById('authBtn').textContent='Đăng nhập';
+  document.getElementById('regBtn').classList.remove('h');
+  document.getElementById('memBnr').classList.add('h');
+}
+async function loadMem() {
+  if(!sbClient||!user) return;
+  const {data}=await sbClient.from('user_memory').select('*').eq('user_id',user.id).single();
+  if(!data) return;
+  document.getElementById('lvlBadge').textContent=data.level||'A1';
+  const pct=Math.min((data.xp/500)*100,100);
+  document.getElementById('xpBar').style.width=pct+'%';
+  document.getElementById('xpSub').textContent=`${data.xp} XP · ${data.learned_words} từ đã học`;
+  const tags=document.getElementById('mTags');
+  const w=(data.weak_topics||[]).map(t=>`<span class="mtag w">⚠ ${t}</span>`).join('');
+  const s=(data.strong_topics||[]).map(t=>`<span class="mtag s">✓ ${t}</span>`).join('');
+  tags.innerHTML=(w+s)||'<span class="mem-empty">Chưa có dữ liệu</span>';
+}
+
+// Mode switching
+function setMode(btn, mode) {
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  currentMode = mode;
+  const m = MODES[mode];
+  const pill = document.getElementById('modePill');
+  pill.textContent = m.label;
+  pill.className = `mode-pill ${m.cls}`;
+  document.getElementById('ta').placeholder = m.ph;
+
+  // Auto-send trigger message for some modes
+  if (mode==='placement') appendMsg('ai','🎯 <strong>Placement Test</strong> — tôi sẽ hỏi 5 câu từ A1 đến C1 để xác định cấp độ của bạn.<br>Gõ <strong>"bắt đầu"</strong> khi sẵn sàng!');
+  if (mode==='daily') appendMsg('ai','🎮 <strong>Daily Challenge</strong> — thử thách 5 phút!\nGõ <strong>"bắt đầu"</strong> để nhận nhiệm vụ hôm nay.');
+  if (mode==='roleplay') appendMsg('ai','🎭 <strong>Roleplay</strong> — bạn muốn luyện tình huống nào?<br><br>🍽️ Nhà hàng &nbsp;·&nbsp; ✈️ Sân bay &nbsp;·&nbsp; 💼 Phỏng vấn<br>🏥 Bệnh viện &nbsp;·&nbsp; 🏠 Thuê nhà &nbsp;·&nbsp; 🛒 Mua sắm');
+  if (mode==='writing') appendMsg('ai','📝 <strong>Chấm bài viết</strong> — paste bài tiếng Đức của bạn vào, tôi sẽ chấm điểm chi tiết theo rubric!');
+}
+function resetMode() { setMode(document.querySelector('.mode-grid .mode-btn'), 'chat'); }
+
+function setTopic(btn, t) {
+  document.querySelectorAll('.sb-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  currentTopic=t;
+  document.getElementById('topicLbl').textContent=`${t} · A1–B2`;
+}
+
+// Helpers
+function resize(el) { el.style.height='22px'; el.style.height=Math.min(el.scrollHeight,120)+'px'; }
+function onKey(e) { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();} }
+function md(t) {
+  return t
+    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    .replace(/`(.*?)`/g,'<code>$1</code>')
+    .replace(/\n/g,'<br>');
+}
+
+function appendMsg(role, html, chips='') {
+  const wrap=document.getElementById('msgs');
+  const div=document.createElement('div');
+  div.className='msg'+(role==='user'?' u':'');
+  const av=role==='user'?`<div class="av me">🙂</div>`:`<div class="av ai">KI</div>`;
+  div.innerHTML=`${av}<div class="bub">${html}${chips?`<div class="chips">${chips}</div>`:''}</div>`;
+  wrap.appendChild(div);
+  wrap.scrollTop=wrap.scrollHeight;
+}
+function showTyping() {
+  const wrap=document.getElementById('msgs'), div=document.createElement('div');
+  div.className='msg'; div.id='typo';
+  div.innerHTML=`<div class="av ai">KI</div><div class="bub"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  wrap.appendChild(div); wrap.scrollTop=wrap.scrollHeight;
+}
+function rmTyping() { document.getElementById('typo')?.remove(); }
+function clearChat() {
+  if(!confirm('Xóa toàn bộ hội thoại?')) return;
+  history=[];
+  document.getElementById('msgs').innerHTML='';
+  appendMsg('ai','Đã xóa! Bắt đầu lại nhé 🙂');
+}
+
+// SEND
+async function send() {
+  if(busy) return;
+  const ta=document.getElementById('ta');
+  const text=ta.value.trim();
+  if(!text) return;
+  ta.value=''; ta.style.height='22px';
+  document.getElementById('sendBtn').disabled=true;
+  busy=true;
+
+  appendMsg('user', md(text));
+  const modeCtx = MODES[currentMode]?.sys || '';
+  history.push({role:'user', content:`[Chủ đề: ${currentTopic}][Chế độ: ${currentMode}] ${text}`});
+  showTyping();
+
+  try {
+    if(!configured) throw new Error('WORKER_URL chưa được cấu hình.');
+    const res=await fetch(WORKER_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        messages: history,
+        topic: currentTopic,
+        modeContext: modeCtx,
+        userId: user?.id||null,
+        supabaseToken: sbToken||null,
+      })
+    });
+    if(!res.ok) throw new Error(`Lỗi server ${res.status}`);
+    const data=await res.json();
+    rmTyping();
+
+    let reply=data.reply||'Xin lỗi, có lỗi xảy ra.';
+    history.push({role:'assistant', content:reply});
+
+    // Chips
+    let chips=`<span class="chip xp">+10 XP</span>`;
+    chips+=`<span class="chip mode">${MODES[currentMode]?.label}</span>`;
+    if(data.memoryUpdate&&user) {
+      chips+=`<span class="chip mem">🧠 Memory</span>`;
+      await loadMem();
+    }
+
+    appendMsg('ai', md(reply), chips);
+
+  } catch(err) {
+    rmTyping();
+    appendMsg('ai',`⚠️ <strong>Lỗi:</strong> ${err.message}`);
+  }
+
+  document.getElementById('sendBtn').disabled=false;
+  busy=false;
+  document.getElementById('ta').focus();
+}
+
+function sendQ(t) { document.getElementById('ta').value=t; send(); }
+</script>
+</body>
+</html>
