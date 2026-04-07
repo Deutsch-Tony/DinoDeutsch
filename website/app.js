@@ -123,95 +123,6 @@ function getRouteLabel(route) {
   return labels[route] || "Tong quan";
 }
 
-function renderAssistantMessages(messages) {
-  if (!messages.length) {
-    return `
-      <div class="assistant-empty">
-        <strong>Chua co hoi thoai.</strong>
-        <p>Thu hoi ve Akkusativ, tu vung theo chu de, hoac nho tao mini quiz ngan.</p>
-      </div>
-    `;
-  }
-
-  return messages
-    .map((message) => {
-      const isUser = message.role === "user";
-      const roleLabel = isUser ? "Ban" : "KI Tutor";
-      return `
-        <article class="assistant-message ${isUser ? "is-user" : "is-assistant"}">
-          <div class="assistant-message-head">
-            <span class="assistant-message-role">${roleLabel}</span>
-          </div>
-          <div class="assistant-message-body">${escapeHtml(message.content).replace(/\n/g, "<br />")}</div>
-        </article>
-      `;
-    })
-    .join("");
-}
-
-function renderAssistantSuggestions() {
-  if (!assistantSuggestions.length) {
-    return `
-      <div class="assistant-suggestions assistant-suggestions-empty">
-        <span>Goi y se hien sau khi agent tra loi hoac khi ban chon prompt nhanh.</span>
-      </div>
-    `;
-  }
-
-  return `
-    <div class="assistant-suggestions" id="assistantSuggestions">
-      ${assistantSuggestions
-        .map(
-          (item) =>
-            `<button class="assistant-suggestion-chip" type="button" data-assistant-prompt="${escapeAttr(item)}">${escapeHtml(
-              item
-            )}</button>`
-        )
-        .join("")}
-    </div>
-  `;
-}
-
-function getDefaultAssistantSuggestions(sourceRoute) {
-  if (sourceRoute === "grammar") {
-    return [
-      "Giai thich nhanh diem ngu phap dang hoc kem 2 vi du de nho.",
-      "Tao 3 cau dien vao cho trong theo level hien tai.",
-      "Chi ra loi sai thuong gap cua chu diem nay."
-    ];
-  }
-
-  if (sourceRoute === "vocab") {
-    return [
-      "Cho toi 8 tu cung chu de nay kem vi du ngan.",
-      "Tao mini quiz 5 cau de on lai tu vung.",
-      "Gom cac tu nay thanh mot doan hoi thoai ngan."
-    ];
-  }
-
-  if (sourceRoute === "listening") {
-    return [
-      "Tom tat bai nghe nay bang tieng Viet ngan gon.",
-      "Chi ra 5 tu khoa can bat khi nghe lai.",
-      "Tao checklist shadowing trong 5 phut cho bai nay."
-    ];
-  }
-
-  if (sourceRoute === "reading") {
-    return [
-      "Tom tat bai doc nay theo y chinh.",
-      "Hoi toi 3 cau kiem tra doc hieu.",
-      "Rut ra cac cum tu nen ghi nho trong bai."
-    ];
-  }
-
-  return [
-    "Tao mini test theo trinh do hien tai.",
-    "Chi ra diem yeu nen on tiep.",
-    "Goi y lo trinh hoc tiep theo cho buoi nay."
-  ];
-}
-
 function getVocabId(level, topic, word) {
   return `${level}__${topic}__${word}`;
 }
@@ -239,52 +150,10 @@ function saveVocabState(state) {
   localStorage.setItem(VOCAB_STATE_KEY, JSON.stringify(state));
 }
 
-async function persistVocabState() {
-  if (!currentSession?.user || !supabase) return;
-  if (syncPromise) return syncPromise;
-
-  const state = loadVocabState();
-  const payload = Object.entries(state).map(([vocabId, entry]) => {
-    const [level, topic, word] = vocabId.split("__");
-    return {
-      user_id: currentSession.user.id,
-      vocab_id: vocabId,
-      level,
-      topic,
-      word,
-      favorite: Boolean(entry.favorite),
-      progress: entry.progress || "new",
-      updated_at: entry.updatedAt || new Date().toISOString()
-    };
-  });
-
-  syncStatus = "Dang dong bo tien do hoc...";
-  syncPromise = supabase
-    .from("user_vocab_state")
-    .upsert(payload, { onConflict: "user_id,vocab_id" })
-    .then(({ error }) => {
-      if (error) {
-        syncStatus = `Dong bo that bai: ${error.message}`;
-        return;
-      }
-      syncStatus = `Da dong bo ${payload.length} muc tien do len cloud.`;
-    })
-    .catch((error) => {
-      syncStatus = `Dong bo that bai: ${error.message}`;
-    })
-    .finally(() => {
-      syncPromise = null;
-      if (routeFromLocation() === "profile") void mountRoute();
-    });
-
-  return syncPromise;
-}
-
 function markStateChanged(mutator) {
   const state = loadVocabState();
   mutator(state);
   saveVocabState(state);
-  if (currentSession?.user) void persistVocabState();
 }
 
 function toggleFavorite(vocabId) {
@@ -316,72 +185,6 @@ function getStateSummary(vocabState) {
     learned: values.filter((item) => item.progress === "learned").length,
     review: values.filter((item) => item.progress === "review").length
   };
-}
-
-function mergeState(localState, remoteRows) {
-  const merged = { ...localState };
-
-  for (const row of remoteRows) {
-    const remoteEntry = normalizeStateEntry({
-      favorite: row.favorite,
-      progress: row.progress,
-      updatedAt: row.updated_at
-    });
-    const localEntry = normalizeStateEntry(merged[row.vocab_id]);
-
-    if (!merged[row.vocab_id]) {
-      merged[row.vocab_id] = remoteEntry;
-      continue;
-    }
-
-    const localTime = Date.parse(localEntry.updatedAt || "") || 0;
-    const remoteTime = Date.parse(remoteEntry.updatedAt || "") || 0;
-    merged[row.vocab_id] = remoteTime >= localTime ? remoteEntry : localEntry;
-  }
-
-  return merged;
-}
-
-async function loadRemoteState() {
-  if (!currentSession?.user || !supabase) return;
-
-  syncStatus = "Dang tai tien do hoc tu cloud...";
-  const { data, error } = await supabase
-    .from("user_vocab_state")
-    .select("vocab_id,favorite,progress,updated_at")
-    .eq("user_id", currentSession.user.id);
-
-  if (error) {
-    syncStatus = `Khong doc duoc tien do cloud: ${error.message}`;
-    return;
-  }
-
-  const localState = loadVocabState();
-  const mergedState = mergeState(localState, data || []);
-  saveVocabState(mergedState);
-  syncStatus = `Da nap ${Object.keys(mergedState).length} muc tien do tu cloud.`;
-  await persistVocabState();
-}
-
-async function upsertProfile(user) {
-  if (!supabase || !user) return;
-
-  const payload = {
-    id: user.id,
-    email: user.email || null,
-    full_name: user.user_metadata?.full_name || user.user_metadata?.name || null,
-    avatar_url: user.user_metadata?.avatar_url || null,
-    provider: user.app_metadata?.provider || "email"
-  };
-
-  const { data, error } = await supabase.from("profiles").upsert(payload).select("*").single();
-  if (!error) currentProfile = data;
-}
-
-async function loadProfile(user) {
-  if (!supabase || !user) return;
-  const { data, error } = await supabase.from("profiles").select("*").eq("id", user.id).single();
-  if (!error) currentProfile = data;
 }
 
 async function loadStaticJson(path) {
@@ -477,7 +280,7 @@ function updateActiveNav(route) {
 
 function updateSeo(route) {
   const seo = SEO[route] || SEO.home;
-  const baseUrl = (SUPABASE_CONFIG.redirectTo || "https://deutsch-easy.pages.dev").replace(/\/+$/, "");
+  const baseUrl = window.location.origin.replace(/\/+$/, "");
   const routeUrl = route === "home" ? `${baseUrl}/` : `${baseUrl}${routeToPath(route)}`;
   document.title = seo.title;
 
@@ -496,296 +299,6 @@ function updateSeo(route) {
   if (twitterTitleEl) twitterTitleEl.setAttribute("content", seo.title);
   if (twitterDescriptionEl) twitterDescriptionEl.setAttribute("content", seo.description);
   if (canonicalEl) canonicalEl.setAttribute("href", routeUrl);
-}
-
-function getRedirectTo() {
-  return SUPABASE_CONFIG.redirectTo || window.location.origin;
-}
-
-function rememberAuthReturnRoute(route = routeFromLocation()) {
-  sessionStorage.setItem(AUTH_RETURN_ROUTE_KEY, route);
-}
-
-function consumeAuthReturnRoute() {
-  const route = sessionStorage.getItem(AUTH_RETURN_ROUTE_KEY);
-  sessionStorage.removeItem(AUTH_RETURN_ROUTE_KEY);
-  return route || "home";
-}
-
-function markAuthExpectRedirect() {
-  sessionStorage.setItem(AUTH_EXPECT_REDIRECT_KEY, "1");
-}
-
-function consumeAuthExpectRedirect() {
-  const expected = sessionStorage.getItem(AUTH_EXPECT_REDIRECT_KEY) === "1";
-  sessionStorage.removeItem(AUTH_EXPECT_REDIRECT_KEY);
-  return expected;
-}
-
-function normalizeAuthError(message = "") {
-  const lower = message.toLowerCase();
-  if (lower.includes("invalid login credentials")) return "Email hoặc mật khẩu chưa đúng.";
-  if (lower.includes("email not confirmed")) return "Email này chưa xác nhận. Hãy kiểm tra hộp thư để xác nhận tài khoản.";
-  if (lower.includes("user already registered")) return "Email này đã có tài khoản. Bạn thử đăng nhập nhé.";
-  if (lower.includes("password should be at least")) return "Mật khẩu cần tối thiểu 6 ký tự.";
-  if (lower.includes("provider is not enabled")) return "Provider đăng nhập này chưa được bật trong Supabase.";
-  return message || "Đã có lỗi xảy ra khi đăng nhập.";
-}
-
-function setAuthStatus(message, type = "") {
-  const statusEl = document.getElementById("authStatus");
-  if (!statusEl) return;
-  statusEl.textContent = message;
-  statusEl.className = "auth-status";
-  if (type) statusEl.classList.add(`is-${type}`);
-}
-
-function syncAuthTabUI() {
-  const titleEl = document.getElementById("authTitle");
-  const descEl = document.getElementById("authDescription");
-  const submitEl = document.getElementById("authSubmit");
-  const passwordEl = document.getElementById("authPassword");
-
-  document.querySelectorAll(".auth-tab").forEach((button) => {
-    button.classList.toggle("is-active", button.dataset.authTab === authMode);
-  });
-
-  if (titleEl) {
-    titleEl.textContent =
-      authMode === "signin" ? "Dang nhap de luu nhip hoc cua ban" : "Tao tai khoan de giu tien do hoc lau dai";
-  }
-
-  if (descEl) {
-    descEl.textContent =
-      authMode === "signin"
-        ? "Ban co the dang nhap bang email hoac lien ket tai khoan Google. Phien dang nhap se do Supabase Auth quan ly."
-        : "Dang ky bang email hoac dung Google de tao tai khoan nhanh. Sau do ban co the quay lai tiep tuc hoc tren cung mot tai khoan.";
-  }
-
-  if (submitEl) {
-    submitEl.textContent = authMode === "signin" ? "Dang nhap bang email" : "Dang ky bang email";
-  }
-
-  if (passwordEl) {
-    passwordEl.setAttribute("autocomplete", authMode === "signin" ? "current-password" : "new-password");
-  }
-}
-
-function openAuthModal(mode = "signin") {
-  authMode = mode;
-  rememberAuthReturnRoute();
-  syncAuthTabUI();
-  const modal = document.getElementById("authModal");
-  if (!modal) return;
-  modal.hidden = false;
-  document.body.style.overflow = "hidden";
-  setAuthStatus("");
-  document.getElementById("authEmail")?.focus();
-}
-
-function closeAuthModal() {
-  const modal = document.getElementById("authModal");
-  if (!modal) return;
-  modal.hidden = true;
-  document.body.style.overflow = "";
-}
-
-function getUserDisplay(user) {
-  const email = user?.email || "Tai khoan";
-  const name = currentProfile?.full_name || user?.user_metadata?.full_name || user?.user_metadata?.name || email;
-  return { name, email };
-}
-
-function renderTopbarAuth() {
-  const container = document.getElementById("topbarAuth");
-  if (!container) return;
-
-  const user = currentSession?.user;
-  if (!user) {
-    container.innerHTML = `
-      <button class="auth-link auth-trigger" type="button" data-auth-mode="signin">Dang nhap</button>
-      <button class="auth-button auth-trigger" type="button" data-auth-mode="signup">Dang ky</button>
-    `;
-    bindAuthTriggers();
-    return;
-  }
-
-  const display = getUserDisplay(user);
-  const initials = (display.name || display.email).trim().charAt(0).toUpperCase();
-
-  container.innerHTML = `
-    <div class="user-chip">
-      <span class="user-avatar">${escapeAttr(initials)}</span>
-      <span>${escapeAttr(display.email)}</span>
-    </div>
-    <div class="user-actions">
-      <button type="button" id="openProfileButton">Ho so</button>
-      <button type="button" id="logoutButton">Dang xuat</button>
-    </div>
-  `;
-
-  document.getElementById("openProfileButton")?.addEventListener("click", () => {
-    goToRoute("profile");
-  });
-  document.getElementById("logoutButton")?.addEventListener("click", async () => {
-    if (!supabase) return;
-    await supabase.auth.signOut();
-  });
-}
-
-function bindAuthTriggers() {
-  document.querySelectorAll(".auth-trigger").forEach((button) => {
-    button.addEventListener("click", () => openAuthModal(button.dataset.authMode || "signin"));
-  });
-}
-
-async function handleEmailAuth(event) {
-  event.preventDefault();
-  if (!supabase) {
-    setAuthStatus("Ban chua cau hinh Supabase nen chua dung duoc dang nhap that.", "error");
-    return;
-  }
-
-  const email = document.getElementById("authEmail")?.value.trim();
-  const password = document.getElementById("authPassword")?.value || "";
-
-  if (!email || !password) {
-    setAuthStatus("Hãy nhập đủ email và mật khẩu.", "error");
-    return;
-  }
-
-  setAuthStatus("Đang xử lý...", "success");
-
-  if (authMode === "signin") {
-    markAuthExpectRedirect();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      consumeAuthExpectRedirect();
-      setAuthStatus(normalizeAuthError(error.message), "error");
-      return;
-    }
-    setAuthStatus("Đăng nhập thành công.", "success");
-    closeAuthModal();
-    return;
-  }
-
-  markAuthExpectRedirect();
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      emailRedirectTo: getRedirectTo()
-    }
-  });
-
-  if (error) {
-    consumeAuthExpectRedirect();
-    setAuthStatus(normalizeAuthError(error.message), "error");
-    return;
-  }
-
-  if (data.session?.user) {
-    setAuthStatus("Đăng ký thành công. Đang vào tài khoản của bạn...", "success");
-    closeAuthModal();
-    return;
-  }
-
-  consumeAuthExpectRedirect();
-  authMode = "signin";
-  syncAuthTabUI();
-  setAuthStatus("Đăng ký thành công. Hãy kiểm tra email để xác nhận tài khoản trước khi đăng nhập.", "success");
-}
-
-async function handleGoogleAuth() {
-  if (!supabase) {
-    setAuthStatus("Bạn chưa cấu hình Supabase nên chưa dùng được Google login.", "error");
-    return;
-  }
-
-  rememberAuthReturnRoute();
-  markAuthExpectRedirect();
-  setAuthStatus("Đang chuyển sang Google...", "success");
-  const { error } = await supabase.auth.signInWithOAuth({
-    provider: "google",
-    options: {
-      redirectTo: getRedirectTo()
-    }
-  });
-
-  if (error) {
-    consumeAuthExpectRedirect();
-    setAuthStatus(normalizeAuthError(error.message), "error");
-  }
-}
-
-async function initAuth() {
-  renderTopbarAuth();
-
-  const notice = document.getElementById("authConfigNotice");
-  if (!hasSupabaseConfig) {
-    if (notice) notice.hidden = false;
-    bindAuthTriggers();
-    return;
-  }
-
-  const sessionRes = await supabase.auth.getSession();
-  currentSession = sessionRes.data.session;
-
-  if (currentSession?.user) {
-    await upsertProfile(currentSession.user);
-    await loadProfile(currentSession.user);
-    await loadRemoteState();
-  }
-
-  renderTopbarAuth();
-
-  supabase.auth.onAuthStateChange(async (event, session) => {
-    currentSession = session;
-    currentProfile = null;
-
-    if (session?.user) {
-      await upsertProfile(session.user);
-      await loadProfile(session.user);
-      await loadRemoteState();
-      closeAuthModal();
-    } else {
-      syncStatus = "Bạn đã đăng xuất. Tiến độ hiện chỉ còn trên trình duyệt này.";
-    }
-
-    renderTopbarAuth();
-
-    if (session?.user && consumeAuthExpectRedirect()) {
-      const nextRoute = consumeAuthReturnRoute();
-      goToRoute(nextRoute === "home" ? "profile" : nextRoute);
-      return;
-    }
-
-    if (!session?.user && routeFromLocation() === "profile") {
-      goToRoute("home");
-      return;
-    }
-
-    if (event === "SIGNED_IN" || routeFromLocation() === "profile") void mountRoute();
-  });
-
-  bindAuthTriggers();
-}
-
-function initAuthUI() {
-  document.getElementById("authClose")?.addEventListener("click", closeAuthModal);
-  document.querySelector("[data-auth-close='true']")?.addEventListener("click", closeAuthModal);
-  document.getElementById("authForm")?.addEventListener("submit", handleEmailAuth);
-  document.getElementById("googleAuthButton")?.addEventListener("click", handleGoogleAuth);
-
-  document.querySelectorAll(".auth-tab").forEach((button) => {
-    button.addEventListener("click", () => {
-      authMode = button.dataset.authTab || "signin";
-      syncAuthTabUI();
-      setAuthStatus("");
-    });
-  });
-
-  syncAuthTabUI();
 }
 
 function renderHero({ eyebrow, title, description, sideTitle, sideStats = [] }) {
@@ -900,17 +413,17 @@ async function renderHome() {
     </section>
     <section class="section">
       <div class="section-head">
-        <p class="eyebrow">Tai khoan</p>
-        <h2>Dang nhap de luu tien do hoc va quay lai dung nhip dang theo</h2>
+        <p class="eyebrow">Assistant moi</p>
+        <h2>Tro ly hoc tap nay dang chay rieng tai /assistant, khong can dang nhap hay backend cu</h2>
       </div>
       ${renderCompactCards(
         [
-          { title: "Email", text: "Dang nhap va dang ky truc tiep bang email + mat khau." },
-          { title: "Google", text: "Lien ket nhanh bang tai khoan Google qua Supabase Auth." },
-          { title: "Cloud sync", text: "Favorite, da hoc va can on se duoc day len database khi ban dang nhap." },
-          { title: "Ho so", text: "Co trang ho so rieng de xem tai khoan, muc sync va thong ke hoc tap." }
+          { title: "Local-first", text: "Assistant moi doc du lieu grammar, vocab va listening ngay trong website." },
+          { title: "Khong dang nhap", text: "Tam thoi bo toan bo flow email, Google va Supabase de build lai sach hon." },
+          { title: "Assistant page", text: "Mo /assistant de chat, chon mode va prompt nhanh tu mot page rieng." },
+          { title: "De thay the", text: "Ve sau ban co the gan AI moi vao assistant page ma khong dung vao app chinh." }
         ],
-        "Auth"
+        "Assistant"
       )}
     </section>
   `;
@@ -1737,7 +1250,7 @@ async function renderVocab() {
         { title: `${meta.total}+`, text: "tu trong thu vien" },
         { title: `${meta.levels.length}`, text: "level dang co" },
         { title: "API", text: "query theo chu de" },
-        { title: currentSession?.user ? "Cloud sync" : "Local", text: currentSession?.user ? "da bat dong bo" : "nho tien do hoc" }
+        { title: "Local", text: "luu tien do tren may" }
       ]
     })}
     <section class="section">
@@ -1769,7 +1282,7 @@ async function renderVocab() {
             <span>Da hoc: ${stateSummary.learned}</span>
             <span>Can on: ${stateSummary.review}</span>
           </div>
-          <p class="sync-inline">${currentSession?.user ? syncStatus : "Dang nhap de dong bo tien do hoc len cloud."}</p>
+          <p>Tien do hien duoc luu tren trinh duyet nay. Ban co the noi database moi sau.</p>
         </div>
         <div class="table-card">
           <table class="vocab-table">
@@ -1941,406 +1454,6 @@ function setupListeningInteractions(listening) {
   renderListeningView();
 }
 
-function renderProfile() {
-  if (!currentSession?.user) {
-    return `
-      <section class="section">
-        <div class="profile-shell">
-          <div class="card profile-main">
-            <p class="eyebrow">Ho so tai khoan</p>
-            <h2>Ban chua dang nhap</h2>
-            <p>Dang nhap bang email hoac Google de luu tien do hoc len Supabase va dong bo giua cac thiet bi.</p>
-            <div class="hero-actions">
-              <button class="hero-primary auth-trigger" type="button" data-auth-mode="signin">Dang nhap</button>
-              <button class="hero-secondary auth-trigger" type="button" data-auth-mode="signup">Dang ky</button>
-            </div>
-          </div>
-        </div>
-      </section>
-    `;
-  }
-
-  const display = getUserDisplay(currentSession.user);
-  const summary = getStateSummary(loadVocabState());
-  const provider = currentProfile?.provider || currentSession.user.app_metadata?.provider || "email";
-  const initials = (display.name || display.email).trim().charAt(0).toUpperCase();
-
-  return `
-    <section class="section">
-      <div class="profile-shell">
-        <div class="card profile-main">
-          <div class="profile-head">
-            <div class="profile-avatar-large">${escapeAttr(initials)}</div>
-            <div>
-              <p class="eyebrow">Ho so tai khoan</p>
-              <h2>${escapeAttr(display.name)}</h2>
-              <p>${escapeAttr(display.email)}</p>
-            </div>
-          </div>
-          <div class="profile-grid">
-            <article class="card compact-card">
-              <p class="mini-kicker">Dang nhap bang</p>
-              <h3>${escapeAttr(provider)}</h3>
-              <p>Tai khoan hien tai dang duoc Supabase Auth quan ly.</p>
-            </article>
-            <article class="card compact-card">
-              <p class="mini-kicker">Cloud sync</p>
-              <h3>Tien do dang dong bo</h3>
-              <p>${escapeAttr(syncStatus)}</p>
-            </article>
-            <article class="card compact-card">
-              <p class="mini-kicker">Favoriten</p>
-              <h3>${summary.favorite}</h3>
-              <p>So muc ban dang giu lai de on them.</p>
-            </article>
-            <article class="card compact-card">
-              <p class="mini-kicker">Da hoc / Can on</p>
-              <h3>${summary.learned} / ${summary.review}</h3>
-              <p>Thong ke tong quan tu trang thai hoc hien tai.</p>
-            </article>
-          </div>
-          <div class="profile-actions">
-            <button class="hero-secondary" type="button" id="forceSyncButton">Dong bo lai</button>
-            <button class="hero-primary" type="button" id="profileLogoutButton">Dang xuat</button>
-          </div>
-        </div>
-      </div>
-    </section>
-  `;
-}
-
-function renderAssistantArchitecture() {
-  assistantConversation = loadAssistantConversation();
-  const messages = renderAssistantMessages(assistantConversation);
-  const sourceRoute = getAssistantSourceRoute();
-  const userDisplay = currentSession?.user ? getUserDisplay(currentSession.user) : null;
-  return `
-    <section class="section assistant-shell">
-      <div class="assistant-hero-shell">
-        <div class="assistant-hero-main">
-          <p class="eyebrow">KI Tutor</p>
-          <h1>Hoi, nhan goi y va hoc tiep ngay trong dung ngu canh bai hoc.</h1>
-          <p class="hero-copy">
-            KI Tutor hien doc route ban dang hoc, level suy ra tu giao dien, va hoc lieu that tu Grammatik, Wortschatz, Horen
-            de tra loi bam sat website hon.
-          </p>
-          <div class="assistant-context-row">
-            <span class="assistant-context-pill">Ngu canh bai hoc: ${getRouteLabel(sourceRoute)}</span>
-            <span class="assistant-context-pill">Level suy ra: ${inferAssistantLevel()}</span>
-            <span class="assistant-context-pill">${currentSession?.user ? "Da dang nhap" : "Dang hoc local"}</span>
-          </div>
-        </div>
-        <aside class="assistant-hero-side">
-          <div class="assistant-side-card">
-            <p class="mini-kicker">Agent dang doc</p>
-            <h3>Hoc lieu that cua web</h3>
-            <ul class="assistant-side-list">
-              <li>Grammar lessons A1-B2</li>
-              <li>Vocab theo level, chu de, vi du</li>
-              <li>Listening transcript, goal, checklist</li>
-            </ul>
-          </div>
-          <div class="assistant-side-card">
-            <p class="mini-kicker">Nguoi hoc</p>
-            <h3>${userDisplay ? escapeHtml(userDisplay.name) : "Khach"}</h3>
-            <p>${userDisplay ? escapeHtml(userDisplay.email) : "Dang nhap de agent nho them profile va tien do."}</p>
-          </div>
-        </aside>
-      </div>
-
-      <div class="assistant-chat-grid">
-        <article class="card assistant-chat-card assistant-chat-primary">
-          <div class="assistant-chat-head">
-            <div>
-              <p class="mini-kicker">Hoi dap</p>
-              <h2>Chat voi KI Tutor</h2>
-            </div>
-            <button class="hero-secondary assistant-clear" type="button" id="assistantClearButton">Xoa thread</button>
-          </div>
-
-          <div class="assistant-toolbar">
-            <span class="assistant-toolbar-pill">SSE streaming</span>
-            <span class="assistant-toolbar-pill">Context-aware</span>
-            <span class="assistant-toolbar-pill">Route nguon: ${getRouteLabel(sourceRoute)}</span>
-          </div>
-
-          <div class="assistant-messages" id="assistantMessages">${messages}</div>
-
-          <div class="assistant-status" id="assistantStatus">San sang. Hay hoi ngu phap, tu vung, nghe, doc hoac nho tao mini quiz.</div>
-
-          <div id="assistantSuggestionsWrap">
-            ${renderAssistantSuggestions()}
-          </div>
-
-          <form class="assistant-form" id="assistantForm">
-            <label class="auth-field assistant-field">
-              <span>Cau hoi</span>
-              <textarea
-                id="assistantInput"
-                rows="4"
-                placeholder="Vi du: Giai thich Akkusativ cho toi bang tieng Viet, kem 2 vi du A1 va 1 bai tap ngan."
-                required
-              ></textarea>
-            </label>
-            <div class="assistant-actions">
-              <button class="hero-primary" type="submit" id="assistantSendButton">Gui cau hoi</button>
-              <button class="hero-secondary" type="button" id="assistantStopButton">Dung stream</button>
-            </div>
-          </form>
-        </article>
-
-        <article class="card assistant-chat-card assistant-chat-secondary">
-          <p class="mini-kicker">Prompt nhanh</p>
-          <h2>Bat dau nhanh theo kieu hoc thuc te</h2>
-          <div class="assistant-prompt-list">
-            <button class="assistant-prompt" type="button" data-assistant-prompt="Giai thich cho toi Akkusativ bang tieng Viet de hieu, kem 2 vi du rat don gian.">
-              Giai thich ngu phap
-            </button>
-            <button class="assistant-prompt" type="button" data-assistant-prompt="Tao mini quiz 5 cau ve tu vung chu de gia dinh trinh do A1.">
-              Tao mini quiz
-            </button>
-            <button class="assistant-prompt" type="button" data-assistant-prompt="Tom tat bai nghe nay va chi ra 5 tu khoa can bat.">
-              Tom tat bai nghe
-            </button>
-            <button class="assistant-prompt" type="button" data-assistant-prompt="Sua cau tieng Duc nay va giai thich loi sai: Ich gehe in die Schule gestern.">
-              Sua cau sai
-            </button>
-          </div>
-          <div class="assistant-chat-note assistant-compact-note">
-            <strong>Flow hien tai</strong>
-            <p>SPA -> <code>/api/assistant</code> -> Python backend -> stream cau tra loi ve giao dien.</p>
-          </div>
-          <div class="assistant-mini-grid">
-            <div class="assistant-mini-card">
-              <span>${assistantConversation.length}</span>
-              <p>Tin nhan dang luu trong thread</p>
-            </div>
-            <div class="assistant-mini-card">
-              <span>3 kho</span>
-              <p>Grammar, vocab, listening dang duoc backend doc that</p>
-            </div>
-          </div>
-        </article>
-      </div>
-    </section>
-  `;
-}
-
-function updateAssistantUI() {
-  const messagesEl = document.getElementById("assistantMessages");
-  if (messagesEl) {
-    messagesEl.innerHTML = renderAssistantMessages(assistantConversation);
-    messagesEl.scrollTop = messagesEl.scrollHeight;
-  }
-
-  const suggestionsWrap = document.getElementById("assistantSuggestionsWrap");
-  if (suggestionsWrap) {
-    suggestionsWrap.innerHTML = renderAssistantSuggestions();
-  }
-}
-
-function setAssistantStatus(message, isError = false) {
-  const statusEl = document.getElementById("assistantStatus");
-  if (!statusEl) return;
-  statusEl.textContent = message;
-  statusEl.classList.toggle("is-error", Boolean(isError));
-}
-
-function appendAssistantMessage(role, content) {
-  assistantConversation.push({ role, content });
-  saveAssistantConversation();
-  updateAssistantUI();
-}
-
-function updateLastAssistantMessage(content) {
-  const last = assistantConversation[assistantConversation.length - 1];
-  if (last && last.role === "assistant") {
-    last.content = content;
-    saveAssistantConversation();
-    updateAssistantUI();
-  }
-}
-
-async function streamAssistantReply(message) {
-  if (assistantRequestController) {
-    assistantRequestController.abort();
-  }
-
-  assistantRequestController = new AbortController();
-  assistantSuggestions = [];
-  appendAssistantMessage("user", message);
-  appendAssistantMessage("assistant", "");
-  setAssistantStatus("Dang ket noi backend va stream cau tra loi...");
-
-  const payload = {
-    message,
-    route: getAssistantSourceRoute(),
-    locale: "vi-VN",
-    level: inferAssistantLevel(),
-    user: getAssistantUserContext(),
-    conversation: assistantConversation.slice(0, -1),
-    stream: true
-  };
-
-  const response = await fetch("/api/assistant", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "text/event-stream"
-    },
-    body: JSON.stringify(payload),
-    signal: assistantRequestController.signal
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(errorText || "Assistant request failed");
-  }
-
-  const contentType = response.headers.get("Content-Type") || "";
-  if (!contentType.includes("text/event-stream")) {
-    const data = await response.json();
-    updateLastAssistantMessage(data.reply || "Khong co phan hoi.");
-    setAssistantStatus("Da nhan phan hoi khong streaming.");
-    return;
-  }
-
-  const reader = response.body?.getReader();
-  if (!reader) {
-    throw new Error("Streaming body is not available");
-  }
-
-  const decoder = new TextDecoder();
-  let buffer = "";
-  let streamedReply = "";
-
-  while (true) {
-    const { value, done } = await reader.read();
-    if (done) break;
-
-    buffer += decoder.decode(value, { stream: true });
-    const frames = buffer.split("\n\n");
-    buffer = frames.pop() || "";
-
-    for (const frame of frames) {
-      const lines = frame.split("\n");
-      let eventName = "message";
-      const dataLines = [];
-
-      for (const line of lines) {
-        if (line.startsWith("event:")) eventName = line.slice(6).trim();
-        if (line.startsWith("data:")) dataLines.push(line.slice(5).trim());
-      }
-
-      if (!dataLines.length) continue;
-      let payloadData = null;
-      try {
-        payloadData = JSON.parse(dataLines.join("\n"));
-      } catch {
-        payloadData = null;
-      }
-
-      if (eventName === "token" && payloadData?.delta) {
-        streamedReply += payloadData.delta;
-        updateLastAssistantMessage(streamedReply);
-      }
-
-      if (eventName === "meta" && Array.isArray(payloadData?.suggestions)) {
-        assistantSuggestions = payloadData.suggestions.slice(0, 4);
-        updateAssistantUI();
-      }
-
-      if (eventName === "final") {
-        streamedReply = payloadData?.reply || streamedReply;
-        if (Array.isArray(payloadData?.suggestions)) {
-          assistantSuggestions = payloadData.suggestions.slice(0, 4);
-        }
-        updateLastAssistantMessage(streamedReply);
-        setAssistantStatus("Da nhan xong phan hoi tu KI Tutor.");
-      }
-
-      if (eventName === "error") {
-        throw new Error(payloadData?.error || "Streaming error");
-      }
-    }
-  }
-
-  if (!streamedReply.trim()) {
-    updateLastAssistantMessage("Tam thoi chua co noi dung tra loi.");
-  }
-}
-
-function setupAssistantInteractions() {
-  assistantConversation = loadAssistantConversation();
-  const sourceRoute = getAssistantSourceRoute();
-  if (!assistantSuggestions.length) {
-    assistantSuggestions = getDefaultAssistantSuggestions(sourceRoute);
-  }
-  updateAssistantUI();
-
-  const form = document.getElementById("assistantForm");
-  const input = document.getElementById("assistantInput");
-  const clearButton = document.getElementById("assistantClearButton");
-  const stopButton = document.getElementById("assistantStopButton");
-
-  form?.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    const message = input?.value.trim();
-    if (!message) return;
-
-    if (input) input.value = "";
-
-    try {
-      await streamAssistantReply(message);
-    } catch (error) {
-      if (error?.name === "AbortError") {
-        setAssistantStatus("Da dung stream hien tai.");
-        return;
-      }
-      setAssistantStatus("Khong goi duoc assistant backend. Kiem tra Pages env va Python service.", true);
-      updateLastAssistantMessage(
-        "Minh chua ket noi duoc toi AI backend. Hay kiem tra AGENT_BACKEND_URL, token va Python service."
-      );
-    } finally {
-      assistantRequestController = null;
-    }
-  });
-
-  clearButton?.addEventListener("click", () => {
-    assistantConversation = [];
-    assistantSuggestions = getDefaultAssistantSuggestions(sourceRoute);
-    saveAssistantConversation();
-    updateAssistantUI();
-    setAssistantStatus("Da xoa thread local.");
-  });
-
-  stopButton?.addEventListener("click", () => {
-    assistantRequestController?.abort();
-    assistantRequestController = null;
-  });
-
-  document.querySelectorAll("[data-assistant-prompt]").forEach((button) => {
-    button.addEventListener("click", () => {
-      if (!input) return;
-      input.value = button.dataset.assistantPrompt || "";
-      input.focus();
-    });
-  });
-}
-
-function setupProfileInteractions() {
-  document.getElementById("forceSyncButton")?.addEventListener("click", async () => {
-    await persistVocabState();
-    await mountRoute();
-  });
-  document.getElementById("profileLogoutButton")?.addEventListener("click", async () => {
-    if (!supabase) return;
-    await supabase.auth.signOut();
-    goToRoute("home");
-  });
-  bindAuthTriggers();
-}
-
 function setupVocabInteractions(vocabMeta) {
   const levelEl = document.getElementById("vocabLevels");
   const topicEl = document.getElementById("vocabTopics");
@@ -2453,11 +1566,9 @@ async function renderRoute(route) {
     if (route === "listening") return await renderListening();
     if (route === "reading") return await renderGenericModule("reading");
     if (route === "test") return await renderGenericModule("test");
-    if (route === "assistant") return renderAssistantArchitecture();
-    if (route === "profile") return renderProfile();
     return await renderHome();
   } catch (error) {
-    return renderLoadError("Khong tai duoc du lieu dong tu API hoac Supabase. Hay kiem tra Pages Functions, bang du lieu va cau hinh auth.");
+    return renderLoadError("Khong tai duoc du lieu hoc. Hay kiem tra Pages Functions va cac file du lieu JSON.");
   }
 }
 
@@ -2486,20 +1597,11 @@ async function mountRoute() {
     const listeningRes = await loadApi("/api/modules/listening");
     setupListeningInteractions(listeningRes.item);
   }
-
-  if (route === "profile") {
-    setupProfileInteractions();
-  }
-
-  if (route === "assistant") {
-    setupAssistantInteractions();
-  }
 }
 
 window.addEventListener("popstate", mountRoute);
 window.addEventListener("DOMContentLoaded", async () => {
-  initAuthUI();
-  await initAuth();
   await mountRoute();
 });
+
 

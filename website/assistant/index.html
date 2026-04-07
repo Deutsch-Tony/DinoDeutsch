@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Assistant | DinoDeutsch</title>
+  <meta name="description" content="Assistant local cua DinoDeutsch doc truc tiep grammar, vocab va listening de goi y bai hoc va mini quiz." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assistant/styles.css?v=20260407b" />
+</head>
+<body>
+  <header class="nav">
+    <a class="brand" href="/"><span class="brand-mark">DS</span><span>DinoDeutsch</span></a>
+    <nav class="nav-links">
+      <a href="/grammar">Grammatik</a>
+      <a href="/vocab">Wortschatz</a>
+      <a href="/listening">Hören</a>
+      <a href="/reading">Lesen</a>
+      <a href="/test">Tests</a>
+      <a class="active" href="/assistant">Assistant</a>
+    </nav>
+    <a class="nav-home" href="/">Ve trang hoc</a>
+  </header>
+
+  <main class="shell">
+    <aside class="sidebar">
+      <section class="panel">
+        <p class="kicker">Che do</p>
+        <div class="mode-grid" id="modeGrid">
+          <button class="mode is-active" type="button" data-mode="explain">Giai thich<small>Tom tat nhanh va ro</small></button>
+          <button class="mode" type="button" data-mode="practice">Luyen tap<small>Tao bai tap ngan</small></button>
+          <button class="mode" type="button" data-mode="quiz">Mini quiz<small>3-5 cau tu kiem tra</small></button>
+          <button class="mode" type="button" data-mode="plan">Lo trinh<small>Buoi hoc 10-15 phut</small></button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <p class="kicker">Nguon du lieu</p>
+        <div class="topic-list" id="topicList">
+          <button class="topic is-active" type="button" data-topic="grammar">Grammatik</button>
+          <button class="topic" type="button" data-topic="vocab">Wortschatz</button>
+          <button class="topic" type="button" data-topic="listening">Hören</button>
+          <button class="topic" type="button" data-topic="mixed">Tong hop</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <p class="kicker">Prompt nhanh</p>
+        <div class="prompt-list">
+          <button class="prompt" type="button" data-prompt="Giai thich Akkusativ ngan gon kem 2 vi du A1.">Akkusativ ngan gon</button>
+          <button class="prompt" type="button" data-prompt="Cho minh 8 tu vung A1 ve gia dinh kem nghia Viet.">8 tu vung ve gia dinh</button>
+          <button class="prompt" type="button" data-prompt="Tom tat bai nghe gioi thieu ban than va chi ra 5 tu khoa can bat.">Tom tat bai nghe</button>
+          <button class="prompt" type="button" data-prompt="Lap mot buoi hoc 15 phut de on ngu phap va tu vung A2.">Buoi hoc 15 phut</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <p class="kicker">Trang thai</p>
+        <div class="status-text" id="statusText">Dang nap du lieu hoc...</div>
+        <div class="stats" id="stats"></div>
+      </section>
+    </aside>
+
+    <section class="main">
+      <div class="hero">
+        <div>
+          <p class="kicker">Assistant local</p>
+          <h1>Hoi de hoc nhanh hon, nhung van bam sat dung hoc lieu cua web.</h1>
+          <p class="hero-copy">Trang nay khong dung dang nhap va khong goi AI backend cu. No doc truc tiep Grammatik, Wortschatz va Hören de tra loi, tao bai tap va goi y lo trinh hoc.</p>
+        </div>
+        <div class="hero-card">
+          <span class="badge" id="topicBadge">Grammatik</span>
+          <span class="badge soft" id="modeBadge">Giai thich</span>
+          <p>Neu can chinh xac hon, hay hoi kem level, chu de hoac ten bai dang hoc.</p>
+        </div>
+      </div>
+
+      <div class="chat-card">
+        <div class="chat-head">
+          <div>
+            <h2>Hoi dap hoc tap</h2>
+            <p id="subline">Du lieu duoc tong hop tu khoi grammar, vocab va listening trong website.</p>
+          </div>
+          <button class="ghost" type="button" id="clearChatButton">Xoa hoi thoai</button>
+        </div>
+
+        <div class="messages" id="messages"></div>
+        <div class="suggestions" id="suggestions"></div>
+
+        <form class="form" id="form">
+          <label for="input">Cau hoi</label>
+          <textarea id="input" rows="3" placeholder="Vi du: Giai thich Perfekt voi haben va sein that ngan, kem 2 vi du A2."></textarea>
+          <div class="actions"><button class="submit" type="submit">Gui cau hoi</button></div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="/assistant/app.js?v=20260407b"></script>
+</body>
+</html>
