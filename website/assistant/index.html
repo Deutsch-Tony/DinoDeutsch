@@ -1,103 +1,852 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Assistant | DinoDeutsch</title>
-  <meta name="description" content="Assistant local cua DinoDeutsch doc truc tiep grammar, vocab va listening de goi y bai hoc va mini quiz." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/assistant/styles.css?v=20260407b" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KI Tutor | DinoDeutsch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══ NOTION DESIGN SYSTEM ═══════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+:root {
+  /* Colors */
+  --white:      #ffffff;
+  --warm-white: #f6f5f4;
+  --near-black: rgba(0,0,0,0.95);
+  --gray-500:   #615d59;
+  --gray-300:   #a39e98;
+  --gray-100:   #e8e7e5;
+  --warm-dark:  #31302e;
+  --blue:       #0075de;
+  --blue-dark:  #005bab;
+  --blue-focus: #097fe8;
+  --blue-bg:    #f2f9ff;
+  --teal:       #2a9d99;
+  --green:      #1aae39;
+  --orange:     #dd5b00;
+
+  /* Borders */
+  --border:     1px solid rgba(0,0,0,0.1);
+
+  /* Shadows */
+  --shadow-card: rgba(0,0,0,0.04) 0px 4px 18px,rgba(0,0,0,0.027) 0px 2.025px 7.85px,rgba(0,0,0,0.02) 0px 0.8px 2.93px,rgba(0,0,0,0.01) 0px 0.175px 1.04px;
+  --shadow-deep: rgba(0,0,0,0.01) 0px 1px 3px,rgba(0,0,0,0.02) 0px 3px 7px,rgba(0,0,0,0.02) 0px 7px 15px,rgba(0,0,0,0.04) 0px 14px 28px,rgba(0,0,0,0.05) 0px 23px 52px;
+
+  /* Radius */
+  --r4:  4px;
+  --r8:  8px;
+  --r12: 12px;
+  --r16: 16px;
+  --rpill: 9999px;
+
+  --font: 'Inter', -apple-system, system-ui, sans-serif;
+}
+
+html,body { height:100%; }
+body {
+  font-family: var(--font);
+  background: var(--white);
+  color: var(--near-black);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ═══ NAV ════════════════════════════════════════════════════ */
+nav {
+  height: 52px;
+  border-bottom: var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 4px;
+  flex-shrink: 0;
+  background: var(--white);
+}
+.logo {
+  font-size: 15px; font-weight: 700;
+  color: var(--near-black);
+  text-decoration: none;
+  letter-spacing: -0.25px;
+  margin-right: 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.logo-mark {
+  width: 24px; height: 24px;
+  background: var(--near-black);
+  color: white;
+  border-radius: var(--r4);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700;
+}
+.nav-link {
+  font-size: 14px; font-weight: 500;
+  color: var(--gray-500);
+  text-decoration: none;
+  padding: 5px 8px;
+  border-radius: var(--r4);
+  transition: color .12s, background .12s;
+}
+.nav-link:hover { color: var(--near-black); background: var(--warm-white); }
+.nav-link.active { color: var(--near-black); font-weight: 600; }
+.nav-abbr { font-size: 11px; font-weight: 600; color: var(--gray-300); margin-right: 2px; }
+.nav-r { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.anon-pill { font-size: 12px; font-weight: 700; color: var(--gray-300); background: var(--warm-white); border: var(--border); border-radius: 999px; padding: 7px 12px; letter-spacing: .04em; text-transform: uppercase; }
+.btn-ghost {
+  font-size: 14px; font-weight: 500;
+  color: var(--gray-500);
+  background: none; border: none; cursor: pointer;
+  padding: 5px 8px; border-radius: var(--r4);
+  font-family: var(--font);
+  transition: color .12s, background .12s;
+}
+.btn-ghost:hover { color: var(--near-black); background: var(--warm-white); }
+.btn-primary {
+  font-size: 14px; font-weight: 600;
+  color: white; background: var(--blue);
+  border: none; cursor: pointer;
+  padding: 6px 14px; border-radius: var(--r4);
+  font-family: var(--font);
+  transition: background .12s, transform .1s;
+}
+.btn-primary:hover { background: var(--blue-dark); }
+.btn-primary:active { transform: scale(0.96); }
+
+/* ═══ LAYOUT ════════════════════════════════════════════════ */
+.app { display: flex; flex: 1; overflow: hidden; }
+
+/* ═══ ZETTELKASTEN SIDEBAR ══════════════════════════════════ */
+/* Left sidebar = "linked notes" navigator */
+.zk-sidebar {
+  width: 236px;
+  border-right: var(--border);
+  display: flex;
+  flex-direction: column;
+  background: var(--warm-white);
+  flex-shrink: 0;
+  overflow-y: auto;
+}
+.zk-sidebar::-webkit-scrollbar { width: 4px; }
+.zk-sidebar::-webkit-scrollbar-thumb { background: var(--gray-100); border-radius: 2px; }
+
+.zk-section { padding: 16px 12px 8px; }
+.zk-section-label {
+  font-size: 11px; font-weight: 600;
+  color: var(--gray-300);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0 4px;
+  margin-bottom: 4px;
+}
+
+/* Note card in sidebar = Zettelkasten node */
+.zk-note {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 8px;
+  border-radius: var(--r8);
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all .12s;
+  margin-bottom: 1px;
+}
+.zk-note:hover { background: var(--white); border-color: rgba(0,0,0,0.07); }
+.zk-note.active {
+  background: var(--white);
+  border-color: rgba(0,0,0,0.1);
+  box-shadow: var(--shadow-card);
+}
+.zk-note-icon { font-size: 14px; width: 20px; text-align: center; flex-shrink: 0; }
+.zk-note-body { flex: 1; min-width: 0; }
+.zk-note-title { font-size: 13px; font-weight: 500; color: var(--near-black); line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.zk-note-meta { font-size: 11px; color: var(--gray-300); margin-top: 1px; }
+.zk-note-badge {
+  font-size: 11px; font-weight: 600;
+  background: var(--blue-bg); color: var(--blue-focus);
+  border-radius: var(--rpill);
+  padding: 1px 7px;
+  letter-spacing: 0.125px;
+  white-space: nowrap;
+}
+
+/* Quick action buttons */
+.zk-action {
+  display: flex; align-items: center; gap: 7px;
+  padding: 6px 8px;
+  border-radius: var(--r8);
+  cursor: pointer;
+  font-size: 13px; font-weight: 500;
+  color: var(--gray-500);
+  background: none; border: none;
+  font-family: var(--font);
+  width: 100%; text-align: left;
+  transition: all .12s;
+  margin-bottom: 1px;
+}
+.zk-action:hover { color: var(--near-black); background: var(--white); }
+.zk-action .za-icon { font-size: 13px; width: 20px; text-align: center; }
+
+/* ═══ PROGRESS CARD (bottom sidebar) ════════════════════════ */
+.zk-progress {
+  margin: 8px 12px 12px;
+  background: var(--white);
+  border: var(--border);
+  border-radius: var(--r12);
+  padding: 12px;
+  box-shadow: var(--shadow-card);
+}
+.zk-progress-top {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 8px;
+}
+.zk-progress-label { font-size: 12px; font-weight: 600; color: var(--near-black); }
+.zk-level-badge {
+  font-size: 11px; font-weight: 600;
+  background: var(--blue-bg); color: var(--blue-focus);
+  border-radius: var(--rpill);
+  padding: 2px 8px;
+  letter-spacing: 0.125px;
+}
+.xp-bar-track {
+  height: 4px;
+  background: var(--gray-100);
+  border-radius: var(--rpill);
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+.xp-bar-fill {
+  height: 100%;
+  background: var(--blue);
+  border-radius: var(--rpill);
+  transition: width .6s cubic-bezier(.34,1.56,.64,1);
+}
+.xp-sub { font-size: 11px; color: var(--gray-300); }
+.skill-tags { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 8px; }
+.skill-tag {
+  font-size: 11px; font-weight: 600;
+  border-radius: var(--rpill);
+  padding: 2px 8px;
+  letter-spacing: 0.125px;
+}
+.skill-tag.weak { background: #fff4ed; color: var(--orange); }
+.skill-tag.strong { background: #f0fdf4; color: var(--green); }
+.zk-bottom { margin-top: auto; }
+
+/* ═══ MAIN CHAT (Zettelkasten "page" canvas) ════════════════ */
+.page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--white);
+}
+
+/* Page header = Zettelkasten note title area */
+.page-header {
+  padding: 14px 24px 13px;
+  border-bottom: var(--border);
+  display: flex; align-items: center; gap: 12px;
+  flex-shrink: 0;
+}
+.page-icon { font-size: 20px; }
+.page-title-wrap { flex: 1; }
+.page-title {
+  font-size: 16px; font-weight: 600;
+  color: var(--near-black);
+  letter-spacing: -0.125px;
+  line-height: 1.3;
+}
+.page-subtitle { font-size: 13px; color: var(--gray-500); margin-top: 1px; }
+.page-actions { display: flex; gap: 6px; }
+.icon-btn {
+  width: 28px; height: 28px;
+  border-radius: var(--r8);
+  border: var(--border);
+  background: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; color: var(--gray-500);
+  transition: all .12s;
+}
+.icon-btn:hover { background: var(--warm-white); color: var(--near-black); }
+
+/* Breadcrumb = linked note context */
+.page-crumb {
+  padding: 6px 24px;
+  border-bottom: var(--border);
+  background: var(--warm-white);
+  display: flex; align-items: center; gap: 8px;
+  flex-shrink: 0;
+}
+.crumb-pill {
+  font-size: 12px; font-weight: 600;
+  border-radius: var(--rpill);
+  padding: 2px 10px;
+  border: var(--border);
+  background: var(--white);
+  cursor: pointer;
+  color: var(--near-black);
+  transition: all .12s;
+}
+.crumb-pill:hover { box-shadow: var(--shadow-card); }
+.crumb-pill.active { background: var(--near-black); color: white; border-color: transparent; }
+.crumb-sep { font-size: 12px; color: var(--gray-300); }
+.crumb-r { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+.crumb-badge {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.125px;
+  background: var(--blue-bg); color: var(--blue-focus);
+  border-radius: var(--rpill); padding: 2px 8px;
+}
+
+/* ═══ MESSAGES — document-like ══════════════════════════════ */
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  scroll-behavior: smooth;
+}
+.messages::-webkit-scrollbar { width: 4px; }
+.messages::-webkit-scrollbar-thumb { background: var(--gray-100); border-radius: 2px; }
+
+/* Each message = a Zettelkasten note block */
+.msg-block { display: flex; gap: 12px; max-width: 800px; animation: slideUp .18s ease; }
+@keyframes slideUp { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+.msg-block.user { align-self: flex-end; flex-direction: row-reverse; }
+
+.msg-avatar {
+  width: 28px; height: 28px;
+  border-radius: var(--r8);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0;
+  border: var(--border);
+  margin-top: 2px;
+}
+.msg-avatar.ai { background: var(--warm-white); }
+.msg-avatar.me { background: var(--near-black); color: white; font-size: 13px; }
+
+/* Note content block */
+.note-block {
+  background: var(--white);
+  border: var(--border);
+  border-radius: var(--r12);
+  padding: 12px 16px;
+  box-shadow: var(--shadow-card);
+  font-size: 14px;
+  line-height: 1.65;
+  max-width: 100%;
+}
+.msg-block.user .note-block {
+  background: var(--near-black);
+  color: white;
+  border-color: transparent;
+}
+.note-block strong { font-weight: 600; }
+.note-block em { color: var(--blue); font-style: normal; }
+.note-block code {
+  font-family: 'SF Mono', 'Fira Mono', monospace;
+  font-size: 13px;
+  background: var(--warm-white);
+  border: var(--border);
+  padding: 1px 5px;
+  border-radius: var(--r4);
+}
+.msg-block.user .note-block code { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.2); }
+.note-block table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 13px; }
+.note-block th { background: var(--warm-white); font-weight: 600; padding: 6px 10px; border: var(--border); text-align: left; }
+.note-block td { padding: 6px 10px; border: var(--border); }
+
+/* Prediction callout = inline Zettelkasten link */
+.callout {
+  background: #fff8f4;
+  border: 1px solid rgba(221,91,0,0.2);
+  border-radius: var(--r8);
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--orange);
+  margin-top: 8px;
+  display: flex; gap: 8px; align-items: flex-start;
+}
+
+/* Feedback row */
+.feedback-row {
+  display: flex; align-items: center; gap: 6px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: var(--border);
+}
+.feedback-label { font-size: 12px; color: var(--gray-300); }
+.fb-btn {
+  font-size: 12px; font-weight: 500;
+  padding: 3px 10px;
+  border-radius: var(--rpill);
+  border: var(--border);
+  background: none; cursor: pointer;
+  color: var(--gray-500);
+  font-family: var(--font);
+  transition: all .12s;
+}
+.fb-btn:hover, .fb-btn.voted { box-shadow: var(--shadow-card); }
+.fb-btn.up:hover, .fb-btn.up.voted { color: var(--green); border-color: rgba(26,174,57,0.3); background: #f0fdf4; }
+.fb-btn.dn:hover, .fb-btn.dn.voted { color: var(--orange); border-color: rgba(221,91,0,0.3); background: #fff8f4; }
+.fb-note { font-size: 11px; color: var(--gray-300); margin-left: 2px; }
+
+/* Note chips */
+.note-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+.chip {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.125px;
+  padding: 2px 8px; border-radius: var(--rpill); border: var(--border);
+}
+.chip.xp { background: #f0fdf4; color: var(--green); border-color: rgba(26,174,57,0.2); }
+.chip.tool { background: var(--blue-bg); color: var(--blue-focus); border-color: rgba(9,127,232,0.2); }
+.chip.diff { background: #fff8f4; color: var(--orange); border-color: rgba(221,91,0,0.2); }
+
+/* Typing indicator */
+.typing-block { display: flex; gap: 5px; align-items: center; padding: 14px 16px; }
+.typing-block span { width: 5px; height: 5px; background: var(--gray-300); border-radius: 50%; animation: blink 1.2s infinite; }
+.typing-block span:nth-child(2){animation-delay:.2s}
+.typing-block span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{transform:scale(1);opacity:.4}40%{transform:scale(1.3);opacity:1}}
+
+/* ═══ INPUT ══════════════════════════════════════════════════ */
+.input-zone {
+  padding: 12px 24px 16px;
+  border-top: var(--border);
+  background: var(--white);
+  flex-shrink: 0;
+}
+.input-card {
+  display: flex; gap: 8px; align-items: flex-end;
+  background: var(--white);
+  border: var(--border);
+  border-radius: var(--r12);
+  padding: 10px 10px 10px 14px;
+  box-shadow: var(--shadow-card);
+  transition: box-shadow .15s;
+}
+.input-card:focus-within { box-shadow: var(--shadow-deep); }
+.text-area {
+  flex: 1;
+  background: none; border: none; outline: none;
+  color: var(--near-black);
+  font-family: var(--font);
+  font-size: 14px; line-height: 1.5;
+  resize: none; height: 22px; max-height: 120px;
+}
+.text-area::placeholder { color: var(--gray-300); }
+.send-btn {
+  width: 30px; height: 30px;
+  border-radius: var(--r8);
+  background: var(--near-black);
+  color: white; border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: transform .1s, opacity .15s;
+}
+.send-btn:hover { opacity: 0.8; }
+.send-btn:active { transform: scale(0.9); }
+.send-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+.send-btn svg { width: 14px; height: 14px; }
+.input-hint { font-size: 11px; color: var(--gray-300); margin-top: 6px; text-align: center; }
+
+/* ═══ MODAL ══════════════════════════════════════════════════ */
+.modal-bg {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.35);
+  display: none; align-items: center; justify-content: center;
+  z-index: 100; animation: fadeIn .15s ease;
+}
+.modal-bg.open { display: flex; }
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-card {
+  background: var(--white);
+  border: var(--border);
+  border-radius: var(--r16);
+  padding: 24px;
+  max-width: 460px; width: 90%;
+  max-height: 80vh; overflow-y: auto;
+  box-shadow: var(--shadow-deep);
+  animation: slideUp .2s ease;
+}
+.modal-title { font-size: 16px; font-weight: 700; letter-spacing: -0.25px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+.modal-close { background:none;border:none;cursor:pointer;font-size:16px;color:var(--gray-300);padding:2px; }
+.modal-close:hover { color: var(--near-black); }
+
+/* ═══ HIDDEN ═════════════════════════════════════════════════ */
+.hidden { display: none !important; }
+</style>
 </head>
 <body>
-  <header class="nav">
-    <a class="brand" href="/"><span class="brand-mark">DS</span><span>DinoDeutsch</span></a>
-    <nav class="nav-links">
-      <a href="/grammar">Grammatik</a>
-      <a href="/vocab">Wortschatz</a>
-      <a href="/listening">H�ren</a>
-      <a href="/reading">Lesen</a>
-      <a href="/test">Tests</a>
-      <a class="active" href="/assistant">Assistant</a>
-    </nav>
-    <a class="nav-home" href="/">Ve trang hoc</a>
-  </header>
 
-  <main class="shell">
-    <aside class="sidebar">
-      <section class="panel">
-        <p class="kicker">Che do</p>
-        <div class="mode-grid" id="modeGrid">
-          <button class="mode is-active" type="button" data-mode="explain">Giai thich<small>Tom tat nhanh va ro</small></button>
-          <button class="mode" type="button" data-mode="practice">Luyen tap<small>Tao bai tap ngan</small></button>
-          <button class="mode" type="button" data-mode="quiz">Mini quiz<small>3-5 cau tu kiem tra</small></button>
-          <button class="mode" type="button" data-mode="plan">Lo trinh<small>Buoi hoc 10-15 phut</small></button>
-        </div>
-      </section>
+<!-- NAV -->
+<nav>
+  <a href="/" class="logo">
+  <span class="logo-mark" aria-hidden="true">
+    <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="2" width="28" height="28" rx="8" fill="url(#dinoGrad)"/>
+      <path d="M10 21C10 16.58 13.58 13 18 13H19.4C21.94 13 24 15.06 24 17.6C24 20.14 21.94 22.2 19.4 22.2H18.2C17.54 22.2 17 21.66 17 21V18.3" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="19.2" cy="16.7" r="1.1" fill="white"/>
+      <path d="M10.5 22.3L8.2 24.4H10.3" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <defs>
+        <linearGradient id="dinoGrad" x1="4" y1="4" x2="28" y2="28" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#1F2937"/>
+          <stop offset="1" stop-color="#455468"/>
+        </linearGradient>
+      </defs>
+    </svg>
+  </span>
+  <span class="logo-copy"><strong>DinoDeutsch</strong><small>KI Tutor</small></span>
+</a>
+  <a href="/grammar"   class="nav-link"><span class="nav-abbr">G</span>Grammatik</a>
+  <a href="/vocab"     class="nav-link"><span class="nav-abbr">W</span>Wortschatz</a>
+  <a href="/listening" class="nav-link"><span class="nav-abbr">H</span>Hören</a>
+  <a href="/reading"   class="nav-link"><span class="nav-abbr">L</span>Lesen</a>
+  <a href="/test"      class="nav-link"><span class="nav-abbr">T</span>Tests</a>
+  <a href="/assistant" class="nav-link active"><span class="nav-abbr">A</span>KI Tutor</a>
+  <div class="nav-r"><span class="anon-pill">Anonymous mode</span></div>
+</nav>
 
-      <section class="panel">
-        <p class="kicker">Nguon du lieu</p>
-        <div class="topic-list" id="topicList">
-          <button class="topic is-active" type="button" data-topic="grammar">Grammatik</button>
-          <button class="topic" type="button" data-topic="vocab">Wortschatz</button>
-          <button class="topic" type="button" data-topic="listening">H�ren</button>
-          <button class="topic" type="button" data-topic="mixed">Tong hop</button>
-        </div>
-      </section>
+<div class="app">
 
-      <section class="panel">
-        <p class="kicker">Prompt nhanh</p>
-        <div class="prompt-list">
-          <button class="prompt" type="button" data-prompt="Giai thich Akkusativ ngan gon kem 2 vi du A1.">Akkusativ ngan gon</button>
-          <button class="prompt" type="button" data-prompt="Cho minh 8 tu vung A1 ve gia dinh kem nghia Viet.">8 tu vung ve gia dinh</button>
-          <button class="prompt" type="button" data-prompt="Tom tat bai nghe gioi thieu ban than va chi ra 5 tu khoa can bat.">Tom tat bai nghe</button>
-          <button class="prompt" type="button" data-prompt="Lap mot buoi hoc 15 phut de on ngu phap va tu vung A2.">Buoi hoc 15 phut</button>
-        </div>
-      </section>
+  <!-- ZETTELKASTEN SIDEBAR -->
+  <aside class="zk-sidebar">
 
-      <section class="panel">
-        <p class="kicker">Trang thai</p>
-        <div class="status-text" id="statusText">Dang nap du lieu hoc...</div>
-        <div class="stats" id="stats"></div>
-      </section>
-    </aside>
+    <!-- Modes as linked notes -->
+    <div class="zk-section">
+      <div class="zk-section-label">Chế độ học</div>
 
-    <section class="main">
-      <div class="hero">
-        <div>
-          <p class="kicker">Assistant local</p>
-          <h1>Hoi de hoc nhanh hon, nhung van bam sat dung hoc lieu cua web.</h1>
-          <p class="hero-copy">Trang nay khong dung dang nhap va khong goi AI backend cu. No doc truc tiep Grammatik, Wortschatz va H�ren de tra loi, tao bai tap va goi y lo trinh hoc.</p>
-        </div>
-        <div class="hero-card">
-          <span class="badge" id="topicBadge">Grammatik</span>
-          <span class="badge soft" id="modeBadge">Giai thich</span>
-          <p>Neu can chinh xac hon, hay hoi kem level, chu de hoac ten bai dang hoc.</p>
-        </div>
+      <div class="zk-note active" data-mode="chat" data-ph="Hỏi gì về tiếng Đức..." data-sys="Hỏi đáp tự do. get_memory để cá nhân hóa." onclick="setMode(this)">
+        <span class="zk-note-icon">💬</span>
+        <div class="zk-note-body"><div class="zk-note-title">Hỏi đáp</div><div class="zk-note-meta">Tự do</div></div>
       </div>
 
-      <div class="chat-card">
-        <div class="chat-head">
-          <div>
-            <h2>Hoi dap hoc tap</h2>
-            <p id="subline">Du lieu duoc tong hop tu khoi grammar, vocab va listening trong website.</p>
-          </div>
-          <button class="ghost" type="button" id="clearChatButton">Xoa hoi thoai</button>
-        </div>
-
-        <div class="messages" id="messages"></div>
-        <div class="suggestions" id="suggestions"></div>
-
-        <form class="form" id="form">
-          <label for="input">Cau hoi</label>
-          <textarea id="input" rows="3" placeholder="Vi du: Giai thich Perfekt voi haben va sein that ngan, kem 2 vi du A2."></textarea>
-          <div class="actions"><button class="submit" type="submit">Gui cau hoi</button></div>
-        </form>
+      <div class="zk-note" data-mode="agent" data-ph="Giao nhiệm vụ — Agent tự lập kế hoạch..." data-sys="Agent: get_memory → plan_session → thực hiện. Không hỏi lại." onclick="setMode(this)">
+        <span class="zk-note-icon">🤖</span>
+        <div class="zk-note-body"><div class="zk-note-title">Agent Mode</div><div class="zk-note-meta">Tự lập kế hoạch</div></div>
+        <span class="zk-note-badge">Smart</span>
       </div>
-    </section>
-  </main>
 
-  <script type="module" src="/assistant/app.js?v=20260407b"></script>
+      <div class="zk-note" data-mode="placement" data-ph='Gõ "bắt đầu" để test cấp độ...' data-sys="Placement test 5 câu A1→C1. Hỏi từng câu, tổng kết cấp độ phù hợp." onclick="setMode(this)">
+        <span class="zk-note-icon">🎯</span>
+        <div class="zk-note-body"><div class="zk-note-title">Test cấp độ</div><div class="zk-note-meta">A1 → C1</div></div>
+      </div>
+
+      <div class="zk-note" data-mode="writing" data-ph="Paste bài viết tiếng Đức vào đây..." data-sys="grade_and_next: chấm rubric (Ngữ pháp/3, Từ vựng/3, Mạch lạc/2, Phong cách/2), chỉ ra lỗi, tạo bài tiếp." onclick="setMode(this)">
+        <span class="zk-note-icon">📝</span>
+        <div class="zk-note-body"><div class="zk-note-title">Nộp bài viết</div><div class="zk-note-meta">Chấm điểm</div></div>
+      </div>
+
+      <div class="zk-note" data-mode="roleplay" data-ph="Chọn: nhà hàng · sân bay · phỏng vấn · bệnh viện..." data-sys="Roleplay tình huống thực tế. Hỏi tình huống, đóng vai tiếng Đức, sửa lỗi sau mỗi lượt, tổng kết cuối." onclick="setMode(this)">
+        <span class="zk-note-icon">🎭</span>
+        <div class="zk-note-body"><div class="zk-note-title">Roleplay</div><div class="zk-note-meta">Tình huống thực</div></div>
+      </div>
+
+      <div class="zk-note" data-mode="daily" data-ph='Gõ "bắt đầu" để nhận thử thách...' data-sys="Daily challenge 5 phút. Tạo 1 trong 5 dạng: dịch nhanh / điền từ / kể chuyện / sửa lỗi. Chấm điểm + XP." onclick="setMode(this)">
+        <span class="zk-note-icon">🎮</span>
+        <div class="zk-note-body"><div class="zk-note-title">Daily Challenge</div><div class="zk-note-meta">5 phút</div></div>
+      </div>
+    </div>
+
+    <!-- Topics -->
+    <div class="zk-section">
+      <div class="zk-section-label">Chủ đề</div>
+      <button class="zk-action active" onclick="setTopic(this,'Ngữ pháp')"><span class="za-icon">📐</span>Ngữ pháp</button>
+      <button class="zk-action" onclick="setTopic(this,'Từ vựng')"><span class="za-icon">📚</span>Từ vựng</button>
+      <button class="zk-action" onclick="setTopic(this,'Hội thoại')"><span class="za-icon">🗣️</span>Hội thoại</button>
+      <button class="zk-action" onclick="setTopic(this,'Luyện viết')"><span class="za-icon">✍️</span>Luyện viết</button>
+      <button class="zk-action" onclick="setTopic(this,'Văn hóa')"><span class="za-icon">🌍</span>Văn hóa Đức</button>
+    </div>
+
+    <!-- Linked actions = Zettelkasten backlinks -->
+    <div class="zk-section">
+      <div class="zk-section-label">Nhanh</div>
+      <button class="zk-action" onclick="sendQ('Phân tích hồ sơ và tự lập kế hoạch học hôm nay')"><span class="za-icon">🗺️</span>Kế hoạch hôm nay</button>
+      <button class="zk-action" onclick="sendQ('Dự đoán lỗi tôi hay mắc ở chủ đề này')"><span class="za-icon">🔮</span>Dự đoán lỗi</button>
+      <button class="zk-action" onclick="sendQ('Tìm tin tức Đức hôm nay và tạo bài tập từ đó')"><span class="za-icon">🗞️</span>Tin tức → bài tập</button>
+      <button class="zk-action" onclick="sendQ('Gợi ý podcast tiếng Đức phù hợp cấp độ của tôi')"><span class="za-icon">🎧</span>Gợi ý media</button>
+      <button class="zk-action" onclick="clearChat()"><span class="za-icon">↺</span>Cuộc trò chuyện mới</button>
+    </div>
+
+    <!-- Progress card -->
+    <div class="zk-bottom">
+      <div class="zk-progress">
+        <div class="zk-progress-top">
+          <span class="zk-progress-label">Tiến độ</span>
+          <span class="zk-level-badge" id="lvlBadge">A1</span>
+        </div>
+        <div class="xp-bar-track"><div class="xp-bar-fill" id="xpBar" style="width:0%"></div></div>
+        <div class="xp-sub" id="xpSub">Anonymous mode - no login required</div>
+        <div class="skill-tags" id="skillTags"></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN PAGE (Zettelkasten canvas) -->
+  <div class="page">
+
+    <!-- Page title area -->
+    <div class="page-header">
+      <div class="page-icon" id="modeIcon">💬</div>
+      <div class="page-title-wrap">
+        <div class="page-title" id="modeTitle">Hỏi đáp tự do</div>
+        <div class="page-subtitle" id="modeSub">DinoDeutsch KI Tutor · Tiếng Đức</div>
+      </div>
+      <div class="page-actions">
+        <button class="icon-btn" title="Xóa" onclick="clearChat()">↺</button>
+      </div>
+    </div>
+
+    <!-- Breadcrumb = linked context (Zettelkasten) -->
+    <div class="page-crumb">
+      <span class="crumb-pill active" id="topicCrumb" onclick="cycleTopics()">📐 Ngữ pháp</span>
+      <span class="crumb-sep">·</span>
+      <span style="font-size:12px;color:var(--gray-500)" id="diffCrumb">Độ khó 3/10</span>
+      <div class="crumb-r">
+        <span class="crumb-badge hidden" id="abBadge">A/B test</span>
+      </div>
+    </div>
+
+    <!-- Config warning -->
+    <div style="margin:12px 24px 0;padding:10px 14px;background:#fff8f4;border:1px solid rgba(221,91,0,0.25);border-radius:var(--r8);font-size:13px;color:var(--orange);" id="cfgWarn">KI Tutor is calling <code style="font-family:monospace;font-size:12px;background:var(--warm-white);padding:1px 5px;border-radius:3px;">/api/assistant</code> on the same site.</div>
+
+    <!-- Messages -->
+    <div class="messages" id="messages">
+      <div class="msg-block">
+        <div class="msg-avatar ai">🐊</div>
+        <div class="note-block">
+          Hallo! Willkommen bei DinoDeutsch 🎉<br><br>
+          Tôi là KI Tutor của bạn — giáo viên tiếng Đức thông minh. Tôi có thể:<br><br>
+          <strong>Học thông minh hơn</strong> — tự đọc hồ sơ, lập kế hoạch, điều chỉnh độ khó<br>
+          <strong>Dự đoán lỗi</strong> — biết bạn sắp mắc lỗi gì trước khi mắc<br>
+          <strong>Học từ feedback</strong> — 👍👎 giúp tôi dạy tốt hơn mỗi ngày<br>
+          <strong>Tìm kiếm web</strong> — tin tức Đức thật, media phù hợp cấp độ<br><br>
+          Chọn chế độ học ở sidebar hoặc hỏi thẳng bất cứ điều gì về tiếng Đức.
+          <div class="note-chips"><span class="chip xp">+10 XP mỗi tin nhắn</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div class="input-zone">
+      <div class="input-card">
+        <textarea class="text-area" id="msgInput"
+          placeholder="Hỏi gì về tiếng Đức..."
+          onkeydown="handleKey(event)"
+          oninput="autoResize(this)"
+          rows="1"></textarea>
+        <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+        </button>
+      </div>
+      <div class="input-hint">Enter gửi · Shift+Enter xuống dòng · 👍👎 sau mỗi câu trả lời</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════
+//  ⚙️  CẤU HÌNH — đổi 3 dòng này
+// ════════════════════════════════════════
+const WORKER_URL = '/api/assistant';
+const CONFIGURED = true;
+document.getElementById('cfgWarn').style.display = 'none';
+
+// ── State ────────────────────────────────
+let history = [], curMode = 'chat', curTopic = 'Ngữ pháp', busy = false;
+let sessionState = { difficulty: 3, messages_count: 0 };
+const user = null;
+
+// Mode config
+const MODES = {
+  chat:      { icon:'💬', title:'Hỏi đáp tự do',    sub:'Hỏi bất cứ điều gì về tiếng Đức' },
+  agent:     { icon:'🤖', title:'Agent Mode',         sub:'Tự lập kế hoạch · Adaptive' },
+  placement: { icon:'🎯', title:'Test cấp độ',        sub:'Xác định A1 / A2 / B1 / B2 / C1' },
+  writing:   { icon:'📝', title:'Chấm bài viết',      sub:'Nộp bài · Nhận nhận xét chi tiết' },
+  roleplay:  { icon:'🎭', title:'Roleplay',            sub:'Luyện hội thoại thực tế' },
+  daily:     { icon:'🎮', title:'Daily Challenge',     sub:'Thử thách 5 phút mỗi ngày' },
+};
+
+const MODE_INTROS = {
+  agent:     '🤖 <strong>Agent Mode</strong> bật rồi!<br>Tôi sẽ tự đọc hồ sơ học của bạn và lập kế hoạch hôm nay — không cần hướng dẫn gì thêm.',
+  placement: '🎯 <strong>Test cấp độ</strong><br>Tôi sẽ hỏi 5 câu từ A1 → C1 để xác định đúng cấp độ của bạn.<br><br>Gõ <strong>"bắt đầu"</strong> khi sẵn sàng!',
+  writing:   '📝 <strong>Chấm bài viết</strong><br>Paste bài tiếng Đức vào đây — tôi sẽ chấm điểm chi tiết và tạo bài tập tiếp theo phù hợp với điểm yếu của bạn.',
+  roleplay:  '🎭 <strong>Roleplay</strong> — bạn muốn luyện tình huống nào?<br><br>🍽️ Nhà hàng · ✈️ Sân bay · 💼 Phỏng vấn · 🏥 Bệnh viện · 🏠 Thuê nhà',
+  daily:     '🎮 <strong>Daily Challenge</strong> — thử thách 5 phút!<br>Gõ <strong>"bắt đầu"</strong> để nhận nhiệm vụ hôm nay 🚀',
+};
+
+const TOPICS = ['Ngữ pháp','Từ vựng','Hội thoại','Luyện viết','Văn hóa'];
+const TOPIC_ICONS = { 'Ngữ pháp':'📐','Từ vựng':'📚','Hội thoại':'🗣️','Luyện viết':'✍️','Văn hóa':'🌍' };
+
+// ── Auth ─────────────────────────────────
+function setMode(el) {
+  document.querySelectorAll('.zk-note').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+  const mode = el.dataset.mode;
+  curMode = mode;
+  const m = MODES[mode];
+  document.getElementById('modeIcon').textContent  = m.icon;
+  document.getElementById('modeTitle').textContent = m.title;
+  document.getElementById('modeSub').textContent   = m.sub;
+  document.getElementById('msgInput').placeholder  = el.dataset.ph || '';
+  if (MODE_INTROS[mode]) appendMsg('ai', MODE_INTROS[mode]);
+}
+function setTopic(btn, topic) {
+  document.querySelectorAll('.zk-action').forEach(a => a.classList.remove('active'));
+  btn.classList.add('active');
+  curTopic = topic;
+  document.getElementById('topicCrumb').textContent = `${TOPIC_ICONS[topic]} ${topic}`;
+}
+function cycleTopics() {
+  const idx = TOPICS.indexOf(curTopic);
+  const next = TOPICS[(idx + 1) % TOPICS.length];
+  const btn = [...document.querySelectorAll('.zk-action')].find(b => b.textContent.trim().includes(next));
+  if (btn) setTopic(btn, next);
+}
+function updateDiffCrumb() {
+  document.getElementById('diffCrumb').textContent = `Độ khó ${sessionState.difficulty}/10`;
+}
+
+// ── Render ────────────────────────────────
+function md(t) {
+  return t
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/`(.*?)`/g, '<code>$1</code>')
+    .replace(/\n/g, '<br>');
+}
+function autoResize(el) {
+  el.style.height = '22px';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+
+function appendMsg(role, html, extra = '') {
+  const wrap = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = 'msg-block' + (role === 'user' ? ' user' : '');
+  const m = MODES[curMode];
+  const avHtml = role === 'user'
+    ? `<div class="msg-avatar me">你</div>`
+    : `<div class="msg-avatar ai">${m?.icon || '🐊'}</div>`;
+  div.innerHTML = `${avHtml}<div class="note-block">${html}${extra}</div>`;
+  wrap.appendChild(div);
+  wrap.scrollTop = wrap.scrollHeight;
+}
+
+function addFeedback(bubbleEl, msgText, abVariant) {
+  const hash = btoa(unescape(encodeURIComponent(msgText.slice(0, 50)))).replace(/[^a-z0-9]/gi, '').slice(0, 20);
+  const row = document.createElement('div');
+  row.className = 'feedback-row';
+  row.innerHTML = `<span class="feedback-label">Câu này</span><button class="fb-btn up">👍 Hữu ích</button><button class="fb-btn dn">👎 Không</button><span class="fb-note"></span>`;
+  const up = row.querySelector('.up'), dn = row.querySelector('.dn');
+  const vote = async (r) => {
+    up.classList.toggle('voted', r === 1); dn.classList.toggle('voted', r === -1);
+    row.querySelector('.fb-note').textContent = r === 1 ? '· Cảm ơn!' : '· Đã ghi nhận';
+    if (!CONFIGURED) return;
+    await fetch(WORKER_URL, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'feedback', hash, text: msgText, rating: r, topic: curTopic, mode: curMode, ab_variant: abVariant }),
+    }).catch(() => {});
+  };
+  up.onclick = () => vote(1); dn.onclick = () => vote(-1);
+  bubbleEl.querySelector('.note-block').appendChild(row);
+}
+
+function showTyping() {
+  const wrap = document.getElementById('messages'), div = document.createElement('div');
+  div.className = 'msg-block'; div.id = 'typing';
+  const m = MODES[curMode];
+  div.innerHTML = `<div class="msg-avatar ai">${m?.icon || '🐊'}</div><div class="note-block"><div class="typing-block"><span></span><span></span><span></span></div></div>`;
+  wrap.appendChild(div); wrap.scrollTop = wrap.scrollHeight;
+}
+function rmTyping() { document.getElementById('typing')?.remove(); }
+
+function clearChat() {
+  history = [];
+  document.getElementById('messages').innerHTML = '';
+  appendMsg('ai', 'Cuộc trò chuyện mới bắt đầu — hỏi gì về tiếng Đức đi!');
+}
+
+// ── Send ──────────────────────────────────
+async function sendMessage() {
+  if (busy) return;
+  const inp = document.getElementById('msgInput');
+  const text = inp.value.trim();
+  if (!text) return;
+  inp.value = ''; inp.style.height = '22px';
+  document.getElementById('sendBtn').disabled = true;
+  busy = true;
+
+  appendMsg('user', md(text));
+  history.push({ role: 'user', content: `[Chủ đề:${curTopic}][Chế độ:${curMode}][Độ khó:${sessionState.difficulty}/10] ${text}` });
+  showTyping();
+
+  try {
+    if (!navigator.onLine) throw new Error('Đang offline. Kiểm tra kết nối mạng.');
+
+    const mNote = document.querySelector(`.zk-note[data-mode="${curMode}"]`);
+    const mSys = mNote?.dataset.sys || '';
+
+    const res = await fetch(WORKER_URL, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: history, topic: curTopic, mode: mSys, sessionState }),
+    });
+    if (!res.ok) throw new Error(`Lỗi server ${res.status}`);
+    const data = await res.json();
+    rmTyping();
+
+    const reply = data.reply || 'Xin lỗi, có lỗi xảy ra.';
+    history.push({ role: 'assistant', content: reply });
+
+    // Update state
+    if (data.sessionState) {
+      Object.assign(sessionState, data.sessionState);
+      updateDiffCrumb();
+    }
+
+    // AB badge
+    const abEl = document.getElementById('abBadge');
+    if (data.abVariant) { abEl.textContent = `🧪 ${data.abVariant.split('::')[1]}`; abEl.classList.remove('hidden'); }
+    else abEl.classList.add('hidden');
+
+    // Build chips
+    const toolsUsed = data.toolsUsed || [];
+    let chipsHtml = '<div class="note-chips"><span class="chip xp">+10 XP</span>';
+    toolsUsed.forEach(t => { chipsHtml += `<span class="chip tool">${t}</span>`; });
+    if (data.sessionState?.difficulty !== sessionState?.difficulty) chipsHtml += `<span class="chip diff">📈 Độ khó ${data.sessionState.difficulty}/10</span>`;
+    chipsHtml += '</div>';
+
+    appendMsg('ai', md(reply) + chipsHtml);
+
+    // Add feedback
+    const lastMsg = document.getElementById('messages').lastElementChild;
+    if (lastMsg) addFeedback(lastMsg, reply, data.abVariant);
+
+    if (user) await loadMemory();
+
+  } catch (err) {
+    rmTyping();
+    appendMsg('ai', `<strong>Lỗi:</strong> ${err.message}`);
+  }
+
+  document.getElementById('sendBtn').disabled = false;
+  busy = false;
+  document.getElementById('msgInput').focus();
+}
+
+function sendQ(t) { document.getElementById('msgInput').value = t; sendMessage(); }
+
+
+</script>
 </body>
 </html>
