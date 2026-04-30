@@ -2351,7 +2351,36 @@
                                   "ipa":  "/betsaːlen/",
                                   "example":  "Ich möchte heute bezahlen."
                               }
-                          ]
+                          ],
+               "CodexA1Update":  [
+                                     {
+                                         "word":  "der Alltag",
+                                         "gender":  "der",
+                                         "pos":  "Danh từ",
+                                         "vi":  "đời sống hằng ngày",
+                                         "en":  "everyday life",
+                                         "ipa":  "",
+                                         "example":  "Mein Alltag beginnt um sieben Uhr."
+                                     },
+                                     {
+                                         "word":  "die Frage",
+                                         "gender":  "die",
+                                         "pos":  "Danh từ",
+                                         "vi":  "câu hỏi",
+                                         "en":  "question",
+                                         "ipa":  "",
+                                         "example":  "Ich habe eine Frage."
+                                     },
+                                     {
+                                         "word":  "antworten",
+                                         "gender":  "-",
+                                         "pos":  "Động từ",
+                                         "vi":  "trả lời",
+                                         "en":  "to answer",
+                                         "ipa":  "",
+                                         "example":  "Kannst du mir bitte antworten?"
+                                     }
+                                  ]
            },
     "A2":  {
                "Reisen":  [
@@ -4705,7 +4734,36 @@
                                              "ipa":  "/unteʁʁiçt/",
                                              "example":  "der Unterricht ist heute wichtig."
                                          }
-                                     ]
+                                     ],
+               "CodexA2Update":  [
+                                     {
+                                         "word":  "verschieben",
+                                         "gender":  "-",
+                                         "pos":  "Động từ",
+                                         "vi":  "dời lịch",
+                                         "en":  "to postpone",
+                                         "ipa":  "",
+                                         "example":  "Wir müssen den Termin verschieben."
+                                     },
+                                     {
+                                         "word":  "die Verbindung",
+                                         "gender":  "die",
+                                         "pos":  "Danh từ",
+                                         "vi":  "kết nối / chuyến nối",
+                                         "en":  "connection",
+                                         "ipa":  "",
+                                         "example":  "Die Verbindung nach München ist gut."
+                                     },
+                                     {
+                                         "word":  "sich anmelden",
+                                         "gender":  "-",
+                                         "pos":  "Động từ",
+                                         "vi":  "đăng ký",
+                                         "en":  "to register",
+                                         "ipa":  "",
+                                         "example":  "Ich melde mich für den Kurs an."
+                                     }
+                                  ]
            },
     "B1":  {
                "Arbeit":  [
@@ -7041,7 +7099,36 @@
                                            "ipa":  "/nakshaltig/",
                                            "example":  "Das ist heute wirklich nachhaltig."
                                        }
-                                   ]
+                                   ],
+               "CodexB1Update":  [
+                                     {
+                                         "word":  "die Voraussetzung",
+                                         "gender":  "die",
+                                         "pos":  "Danh từ",
+                                         "vi":  "điều kiện tiên quyết",
+                                         "en":  "requirement",
+                                         "ipa":  "",
+                                         "example":  "Erfahrung ist eine wichtige Voraussetzung."
+                                     },
+                                     {
+                                         "word":  "vorbeugen",
+                                         "gender":  "-",
+                                         "pos":  "Động từ",
+                                         "vi":  "phòng ngừa",
+                                         "en":  "to prevent",
+                                         "ipa":  "",
+                                         "example":  "Sport kann Krankheiten vorbeugen."
+                                     },
+                                     {
+                                         "word":  "sich bewerben",
+                                         "gender":  "-",
+                                         "pos":  "Động từ",
+                                         "vi":  "ứng tuyển",
+                                         "en":  "to apply",
+                                         "ipa":  "",
+                                         "example":  "Sie bewirbt sich um eine Stelle."
+                                     }
+                                  ]
            },
     "B2":  {
                "Gesellschaft":  [
@@ -9395,6 +9482,35 @@
                                           "ipa":  "/bɔʏ̯ʁtaɪ̯len/",
                                           "example":  "Ich möchte heute beurteilen."
                                       }
+                                  ],
+               "CodexB2Update":  [
+                                     {
+                                         "word":  "die Stellungnahme",
+                                         "gender":  "die",
+                                         "pos":  "Danh từ",
+                                         "vi":  "bản nêu quan điểm",
+                                         "en":  "statement",
+                                         "ipa":  "",
+                                         "example":  "Die Zeitung veröffentlichte eine Stellungnahme."
+                                     },
+                                     {
+                                         "word":  "nachvollziehbar",
+                                         "gender":  "-",
+                                         "pos":  "Tính từ",
+                                         "vi":  "có thể hiểu được",
+                                         "en":  "understandable",
+                                         "ipa":  "",
+                                         "example":  "Die Entscheidung ist nachvollziehbar."
+                                     },
+                                     {
+                                         "word":  "die Datenerhebung",
+                                         "gender":  "die",
+                                         "pos":  "Danh từ",
+                                         "vi":  "việc thu thập dữ liệu",
+                                         "en":  "data collection",
+                                         "ipa":  "",
+                                         "example":  "Die Datenerhebung war anonym."
+                                     }
                                   ]
            }
 }

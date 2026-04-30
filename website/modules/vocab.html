@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Từ Vựng Tiếng Đức A1–A2</title>
+<title>Từ Vựng Tiếng Đức A1-B2</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -329,7 +329,7 @@ body { overflow-y: auto !important; }
 
 <nav class="tb">
   <div class="logo">🇩🇪</div>
-  <div class="brand">Từ Vựng Đức <sup>A1-A2</sup></div>
+  <div class="brand">Từ Vựng Đức <sup>A1-B2</sup></div>
   <div class="sw"><span class="si">🔍</span><input type="text" id="sI" placeholder="Tìm từ vựng..."></div>
   <div class="tr">
     <div class="spw">🐢<input type="range" id="ttsR" min="0.5" max="1.2" step="0.1" value="0.85">🐇</div>
@@ -342,10 +342,10 @@ body { overflow-y: auto !important; }
 
 <section class="hero">
   <h1>🗄️ Tủ Từ Vựng Tiếng Đức</h1>
-  <p>3.168 từ A1→B2. Mở tủ → học từ → chia động từ, biến cách, B1/B2 nâng cao.</p>
+  <p>3.190+ từ A1→B2. Mở tủ → học từ → chia động từ, biến cách, B1/B2 nâng cao.</p>
   <div class="pills">
     <span class="pill" id="totPill">– từ</span>
-    <span class="pill g">A1–A2</span>
+    <span class="pill g">A1–B2</span>
     <span class="pill o">A1 → B2</span>
     <span class="pill">🌙 Dark mode</span>
     <span class="pill">⚙️ Conjugation</span>
@@ -3729,6 +3729,32 @@ function speakBtnHtml(word, small){
     onclick="event.stopPropagation();speakWord('${esc(word).replace(/'/g,'\\\'')}')">🔊</button>`;
 }
 
+vocab.push(
+{w:"der Alltag",art:"der",pl:"",type:"N",ipa:"",en:"everyday life",vi:"đời sống hằng ngày",gr:"der Alltag; kein Plural",ex:"Mein Alltag beginnt um sieben Uhr.",exVi:"Cuộc sống hằng ngày của tôi bắt đầu lúc 7 giờ.",cat:"Alltag"},
+{w:"die Frage",art:"die",pl:"Fragen",type:"N",ipa:"",en:"question",vi:"câu hỏi",gr:"die Frage, die Fragen",ex:"Ich habe eine Frage.",exVi:"Tôi có một câu hỏi.",cat:"Kommunikation"},
+{w:"antworten",art:"",pl:"",type:"V",ipa:"",en:"to answer",vi:"trả lời",gr:"antwortet; hat geantwortet; + Dativ",ex:"Kannst du mir bitte antworten?",exVi:"Bạn có thể trả lời tôi không?",cat:"Kommunikation"},
+{w:"billig",art:"",pl:"",type:"Adj",ipa:"",en:"cheap",vi:"rẻ",gr:"billig - billiger - am billigsten",ex:"Das Brot ist billig.",exVi:"Bánh mì rẻ.",cat:"Einkaufen"},
+{w:"die Öffnungszeiten",art:"die",pl:"",type:"N",ipa:"",en:"opening hours",vi:"giờ mở cửa",gr:"Plural",ex:"Die Öffnungszeiten stehen an der Tür.",exVi:"Giờ mở cửa ghi ở cửa.",cat:"Zeit"},
+{w:"der Kassenzettel",art:"der",pl:"Kassenzettel",type:"N",ipa:"",en:"receipt",vi:"hóa đơn mua hàng",gr:"der Kassenzettel, die Kassenzettel",ex:"Ich brauche den Kassenzettel.",exVi:"Tôi cần hóa đơn.",cat:"Einkaufen"},
+{w:"die Untersuchung",art:"die",pl:"Untersuchungen",type:"N",ipa:"",en:"medical examination",vi:"cuộc khám / kiểm tra",gr:"die Untersuchung, die Untersuchungen",ex:"Die Untersuchung dauert zehn Minuten.",exVi:"Cuộc khám kéo dài mười phút.",cat:"Gesundheit"},
+{w:"verschieben",art:"",pl:"",type:"V",ipa:"",en:"to postpone / move",vi:"dời lịch",gr:"verschiebt; hat verschoben",ex:"Wir müssen den Termin verschieben.",exVi:"Chúng ta phải dời lịch hẹn.",cat:"Büro"},
+{w:"zuverlässig",art:"",pl:"",type:"Adj",ipa:"",en:"reliable",vi:"đáng tin cậy",gr:"zuverlässig - zuverlässiger",ex:"Der Zug ist normalerweise zuverlässig.",exVi:"Tàu thường đáng tin cậy.",cat:"Verkehr"},
+{w:"die Verbindung",art:"die",pl:"Verbindungen",type:"N",ipa:"",en:"connection",vi:"kết nối / chuyến nối",gr:"die Verbindung, die Verbindungen",ex:"Die Verbindung nach München ist gut.",exVi:"Chuyến nối tới Munich tốt.",cat:"Verkehr"},
+{w:"die Umleitung",art:"die",pl:"Umleitungen",type:"N",ipa:"",en:"detour",vi:"đường vòng / chuyển hướng",gr:"die Umleitung, die Umleitungen",ex:"Wegen der Baustelle gibt es eine Umleitung.",exVi:"Vì công trường nên có đường vòng.",cat:"Stadt"},
+{w:"sich anmelden",art:"",pl:"",type:"V",ipa:"",en:"to register",vi:"đăng ký",gr:"meldet sich an; hat sich angemeldet",ex:"Ich melde mich für den Kurs an.",exVi:"Tôi đăng ký khóa học.",cat:"Lernen"},
+{w:"die Voraussetzung",art:"die",pl:"Voraussetzungen",type:"N",ipa:"",en:"requirement",vi:"điều kiện tiên quyết",gr:"die Voraussetzung, die Voraussetzungen",ex:"Erfahrung ist eine wichtige Voraussetzung.",exVi:"Kinh nghiệm là một điều kiện quan trọng.",cat:"B1-Beruf"},
+{w:"die Zustimmung",art:"die",pl:"Zustimmungen",type:"N",ipa:"",en:"approval / agreement",vi:"sự đồng ý",gr:"die Zustimmung, die Zustimmungen",ex:"Wir brauchen die Zustimmung der Gruppe.",exVi:"Chúng tôi cần sự đồng ý của nhóm.",cat:"B1-Gesellschaft"},
+{w:"die Nebenkosten",art:"die",pl:"",type:"N",ipa:"",en:"utility costs",vi:"chi phí phụ khi thuê nhà",gr:"Plural",ex:"Die Nebenkosten sind in der Miete enthalten.",exVi:"Chi phí phụ đã bao gồm trong tiền thuê.",cat:"B1-Wohnen"},
+{w:"vorbeugen",art:"",pl:"",type:"V",ipa:"",en:"to prevent",vi:"phòng ngừa",gr:"beugt vor; hat vorgebeugt",ex:"Sport kann Krankheiten vorbeugen.",exVi:"Thể thao có thể phòng ngừa bệnh.",cat:"B1-Gesundheit"},
+{w:"wiederverwenden",art:"",pl:"",type:"V",ipa:"",en:"to reuse",vi:"tái sử dụng",gr:"verwendet wieder; hat wiederverwendet",ex:"Man kann diese Tasche wiederverwenden.",exVi:"Có thể tái sử dụng chiếc túi này.",cat:"B1-Umwelt"},
+{w:"sich bewerben",art:"",pl:"",type:"V",ipa:"",en:"to apply",vi:"ứng tuyển",gr:"bewirbt sich; hat sich beworben; um + Akk",ex:"Sie bewirbt sich um eine Stelle.",exVi:"Cô ấy ứng tuyển một vị trí.",cat:"B1-Verben"},
+{w:"die Stellungnahme",art:"die",pl:"Stellungnahmen",type:"N",ipa:"",en:"statement / position paper",vi:"bản nêu quan điểm",gr:"die Stellungnahme, die Stellungnahmen",ex:"Die Zeitung veröffentlichte eine Stellungnahme.",exVi:"Tờ báo công bố một bản nêu quan điểm.",cat:"B2-Medien"},
+{w:"die Nachhaltigkeit",art:"die",pl:"",type:"N",ipa:"",en:"sustainability",vi:"sự bền vững",gr:"kein Plural",ex:"Nachhaltigkeit spielt eine zentrale Rolle.",exVi:"Sự bền vững đóng vai trò trung tâm.",cat:"B2-Wirtschaft"},
+{w:"nachvollziehbar",art:"",pl:"",type:"Adj",ipa:"",en:"understandable / traceable",vi:"có thể hiểu được / truy vết được",gr:"",ex:"Die Entscheidung ist nachvollziehbar.",exVi:"Quyết định đó có thể hiểu được.",cat:"B2-Adjektive"},
+{w:"in Betracht ziehen",art:"",pl:"",type:"V",ipa:"",en:"to consider",vi:"xem xét",gr:"zieht in Betracht; hat in Betracht gezogen",ex:"Wir ziehen mehrere Lösungen in Betracht.",exVi:"Chúng tôi xem xét nhiều giải pháp.",cat:"B2-Verben"},
+{w:"die Datenerhebung",art:"die",pl:"Datenerhebungen",type:"N",ipa:"",en:"data collection",vi:"việc thu thập dữ liệu",gr:"die Datenerhebung, die Datenerhebungen",ex:"Die Datenerhebung war anonym.",exVi:"Việc thu thập dữ liệu là ẩn danh.",cat:"B2-Wissenschaft"},
+{w:"differenzieren",art:"",pl:"",type:"V",ipa:"",en:"to differentiate",vi:"phân biệt có sắc thái",gr:"reg.; zwischen + Dat",ex:"Man muss zwischen Meinung und Tatsache differenzieren.",exVi:"Cần phân biệt giữa ý kiến và sự thật.",cat:"B2-Verben"}
+);
 const GROUPS = [{"id": "greet", "emoji": "🗣️", "title": "Giao tiếp", "desc": "Chào hỏi, hội thoại, cụm từ thông dụng", "cats": ["Begrüßung", "Ausdrücke", "Kommunikation", "Redemittel", "Alltag", "Redewendungen", "Idiome", "Beschwerden", "Telefonieren"], "color": "#0075de"}, {"id": "family", "emoji": "👨‍👩‍👧", "title": "Gia đình & Con người", "desc": "Gia đình, cảm xúc, tính cách", "cats": ["Familie", "Personen", "Beziehungen", "Soziales", "Gefühle", "Charakter"], "color": "#dd5b00"}, {"id": "home", "emoji": "🏠", "title": "Nhà ở & Đời sống", "desc": "Nhà ở, phòng, đồ vật, sinh hoạt", "cats": ["Wohnen", "Wohnung", "Zimmer", "Haushalt", "Hygiene", "Tagesablauf", "Alltag+", "Haus", "Gegenstände"], "color": "#2a9d99"}, {"id": "food", "emoji": "🍽️", "title": "Ăn uống & Bếp núc", "desc": "Thực phẩm, nhà hàng, nấu ăn", "cats": ["Essen", "Küche", "Restaurant", "Obst & Gemüse", "Einkaufen"], "color": "#1aae39"}, {"id": "school", "emoji": "📚", "title": "Học tập & Ngôn ngữ", "desc": "Trường học, ngữ pháp, ngôn ngữ", "cats": ["Schule", "Sprache", "Grammatik", "Lernen", "Bildung+"], "color": "#391c57"}, {"id": "work", "emoji": "💼", "title": "Công việc & Tài chính", "desc": "Nghề nghiệp, kinh tế, tài chính", "cats": ["Berufe", "Büro", "Wirtschaft", "Finanzen", "Bank"], "color": "#523410"}, {"id": "nature", "emoji": "🌍", "title": "Thế giới & Thiên nhiên", "desc": "Đất nước, thiên nhiên, thời tiết, động vật", "cats": ["Länder", "Natur", "Wetter", "Jahreszeiten", "Tiere", "Umwelt", "Klima", "Farben"], "color": "#2a9d99"}, {"id": "travel", "emoji": "🚌", "title": "Di chuyển & Du lịch", "desc": "Giao thông, du lịch, thành phố", "cats": ["Verkehr", "Reisen", "Stadt", "Reisephrasen", "Urlaubsphrasen"], "color": "#ff64c8"}, {"id": "health", "emoji": "🏥", "title": "Sức khỏe & Thể thao", "desc": "Cơ thể, bệnh tật, thể thao", "cats": ["Gesundheit", "Körper", "Sport", "Architektur"], "color": "#dd5b00"}, {"id": "time", "emoji": "⏰", "title": "Thời gian & Số học", "desc": "Số, thời gian, ngày tháng, toán học", "cats": ["Zeit", "Zahlen", "Wochentage", "Mathematik", "Mengen"], "color": "#0075de"}, {"id": "culture", "emoji": "🎨", "title": "Văn hoá & Nghệ thuật", "desc": "Âm nhạc, lễ hội, văn hoá Đức", "cats": ["Freizeit", "Musik", "Feste", "Kultur", "Mode", "Kleidung"], "color": "#391c57"}, {"id": "science", "emoji": "🔬", "title": "Khoa học & Xã hội", "desc": "Khoa học, công nghệ, chính trị", "cats": ["Wissenschaft", "Technik", "Politik", "Gesellschaft"], "color": "#523410"}, {"id": "grammar", "emoji": "📖", "title": "Ngữ pháp & Cấu trúc", "desc": "Động từ, danh từ, tính từ, cú pháp", "cats": ["Verben", "Adjektive", "Adverbien+", "Nomen", "Präpositionen", "Konjunktionen", "Demonstrativpronomen", "Fragewörter", "Gradpartikeln", "Personalpronomen"], "color": "#0075de"}, {"id": "b1", "emoji": "📗", "title": "B1 Thực chiến", "desc": "Beruf, Gesellschaft, Wohnen, Gesundheit, Umwelt, Verben", "cats": ["B1-Beruf", "B1-Gesellschaft", "B1-Wohnen", "B1-Gesundheit", "B1-Umwelt", "B1-Verben"], "color": "#0075de"}, {"id": "b2", "emoji": "📘", "title": "B2 Nâng cao", "desc": "Wissenschaft, Wirtschaft, Medien, Philosophie, Linguistik", "cats": ["B2-Wissenschaft", "B2-Wirtschaft", "B2-Medien", "B2-Philosophie", "B2-Linguistik", "B2-Verben", "B2-Adjektive"], "color": "#391c57"}];
 
 const IRREG_VERBS = [["sein", "ist", "war", "gewesen", "ist"], ["haben", "hat", "hatte", "gehabt", "hat"], ["werden", "wird", "wurde", "geworden", "ist"], ["gehen", "geht", "ging", "gegangen", "ist"], ["kommen", "kommt", "kam", "gekommen", "ist"], ["fahren", "fährt", "fuhr", "gefahren", "ist"], ["laufen", "läuft", "lief", "gelaufen", "ist"], ["fliegen", "fliegt", "flog", "geflogen", "ist"], ["nehmen", "nimmt", "nahm", "genommen", "hat"], ["geben", "gibt", "gab", "gegeben", "hat"], ["essen", "isst", "aß", "gegessen", "hat"], ["trinken", "trinkt", "trank", "getrunken", "hat"], ["schlafen", "schläft", "schlief", "geschlafen", "hat"], ["sprechen", "spricht", "sprach", "gesprochen", "hat"], ["schreiben", "schreibt", "schrieb", "geschrieben", "hat"], ["lesen", "liest", "las", "gelesen", "hat"], ["sehen", "sieht", "sah", "gesehen", "hat"], ["wissen", "weiß", "wusste", "gewusst", "hat"], ["kennen", "kennt", "kannte", "gekannt", "hat"], ["denken", "denkt", "dachte", "gedacht", "hat"], ["bringen", "bringt", "brachte", "gebracht", "hat"], ["heißen", "heißt", "hieß", "geheißen", "hat"], ["stehen", "steht", "stand", "gestanden", "hat"], ["liegen", "liegt", "lag", "gelegen", "hat"], ["sitzen", "sitzt", "saß", "gesessen", "hat"], ["finden", "findet", "fand", "gefunden", "hat"], ["lassen", "lässt", "ließ", "gelassen", "hat"], ["halten", "hält", "hielt", "gehalten", "hat"], ["fallen", "fällt", "fiel", "gefallen", "ist"], ["werfen", "wirft", "warf", "geworfen", "hat"], ["treffen", "trifft", "traf", "getroffen", "hat"], ["vergessen", "vergisst", "vergaß", "vergessen", "hat"], ["beginnen", "beginnt", "begann", "begonnen", "hat"], ["verlieren", "verliert", "verlor", "verloren", "hat"], ["gewinnen", "gewinnt", "gewann", "gewonnen", "hat"], ["schneiden", "schneidet", "schnitt", "geschnitten", "hat"], ["helfen", "hilft", "half", "geholfen", "hat"], ["empfehlen", "empfiehlt", "empfahl", "empfohlen", "hat"], ["schießen", "schießt", "schoss", "geschossen", "hat"], ["beißen", "beißt", "biss", "gebissen", "hat"], ["rufen", "ruft", "rief", "gerufen", "hat"], ["ziehen", "zieht", "zog", "gezogen", "hat/ist"], ["steigen", "steigt", "stieg", "gestiegen", "ist"], ["bitten", "bittet", "bat", "gebeten", "hat"], ["tragen", "trägt", "trug", "getragen", "hat"], ["waschen", "wäscht", "wusch", "gewaschen", "hat"], ["wachsen", "wächst", "wuchs", "gewachsen", "ist"], ["backen", "bäckt", "buk", "gebacken", "hat"], ["stoßen", "stößt", "stieß", "gestoßen", "hat/ist"], ["fließen", "fließt", "floss", "geflossen", "ist"]];
@@ -4016,7 +4042,7 @@ function chipH(w,q=''){
   const aB=w.art?`<span class="wa ${artC(w.art)}">${esc(w.art)}</span>`:'';
   const tB=`<span class="wtyp ${typC(w.type)}">${typL(w.type)}</span>`;
   const we=JSON.stringify(w.w);
-  return `<div class="wc" onclick="openP(${we})"><div class="ww">${hl(w.w,q)} ${aB} ${tB}</div>${w.pl?`<div style="font-size:9px;color:var(--tx3);margin-bottom:2px;font-family:monospace">–${esc(w.pl)}</div>`:''}<div class="wvi">${hl(w.vi,q)}</div><button class="ws" onclick="event.stopPropagation();speakWord(${we})" title="Phát âm">🔊</button></div>`;
+  return `<div class="wc" onclick='openP(${we})'><div class="ww">${hl(w.w,q)} ${aB} ${tB}</div>${w.pl?`<div style="font-size:9px;color:var(--tx3);margin-bottom:2px;font-family:monospace">–${esc(w.pl)}</div>`:''}<div class="wvi">${hl(w.vi,q)}</div><button class="ws" onclick='event.stopPropagation();speakWord(${we})' title="Phát âm">🔊</button></div>`;
 }
 function setView(v){
   viewMode=v;
@@ -4054,8 +4080,8 @@ function renderP(w){
     <div class="zkrow">${aB}${tB}${cB}</div>
     ${w.ipa?`<div class="zkipa">${esc(w.ipa)}</div>`:''}
     <div class="spkrow">
-      <button class="spkb m" onclick="speakWord(${we})">🔊 Phát âm</button>
-      <button class="spkb s" onclick="speakWord(${we},true)">🐢 Chậm</button>
+      <button class="spkb m" onclick='speakWord(${we})'>🔊 Phát âm</button>
+      <button class="spkb s" onclick='speakWord(${we},true)'>🐢 Chậm</button>
     </div>
     <div class="zkdiv"></div>
     <div class="zklbl">Nghĩa</div>
@@ -4067,9 +4093,9 @@ function renderP(w){
     ${w.gr?`<div class="zkdiv"></div><div class="zklbl">Ghi chú ngữ pháp</div><div class="zkgt">${w.gr.split(';').map(g=>`<span class="zkg">${esc(g.trim())}</span>`).join('')}</div>`:''}
     ${w.ex?`<div class="zkdiv"></div><div class="zklbl">Ví dụ minh hoạ</div>
     <div class="zkex"><div class="zkexde">${esc(w.ex)}</div><div class="zkexvi">${esc(w.exVi||'')}</div>
-    <button class="zkexspk" onclick="speakExample(${ee})">🔊 Nghe câu</button></div>`:''}
-    ${same.length?`<div class="zkdiv"></div><div class="zklbl">🔗 Cùng chủ đề (${esc(w.cat)})</div><div class="zklinks">${same.map(v=>`<span class="zklink" onclick="openP(${JSON.stringify(v.w)})">${esc(v.w)}</span>`).join('')}</div>`:''}
-    ${rel.length?`<div class="zkdiv"></div><div class="zklbl">🔀 Từ liên quan</div><div class="zklinks">${rel.map(v=>`<span class="zklink rel" onclick="openP(${JSON.stringify(v.w)})">${esc(v.w)}</span>`).join('')}</div>`:''}`;
+    <button class="zkexspk" onclick='speakExample(${ee})'>🔊 Nghe câu</button></div>`:''}
+    ${same.length?`<div class="zkdiv"></div><div class="zklbl">🔗 Cùng chủ đề (${esc(w.cat)})</div><div class="zklinks">${same.map(v=>`<span class="zklink" onclick='openP(${JSON.stringify(v.w)})'>${esc(v.w)}</span>`).join('')}</div>`:''}
+    ${rel.length?`<div class="zkdiv"></div><div class="zklbl">🔀 Từ liên quan</div><div class="zklinks">${rel.map(v=>`<span class="zklink rel" onclick='openP(${JSON.stringify(v.w)})'>${esc(v.w)}</span>`).join('')}</div>`:''}`;
 }
 function closeP(){
   document.getElementById('wOv').classList.remove('show');
@@ -4103,7 +4129,7 @@ function buildIrregTables(){
   const vb=document.getElementById('irregVerbBody');
   IRREG_VERBS.forEach(([inf,pres3,prät,p2,aux])=>{
     const tr=document.createElement('tr');
-    tr.innerHTML=`<td onclick="openP(${JSON.stringify(inf)})">${esc(inf)}</td><td class="irr">${esc(pres3)}</td><td class="irr">${esc(prät)}</td><td class="irr">${esc(p2)}</td><td class="aux">${esc(aux)}</td>`;
+    tr.innerHTML=`<td onclick='openP(${JSON.stringify(inf)})'>${esc(inf)}</td><td class="irr">${esc(pres3)}</td><td class="irr">${esc(prät)}</td><td class="irr">${esc(p2)}</td><td class="aux">${esc(aux)}</td>`;
     vb.appendChild(tr);
   });
   // Nouns

@@ -1,12 +1,259 @@
-﻿{
+{
   "eyebrow": "Lesen",
-  "title": "Đọc để hiểu ý trước, rồi mới đọc để nâng cấp từ vựng và ngữ pháp.",
-  "description": "Module này dành cho bài đọc ngắn, glossary, câu hỏi kiểm tra và bài viết lại theo mức độ.",
-  "highlights": [
-    { "title": "Text ngắn", "text": "80-150 từ cho A1-A2, dài hơn ở B1-B2." },
-    { "title": "Glossary", "text": "Giải nghĩa từ mới ngay cạnh đoạn đọc." },
-    { "title": "Questions", "text": "Kiểm tra hiểu ý chính và chi tiết." },
-    { "title": "Rewrite", "text": "Viết lại 2-3 câu để tăng active recall." }
+  "title": "Đọc theo level, bắt ý trước rồi dùng glossary để nâng cấp từ vựng và ngữ pháp.",
+  "description": "Module đọc gom graded texts A1-B2, glossary inline, câu hỏi hiểu bài, ghi chú cá nhân và prompt viết lại.",
+  "overview": {
+    "studyFlow": [
+      "Chọn đúng level",
+      "Đọc lấy ý chính không tra từ",
+      "Mở glossary để xử lý từ khóa",
+      "Làm quiz",
+      "Viết lại 2-3 câu bằng cấu trúc mới"
+    ],
+    "focusPoints": [
+      "Skimming ý chính",
+      "Scanning chi tiết",
+      "Từ nối và dấu hiệu ngữ pháp",
+      "Active recall bằng rewrite"
+    ]
+  },
+  "levels": [
+    {
+      "level": "A1",
+      "label": "A1 Einstieg",
+      "focus": "Đoạn ngắn, câu chính đơn giản, thông tin cá nhân và đời sống hằng ngày.",
+      "texts": [
+        {
+          "slug": "a1-neuer-deutschkurs",
+          "title": "Mein neuer Deutschkurs",
+          "topic": "Kurs & Vorstellung",
+          "estimatedMinutes": 4,
+          "grammarFocus": ["sein/haben", "Präsens", "W-Fragen"],
+          "text": [
+            "Ich heiße Linh und komme aus Viet Nam. Seit zwei Monaten wohne ich in Berlin.",
+            "Am Montag und am Mittwoch besuche ich einen Deutschkurs. Der Kurs beginnt um neun Uhr und endet um halb zwölf.",
+            "Unsere Lehrerin heißt Frau Schneider. Sie spricht langsam und schreibt neue Wörter an die Tafel.",
+            "Nach dem Kurs trinke ich oft Kaffee mit zwei Mitschülern. Wir sprechen ein bisschen Deutsch und helfen uns gegenseitig."
+          ],
+          "glossary": [
+            {"term": "besuche", "meaning": "tham gia / đi học", "note": "einen Kurs besuchen"},
+            {"term": "beginnt", "meaning": "bắt đầu", "note": "beginnen chia ngôi 3 số ít"},
+            {"term": "endet", "meaning": "kết thúc", "note": "enden cần -et"},
+            {"term": "Mitschülern", "meaning": "bạn cùng lớp", "note": "Dativ plural sau mit"},
+            {"term": "gegenseitig", "meaning": "lẫn nhau", "note": "dùng cho hành động qua lại"}
+          ],
+          "questions": [
+            {"q": "Linh học tiếng Đức vào những ngày nào?", "choices": ["Thứ Hai và thứ Tư", "Thứ Ba và thứ Sáu", "Mỗi ngày"], "answer": 0},
+            {"q": "Cô giáo làm gì với từ mới?", "choices": ["Gửi email", "Viết lên bảng", "Đọc rất nhanh"], "answer": 1},
+            {"q": "Sau giờ học Linh thường làm gì?", "choices": ["Đi làm ngay", "Uống cà phê với bạn học", "Gọi điện về nhà"], "answer": 1}
+          ],
+          "rewritePrompt": "Viết 3 câu giới thiệu lớp học của bạn với mẫu: Ich besuche..., Der Kurs beginnt..., Nach dem Kurs..."
+        },
+        {
+          "slug": "a1-im-supermarkt",
+          "title": "Im Supermarkt",
+          "topic": "Einkaufen",
+          "estimatedMinutes": 4,
+          "grammarFocus": ["Akkusativ", "möchten", "Preis"],
+          "text": [
+            "Heute kauft Jonas im Supermarkt ein. Er braucht Milch, Brot, Eier und zwei Äpfel.",
+            "An der Kasse fragt die Kassiererin: Möchten Sie eine Tüte?",
+            "Jonas sagt: Nein, danke. Ich habe einen Rucksack.",
+            "Alles zusammen kostet neun Euro achtzig. Jonas bezahlt mit Karte und geht nach Hause."
+          ],
+          "glossary": [
+            {"term": "kauft", "meaning": "mua", "note": "einkaufen = mua sắm"},
+            {"term": "braucht", "meaning": "cần", "note": "brauchen + Akkusativ"},
+            {"term": "Tüte", "meaning": "túi", "note": "die Tüte"},
+            {"term": "Rucksack", "meaning": "ba lô", "note": "der Rucksack"},
+            {"term": "bezahlt", "meaning": "thanh toán", "note": "mit Karte bezahlen"}
+          ],
+          "questions": [
+            {"q": "Jonas cần mua gì?", "choices": ["Sữa, bánh mì, trứng và táo", "Cà phê và bánh", "Một cái áo"], "answer": 0},
+            {"q": "Jonas có lấy túi không?", "choices": ["Có", "Không", "Không biết"], "answer": 1},
+            {"q": "Jonas trả tiền bằng gì?", "choices": ["Tiền mặt", "Thẻ", "Điện thoại"], "answer": 1}
+          ],
+          "rewritePrompt": "Đổi danh sách mua hàng và viết lại đoạn bằng 4 câu ngắn."
+        }
+      ]
+    },
+    {
+      "level": "A2",
+      "label": "A2 Alltag",
+      "focus": "Đoạn dài hơn, có thời gian, lý do, kế hoạch và thông tin chi tiết.",
+      "texts": [
+        {
+          "slug": "a2-wohnungssuche",
+          "title": "Eine kleine Wohnung suchen",
+          "topic": "Wohnen",
+          "estimatedMinutes": 6,
+          "grammarFocus": ["Perfekt", "Dativ", "Wechselpräpositionen"],
+          "text": [
+            "Mara sucht seit drei Wochen eine kleine Wohnung in Leipzig. Gestern hat sie eine Anzeige im Internet gefunden.",
+            "Die Wohnung liegt in der Nähe vom Bahnhof und hat zwei Zimmer, eine Küche und einen Balkon.",
+            "Am Nachmittag hat Mara den Vermieter angerufen. Sie kann die Wohnung am Freitag um sechzehn Uhr besichtigen.",
+            "Besonders wichtig ist ihr, dass die Miete nicht zu hoch ist und dass es in der Nähe einen Supermarkt gibt."
+          ],
+          "glossary": [
+            {"term": "Anzeige", "meaning": "tin rao / quảng cáo", "note": "die Anzeige"},
+            {"term": "in der Nähe", "meaning": "ở gần", "note": "in der Nähe von + Dativ"},
+            {"term": "Vermieter", "meaning": "chủ nhà cho thuê", "note": "der Vermieter"},
+            {"term": "besichtigen", "meaning": "đi xem nhà", "note": "eine Wohnung besichtigen"},
+            {"term": "Miete", "meaning": "tiền thuê", "note": "die Miete"}
+          ],
+          "questions": [
+            {"q": "Mara tìm nhà bao lâu rồi?", "choices": ["Ba ngày", "Ba tuần", "Ba tháng"], "answer": 1},
+            {"q": "Căn hộ ở gần đâu?", "choices": ["Nhà ga", "Trường học", "Công viên"], "answer": 0},
+            {"q": "Điều gì đặc biệt quan trọng với Mara?", "choices": ["Có thang máy", "Tiền thuê không quá cao", "Có gara"], "answer": 1}
+          ],
+          "rewritePrompt": "Viết lại đoạn theo ngôi Ich: Ich suche seit..., Gestern habe ich..., Am Freitag..."
+        },
+        {
+          "slug": "a2-termin-beim-arzt",
+          "title": "Ein Termin beim Arzt",
+          "topic": "Gesundheit",
+          "estimatedMinutes": 6,
+          "grammarFocus": ["weil", "Perfekt", "Modalverben"],
+          "text": [
+            "Seit Montag hat Emir Halsschmerzen und Fieber. Deshalb ruft er am Morgen in der Arztpraxis an.",
+            "Die Assistentin fragt nach seinem Namen, seiner Telefonnummer und den Symptomen.",
+            "Emir bekommt einen Termin um elf Uhr. Er soll seine Versicherungskarte mitbringen und im Wartezimmer eine Maske tragen.",
+            "Nach der Untersuchung sagt die Ärztin, dass Emir viel trinken und zwei Tage zu Hause bleiben soll."
+          ],
+          "glossary": [
+            {"term": "Halsschmerzen", "meaning": "đau họng", "note": "Plural dùng như bệnh"},
+            {"term": "Arztpraxis", "meaning": "phòng khám", "note": "die Praxis"},
+            {"term": "Symptomen", "meaning": "triệu chứng", "note": "Dativ plural"},
+            {"term": "Versicherungskarte", "meaning": "thẻ bảo hiểm", "note": "die Karte"},
+            {"term": "Untersuchung", "meaning": "khám bệnh", "note": "die Untersuchung"}
+          ],
+          "questions": [
+            {"q": "Emir có triệu chứng gì?", "choices": ["Đau lưng", "Đau họng và sốt", "Đau bụng"], "answer": 1},
+            {"q": "Emir cần mang gì?", "choices": ["Hộ chiếu", "Thẻ bảo hiểm", "Sổ tay"], "answer": 1},
+            {"q": "Bác sĩ khuyên Emir làm gì?", "choices": ["Đi làm ngay", "Uống nhiều nước và ở nhà hai ngày", "Chơi thể thao"], "answer": 1}
+          ],
+          "rewritePrompt": "Tóm tắt bài bằng 3 câu dùng deshalb, weil và soll."
+        }
+      ]
+    },
+    {
+      "level": "B1",
+      "label": "B1 Selbstständig",
+      "focus": "Ý kiến cá nhân, lý do, ưu nhược điểm và thông tin xã hội quen thuộc.",
+      "texts": [
+        {
+          "slug": "b1-homeoffice-erfahrung",
+          "title": "Homeoffice: praktisch, aber nicht perfekt",
+          "topic": "Arbeit",
+          "estimatedMinutes": 8,
+          "grammarFocus": ["obwohl", "deshalb", "Vorfeld"],
+          "text": [
+            "Seit der Pandemie arbeiten viele Angestellte regelmäßig im Homeoffice. Für einige ist das sehr praktisch, weil sie keine Zeit auf dem Weg zur Arbeit verlieren.",
+            "Außerdem können sie ihren Tag oft flexibler planen. Trotzdem gibt es auch Nachteile.",
+            "Manche Menschen fühlen sich zu Hause isoliert, obwohl sie jeden Tag online mit Kollegen sprechen.",
+            "Deshalb ist eine gute Mischung wichtig: ein paar Tage im Büro für persönliche Gespräche und ein paar Tage zu Hause für konzentrierte Aufgaben."
+          ],
+          "glossary": [
+            {"term": "Angestellte", "meaning": "nhân viên", "note": "die Angestellten / der Angestellte"},
+            {"term": "regelmäßig", "meaning": "đều đặn", "note": "trạng từ tần suất"},
+            {"term": "flexibler", "meaning": "linh hoạt hơn", "note": "Komparativ"},
+            {"term": "isoliert", "meaning": "bị cô lập", "note": "sich isoliert fühlen"},
+            {"term": "Mischung", "meaning": "sự pha trộn / kết hợp", "note": "die Mischung"}
+          ],
+          "questions": [
+            {"q": "Lợi ích đầu tiên của Homeoffice trong bài là gì?", "choices": ["Không mất thời gian đi làm", "Lương cao hơn", "Có thêm ngày nghỉ"], "answer": 0},
+            {"q": "Nhược điểm được nhắc đến là gì?", "choices": ["Quá ồn", "Cảm thấy cô lập", "Không có internet"], "answer": 1},
+            {"q": "Tác giả đề xuất điều gì?", "choices": ["Chỉ làm ở nhà", "Chỉ làm ở văn phòng", "Kết hợp văn phòng và ở nhà"], "answer": 2}
+          ],
+          "rewritePrompt": "Viết 4 câu nêu ý kiến của bạn về Homeoffice, bắt buộc dùng weil, obwohl và deshalb."
+        },
+        {
+          "slug": "b1-nachhaltig-einkaufen",
+          "title": "Nachhaltig einkaufen",
+          "topic": "Umwelt",
+          "estimatedMinutes": 8,
+          "grammarFocus": ["Relativsatz", "Infinitiv mit zu", "Konnektoren"],
+          "text": [
+            "Immer mehr Menschen versuchen, nachhaltiger einzukaufen. Sie wählen Produkte, die wenig Verpackung haben oder aus der Region kommen.",
+            "Das ist nicht immer einfach, denn regionale Produkte sind manchmal teurer als importierte Waren.",
+            "Trotzdem lohnt es sich, bewusster zu kaufen. Wer weniger wegwirft, spart langfristig Geld und schützt gleichzeitig die Umwelt.",
+            "Ein guter erster Schritt ist, vor dem Einkauf eine Liste zu schreiben und nur das zu kaufen, was man wirklich braucht."
+          ],
+          "glossary": [
+            {"term": "nachhaltiger", "meaning": "bền vững hơn", "note": "Komparativ của nachhaltig"},
+            {"term": "Verpackung", "meaning": "bao bì", "note": "die Verpackung"},
+            {"term": "importierte Waren", "meaning": "hàng nhập khẩu", "note": "Partizip II như tính từ"},
+            {"term": "lohnt es sich", "meaning": "đáng để làm", "note": "es lohnt sich + zu"},
+            {"term": "bewusster", "meaning": "có ý thức hơn", "note": "Komparativ"}
+          ],
+          "questions": [
+            {"q": "Sản phẩm bền vững trong bài thường có đặc điểm gì?", "choices": ["Nhiều bao bì", "Ít bao bì hoặc đến từ khu vực gần", "Luôn rẻ nhất"], "answer": 1},
+            {"q": "Vì sao mua hàng bền vững không luôn dễ?", "choices": ["Vì đôi khi đắt hơn", "Vì không có danh sách", "Vì không được phép"], "answer": 0},
+            {"q": "Bước đầu tiên tốt là gì?", "choices": ["Mua thật nhiều", "Viết danh sách trước khi mua", "Chỉ mua online"], "answer": 1}
+          ],
+          "rewritePrompt": "Viết lại đoạn thành lời khuyên cho bạn bè với cấu trúc: Du solltest..., Es lohnt sich..., Wer..."
+        }
+      ]
+    },
+    {
+      "level": "B2",
+      "label": "B2 Präziser Ausdruck",
+      "focus": "Lập luận có sắc thái, nominal style, register và chủ đề xã hội phức tạp hơn.",
+      "texts": [
+        {
+          "slug": "b2-medienkompetenz",
+          "title": "Medienkompetenz in einer schnellen Öffentlichkeit",
+          "topic": "Medien",
+          "estimatedMinutes": 10,
+          "grammarFocus": ["Nominalisierung", "Konnektoren", "Passiversatz"],
+          "text": [
+            "Die Verbreitung von Informationen hat sich durch soziale Medien stark beschleunigt. Innerhalb weniger Minuten können Beiträge tausende Menschen erreichen.",
+            "Einerseits erleichtert diese Geschwindigkeit den Zugang zu aktuellen Ereignissen. Andererseits steigt die Gefahr, dass unvollständige oder falsche Meldungen ungeprüft weitergeleitet werden.",
+            "Medienkompetenz bedeutet daher nicht nur, technische Geräte bedienen zu können. Entscheidend ist die Fähigkeit, Quellen zu prüfen, Interessen zu erkennen und Informationen einzuordnen.",
+            "Je schneller Öffentlichkeit entsteht, desto wichtiger wird ein langsamer, kritischer Blick."
+          ],
+          "glossary": [
+            {"term": "Verbreitung", "meaning": "sự lan truyền", "note": "Nominalisierung từ verbreiten"},
+            {"term": "beschleunigt", "meaning": "được tăng tốc", "note": "sich beschleunigen"},
+            {"term": "Einerseits", "meaning": "một mặt", "note": "đi với Andererseits"},
+            {"term": "ungeprüft", "meaning": "chưa được kiểm chứng", "note": "Partizip II phủ định"},
+            {"term": "einzuordnen", "meaning": "đặt vào bối cảnh", "note": "zu-Infinitiv của einordnen"}
+          ],
+          "questions": [
+            {"q": "Vấn đề chính của tốc độ truyền thông là gì?", "choices": ["Không ai đọc tin", "Tin sai hoặc thiếu có thể bị chia sẻ chưa kiểm chứng", "Mọi bài viết đều quá dài"], "answer": 1},
+            {"q": "Medienkompetenz trong bài bao gồm gì?", "choices": ["Chỉ dùng thiết bị", "Kiểm tra nguồn, nhận ra lợi ích, đặt thông tin vào bối cảnh", "Chỉ đọc tiêu đề"], "answer": 1},
+            {"q": "Câu kết luận nhấn mạnh điều gì?", "choices": ["Cần nhìn chậm và phê phán hơn", "Cần đăng bài nhanh hơn", "Cần bỏ mạng xã hội"], "answer": 0}
+          ],
+          "rewritePrompt": "Viết một đoạn 5 câu về mạng xã hội, dùng Einerseits/Andererseits, daher và entscheidend ist..."
+        },
+        {
+          "slug": "b2-lebenslanges-lernen",
+          "title": "Lebenslanges Lernen als berufliche Strategie",
+          "topic": "Bildung & Beruf",
+          "estimatedMinutes": 10,
+          "grammarFocus": ["Funktionsverbgefüge", "Partizipialattribute", "Passiversatz"],
+          "text": [
+            "In vielen Berufen reicht eine einmal abgeschlossene Ausbildung nicht mehr aus. Technologien verändern sich, Arbeitsprozesse werden digitalisiert und neue Anforderungen entstehen schneller als früher.",
+            "Lebenslanges Lernen ist deshalb keine dekorative Zusatzqualifikation, sondern eine berufliche Strategie.",
+            "Wer regelmäßig kleine Lernschritte in den Alltag integriert, bleibt handlungsfähig und kann Veränderungen aktiv mitgestalten.",
+            "Wichtig ist dabei nicht, ständig neue Zertifikate zu sammeln, sondern relevantes Wissen rechtzeitig zu aktualisieren und praktisch anzuwenden."
+          ],
+          "glossary": [
+            {"term": "abgeschlossene Ausbildung", "meaning": "đào tạo đã hoàn tất", "note": "Partizipialattribut"},
+            {"term": "Anforderungen", "meaning": "yêu cầu", "note": "die Anforderung"},
+            {"term": "Zusatzqualifikation", "meaning": "bằng cấp/kỹ năng bổ sung", "note": "die Qualifikation"},
+            {"term": "handlungsfähig", "meaning": "có khả năng hành động", "note": "fähig + zu"},
+            {"term": "anzuwenden", "meaning": "áp dụng", "note": "zu-Infinitiv của anwenden"}
+          ],
+          "questions": [
+            {"q": "Vì sao một bằng cấp ban đầu không còn đủ?", "choices": ["Vì công nghệ và quy trình thay đổi nhanh", "Vì mọi người không thích học", "Vì không có việc làm"], "answer": 0},
+            {"q": "Tác giả xem lifelong learning là gì?", "choices": ["Một trang trí CV", "Một chiến lược nghề nghiệp", "Một sở thích cuối tuần"], "answer": 1},
+            {"q": "Điều quan trọng không phải là gì?", "choices": ["Cập nhật kiến thức", "Áp dụng thực tế", "Sưu tập chứng chỉ liên tục"], "answer": 2}
+          ],
+          "rewritePrompt": "Viết 5 câu về kế hoạch học nghề nghiệp của bạn, dùng deshalb, wer..., nicht..., sondern..."
+        }
+      ]
+    }
   ],
   "resourceCategory": "reading"
 }

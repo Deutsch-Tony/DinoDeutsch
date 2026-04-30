@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>DinoDeutsch Reading A1-B2</title>
+<style>
+:root{
+  --bg:#fff;--bg2:#f6f5f4;--bg3:#efefed;
+  --tx:rgba(0,0,0,.95);--tx2:#615d59;--tx3:#a39e98;
+  --border:rgba(0,0,0,.1);
+  --blue:#0075de;--blue-hover:#005bab;--blue-bg:#f2f9ff;--blue-text:#097fe8;
+  --green:#1aae39;--orange:#dd5b00;--teal:#2a9d99;--purple:#391c57;
+  --shadow:rgba(0,0,0,.04) 0 4px 18px,rgba(0,0,0,.027) 0 2px 8px,rgba(0,0,0,.02) 0 1px 3px;
+  --shadow-deep:rgba(0,0,0,.01) 0 1px 3px,rgba(0,0,0,.02) 0 3px 7px,rgba(0,0,0,.04) 0 14px 28px,rgba(0,0,0,.05) 0 23px 52px;
+  --font:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+}
+[data-theme="dark"]{
+  --bg:#1a1916;--bg2:#222120;--bg3:#2e2d2b;
+  --tx:rgba(255,255,255,.92);--tx2:#aaa5a0;--tx3:#77716c;
+  --border:rgba(255,255,255,.1);
+  --blue:#4ea8f7;--blue-hover:#3d9af0;--blue-bg:rgba(0,117,222,.16);--blue-text:#62aef0;
+  --shadow:rgba(0,0,0,.28) 0 4px 18px;--shadow-deep:rgba(0,0,0,.5) 0 23px 52px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:var(--font);font-size:16px;-webkit-font-smoothing:antialiased}
+button,textarea{font:inherit}
+button:focus-visible,textarea:focus-visible{outline:2px solid var(--blue-text);outline-offset:2px}
+.hero{background:linear-gradient(180deg,var(--bg) 0%,var(--bg2) 100%);border-bottom:1px solid var(--border);padding:44px 24px 32px;text-align:center}
+.hero h1{margin:0 0 10px;font-size:clamp(34px,5vw,54px);font-weight:700;line-height:1.04;letter-spacing:-1.875px}
+.hero p{max-width:720px;margin:0 auto 18px;color:var(--tx2);font-size:18px;line-height:1.5}
+.pills{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+.pill{border:1px solid rgba(9,127,232,.16);border-radius:9999px;background:var(--blue-bg);color:var(--blue-text);padding:4px 10px;font-size:12px;font-weight:600;letter-spacing:.125px}
+.app{display:grid;grid-template-columns:290px minmax(0,1fr);min-height:calc(100vh - 176px)}
+.side{border-right:1px solid var(--border);background:var(--bg);padding:18px;overflow:auto}
+.main{background:var(--bg2);padding:22px;overflow:auto}
+.label{margin:0 0 10px;color:var(--tx3);font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase}
+.levels{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+.level-btn{border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--tx2);padding:7px 10px;font-size:12px;font-weight:700;cursor:pointer}
+.level-btn.on,.level-btn:hover{border-color:var(--blue);background:var(--blue-bg);color:var(--blue-text)}
+.text-list{display:flex;flex-direction:column;gap:8px}
+.text-card{width:100%;text-align:left;border:1px solid var(--border);border-radius:12px;background:var(--bg);box-shadow:var(--shadow);padding:13px;cursor:pointer}
+.text-card:hover{border-color:rgba(0,117,222,.28);transform:translateY(-1px)}
+.text-card.on{border-color:var(--blue);box-shadow:0 0 0 2px rgba(0,117,222,.10),var(--shadow)}
+.text-title{font-size:14px;font-weight:700;letter-spacing:-.15px;margin-bottom:4px}
+.text-meta{display:flex;gap:6px;flex-wrap:wrap;color:var(--tx3);font-size:11px;font-weight:600}
+.panel{max-width:1080px;margin:0 auto;border:1px solid var(--border);border-radius:16px;background:var(--bg);box-shadow:var(--shadow-deep);overflow:hidden}
+.panel-head{padding:22px 22px 18px;border-bottom:1px solid var(--border)}
+.panel-title{margin:0 0 8px;font-size:30px;font-weight:700;line-height:1.12;letter-spacing:-.7px}
+.panel-sub{margin:0;color:var(--tx2);font-size:15px;line-height:1.55}
+.meta-row{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0 0}
+.tag{border:1px solid var(--border);border-radius:9999px;background:var(--bg2);color:var(--tx2);padding:3px 9px;font-size:11px;font-weight:600}
+.tools{display:flex;gap:8px;flex-wrap:wrap;padding:14px 22px;border-bottom:1px solid var(--border);background:var(--bg)}
+.btn{min-height:36px;border:1px solid var(--border);border-radius:4px;background:var(--bg2);color:var(--tx);padding:7px 12px;font-size:13px;font-weight:700;cursor:pointer}
+.btn:hover{background:var(--bg3)}
+.btn.primary{background:var(--blue);border-color:transparent;color:#fff}
+.btn.primary:hover{background:var(--blue-hover)}
+.content{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr);gap:18px;padding:22px}
+.article{border:1px solid var(--border);border-radius:12px;background:var(--bg);box-shadow:var(--shadow);padding:22px}
+.article p{margin:0 0 17px;color:var(--tx);font-size:18px;line-height:1.72;letter-spacing:-.05px}
+.article p:last-child{margin-bottom:0}
+.word{display:inline;border:0;border-bottom:1px solid rgba(0,117,222,.35);background:rgba(0,117,222,.07);color:var(--tx);border-radius:3px;padding:1px 2px;cursor:pointer}
+.word:hover{background:var(--blue-bg);color:var(--blue-text)}
+.side-stack{display:flex;flex-direction:column;gap:12px}
+.card{border:1px solid var(--border);border-radius:12px;background:var(--bg);box-shadow:var(--shadow);padding:16px}
+.card h2{margin:0 0 12px;font-size:16px;font-weight:700;letter-spacing:-.2px}
+.glossary-main{border:1px solid rgba(9,127,232,.18);border-radius:10px;background:var(--blue-bg);padding:12px;color:var(--blue-text);font-size:14px;line-height:1.5}
+.glossary-list{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.glossary-chip{border:1px solid var(--border);border-radius:9999px;background:var(--bg2);color:var(--tx2);padding:3px 9px;font-size:12px;font-weight:600;cursor:pointer}
+.quiz{display:flex;flex-direction:column;gap:10px}
+.question{border-top:1px solid var(--border);padding-top:12px}
+.question:first-child{border-top:0;padding-top:0}
+.question b{display:block;margin-bottom:8px;font-size:13px;line-height:1.45}
+.choices{display:grid;gap:6px}
+.choice{border:1px solid var(--border);border-radius:7px;background:var(--bg2);color:var(--tx);padding:8px 10px;text-align:left;font-size:13px;cursor:pointer}
+.choice:hover:not(:disabled){border-color:var(--blue);color:var(--blue-text)}
+.choice.correct{border-color:#15803d;background:#f0fdf4;color:#15803d}
+.choice.wrong{border-color:#dc2626;background:#fef2f2;color:#dc2626}
+[data-theme="dark"] .choice.correct{background:rgba(21,128,61,.18);color:#69db82}
+[data-theme="dark"] .choice.wrong{background:rgba(220,38,38,.18);color:#fca5a5}
+textarea{width:100%;min-height:112px;resize:vertical;border:1px solid var(--border);border-radius:8px;background:var(--bg2);color:var(--tx);padding:10px 12px;line-height:1.5}
+.highlight-list{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.highlight{border-left:3px solid var(--orange);background:rgba(221,91,0,.06);border-radius:0 8px 8px 0;padding:8px 10px;color:var(--tx2);font-size:13px;line-height:1.45}
+.focus-tags{display:flex;gap:6px;flex-wrap:wrap}
+.focus-tag{border:1px solid rgba(42,157,153,.22);border-radius:9999px;background:rgba(42,157,153,.07);color:var(--teal);padding:3px 9px;font-size:12px;font-weight:600}
+.empty{max-width:620px;margin:80px auto;text-align:center;color:var(--tx2)}
+@media(max-width:900px){.app{grid-template-columns:1fr}.side{border-right:0;border-bottom:1px solid var(--border)}.main{padding:16px}.content{grid-template-columns:1fr}.panel-title{font-size:24px}.article p{font-size:16px}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <h1>Reading A1-B2</h1>
+  <p>Đọc bài ngắn theo CEFR, bấm từ khóa để xem nghĩa, làm quiz hiểu bài và lưu ghi chú/highlight cho lần ôn tiếp theo.</p>
+  <div class="pills"><span class="pill">Glossary inline</span><span class="pill">Comprehension quiz</span><span class="pill">Notes</span><span class="pill">Rewrite prompt</span></div>
+</header>
+<div class="app">
+  <aside class="side">
+    <p class="label">Level</p>
+    <div id="levels" class="levels"></div>
+    <p id="levelFocus" class="label"></p>
+    <div id="texts" class="text-list"></div>
+  </aside>
+  <main class="main">
+    <div id="panel" class="panel"></div>
+  </main>
+</div>
+<script>
+let data;
+let activeLevel = "A1";
+let activeText;
+let activeGlossaryTerm = "";
+
+const $ = (id) => document.getElementById(id);
+const esc = (value) => String(value ?? "").replace(/[&<>"']/g, (c) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;" }[c]));
+const reEsc = (value) => String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+fetch("../data/reading.json")
+  .then((res) => res.json())
+  .then((json) => {
+    data = json;
+    activeLevel = json.levels[0].level;
+    renderLevels();
+    renderTexts();
+    openText(json.levels[0].texts[0]);
+  })
+  .catch(() => {
+    $("panel").innerHTML = '<div class="empty">Không tải được data/reading.json.</div>';
+  });
+
+function currentLevelData(){
+  return data.levels.find((level) => level.level === activeLevel);
+}
+
+function renderLevels(){
+  $("levels").innerHTML = data.levels.map((level) => `
+    <button class="level-btn ${level.level === activeLevel ? "on" : ""}" onclick="setLevel('${level.level}')">${level.level}</button>
+  `).join("");
+}
+
+function renderTexts(){
+  const level = currentLevelData();
+  $("levelFocus").textContent = level.label + " · " + level.focus;
+  $("texts").innerHTML = level.texts.map((text) => `
+    <button class="text-card ${activeText && text.slug === activeText.slug ? "on" : ""}" onclick="openTextBySlug('${text.slug}')">
+      <div class="text-title">${esc(text.title)}</div>
+      <div class="text-meta"><span>${esc(level.level)}</span><span>${esc(text.topic)}</span><span>${esc(text.estimatedMinutes)} phút</span></div>
+    </button>
+  `).join("");
+}
+
+function setLevel(level){
+  activeLevel = level;
+  activeText = null;
+  activeGlossaryTerm = "";
+  renderLevels();
+  renderTexts();
+  openText(currentLevelData().texts[0]);
+}
+
+function openTextBySlug(slug){
+  const text = currentLevelData().texts.find((item) => item.slug === slug);
+  if(text) openText(text);
+}
+
+function openText(text){
+  activeText = text;
+  activeGlossaryTerm = text.glossary[0]?.term || "";
+  renderTexts();
+  renderPanel();
+}
+
+function renderPanel(){
+  if(!activeText){
+    $("panel").innerHTML = '<div class="empty">Chọn một bài đọc để bắt đầu.</div>';
+    return;
+  }
+  const text = activeText;
+  const wordCount = text.text.join(" ").split(/\s+/).length;
+  $("panel").innerHTML = `
+    <section class="panel-head">
+      <h1 class="panel-title">${esc(text.title)}</h1>
+      <p class="panel-sub">${esc(text.topic)} · Đọc ý chính trước, sau đó bấm vào từ được đánh dấu để xem glossary.</p>
+      <div class="meta-row">
+        <span class="tag">${esc(activeLevel)}</span>
+        <span class="tag">${wordCount} từ</span>
+        <span class="tag">${esc(text.estimatedMinutes)} phút</span>
+      </div>
+    </section>
+    <section class="tools">
+      <button class="btn primary" onclick="scrollToArticle()">Đọc bài</button>
+      <button class="btn" onclick="addHighlight()">Lưu highlight từ selection</button>
+      <button class="btn" onclick="resetQuiz()">Làm lại quiz</button>
+    </section>
+    <section class="content">
+      <article id="article" class="article">
+        ${text.text.map((paragraph) => `<p>${markGlossary(paragraph, text.glossary)}</p>`).join("")}
+      </article>
+      <aside class="side-stack">
+        <div class="card">
+          <h2>Glossary</h2>
+          <div id="glossaryMain" class="glossary-main">${renderGlossaryMain()}</div>
+          <div class="glossary-list">${text.glossary.map((item) => `<button class="glossary-chip" onclick="showGlossary('${escAttr(item.term)}')">${esc(item.term)}</button>`).join("")}</div>
+        </div>
+        <div class="card">
+          <h2>Grammar focus</h2>
+          <div class="focus-tags">${text.grammarFocus.map((item) => `<span class="focus-tag">${esc(item)}</span>`).join("")}</div>
+        </div>
+        <div class="card">
+          <h2>Comprehension quiz</h2>
+          <div id="quiz" class="quiz">${renderQuiz()}</div>
+        </div>
+        <div class="card">
+          <h2>Notes</h2>
+          <textarea id="notes" placeholder="Ghi lại từ mới, cấu trúc hay hoặc câu bạn muốn bắt chước."></textarea>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+            <button class="btn primary" onclick="saveNotes()">Lưu notes</button>
+            <button class="btn" onclick="loadNotes()">Tải lại</button>
+          </div>
+          <div id="noteState" style="margin-top:8px;color:var(--tx3);font-size:12px"></div>
+        </div>
+        <div class="card">
+          <h2>Highlights</h2>
+          <div id="highlights" class="highlight-list"></div>
+        </div>
+        <div class="card">
+          <h2>Rewrite prompt</h2>
+          <p style="margin:0;color:var(--tx2);font-size:14px;line-height:1.55">${esc(text.rewritePrompt)}</p>
+        </div>
+      </aside>
+    </section>
+  `;
+  loadNotes();
+  renderHighlights();
+}
+
+function escAttr(value){
+  return String(value).replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+}
+
+function markGlossary(paragraph, glossary){
+  const terms = glossary.map((item) => item.term).sort((a, b) => b.length - a.length);
+  if(!terms.length) return esc(paragraph);
+  const pattern = new RegExp("(" + terms.map(reEsc).join("|") + ")", "giu");
+  let html = "";
+  let last = 0;
+  paragraph.replace(pattern, (match, _term, offset) => {
+    html += esc(paragraph.slice(last, offset));
+    const found = glossary.find((item) => item.term.toLowerCase() === match.toLowerCase()) || {term:match};
+    html += `<button class="word" onclick="showGlossary('${escAttr(found.term)}')">${esc(match)}</button>`;
+    last = offset + match.length;
+    return match;
+  });
+  html += esc(paragraph.slice(last));
+  return html;
+}
+
+function renderGlossaryMain(){
+  const item = activeText.glossary.find((entry) => entry.term === activeGlossaryTerm) || activeText.glossary[0];
+  if(!item) return "Không có glossary.";
+  return `<strong>${esc(item.term)}</strong><br>${esc(item.meaning)}<br><span style="color:var(--tx2)">${esc(item.note || "")}</span>`;
+}
+
+function showGlossary(term){
+  activeGlossaryTerm = term;
+  const box = $("glossaryMain");
+  if(box) box.innerHTML = renderGlossaryMain();
+}
+
+function renderQuiz(){
+  return activeText.questions.map((question, questionIndex) => `
+    <div class="question">
+      <b>${questionIndex + 1}. ${esc(question.q)}</b>
+      <div class="choices">
+        ${question.choices.map((choice, choiceIndex) => `<button class="choice" onclick="answerQuestion(this,${questionIndex},${choiceIndex})">${esc(choice)}</button>`).join("")}
+      </div>
+    </div>
+  `).join("");
+}
+
+function answerQuestion(button, questionIndex, choiceIndex){
+  const question = activeText.questions[questionIndex];
+  const group = button.closest(".choices");
+  group.querySelectorAll(".choice").forEach((choice, index) => {
+    choice.disabled = true;
+    if(index === question.answer) choice.classList.add("correct");
+  });
+  if(choiceIndex !== question.answer) button.classList.add("wrong");
+}
+
+function resetQuiz(){
+  const quiz = $("quiz");
+  if(quiz) quiz.innerHTML = renderQuiz();
+}
+
+function scrollToArticle(){
+  $("article").scrollIntoView({behavior:"smooth", block:"start"});
+}
+
+function notesKey(){
+  return "reading-notes-" + activeText.slug;
+}
+
+function highlightsKey(){
+  return "reading-highlights-" + activeText.slug;
+}
+
+function saveNotes(){
+  localStorage.setItem(notesKey(), $("notes").value);
+  $("noteState").textContent = "Đã lưu notes cho bài này.";
+}
+
+function loadNotes(){
+  const notes = $("notes");
+  if(notes) notes.value = localStorage.getItem(notesKey()) || "";
+  const state = $("noteState");
+  if(state) state.textContent = notes && notes.value ? "Notes đã được tải từ máy này." : "Chưa có notes cho bài này.";
+}
+
+function addHighlight(){
+  const selected = String(window.getSelection()).trim();
+  if(!selected){
+    renderHighlights("Chọn một đoạn trong bài trước, rồi bấm lưu highlight.");
+    return;
+  }
+  const highlights = getHighlights();
+  highlights.unshift(selected.slice(0, 220));
+  localStorage.setItem(highlightsKey(), JSON.stringify(highlights.slice(0, 8)));
+  window.getSelection().removeAllRanges();
+  renderHighlights("Đã lưu highlight.");
+}
+
+function getHighlights(){
+  try{return JSON.parse(localStorage.getItem(highlightsKey()) || "[]");}catch(_){return []}
+}
+
+function renderHighlights(message){
+  const box = $("highlights");
+  if(!box) return;
+  const highlights = getHighlights();
+  box.innerHTML = `${message ? `<div style="color:var(--tx3);font-size:12px">${esc(message)}</div>` : ""}${highlights.length ? highlights.map((item) => `<div class="highlight">${esc(item)}</div>`).join("") : '<div style="color:var(--tx3);font-size:13px">Chưa có highlight.</div>'}`;
+}
+
+window.addEventListener("message", (event) => {
+  if(event.data && event.data.type === "SET_THEME"){
+    document.documentElement.setAttribute("data-theme", event.data.theme === "dark" ? "dark" : "light");
+  }
+});
+</script>
+</body>
+</html>
