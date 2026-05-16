@@ -2,576 +2,979 @@
 <html lang="vi" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>DinoDeutsch | German Learning System A1-B2</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Dino Language — học ngôn ngữ theo phương pháp Zettelkasten. Bắt đầu với tiếng Đức.">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f0f12" media="(prefers-color-scheme: dark)">
+<title>Dino Language — Sáu ngôn ngữ. Một mạng lưới.</title>
+<link rel="icon" href="/og-card.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+/* ─────────────────────────────────────────────────────────────
+   DINO LANGUAGE — Cohere Edition v9 (redesign)
+   Design tokens, components, layout
+───────────────────────────────────────────────────────────── */
+
 :root{
-  --bg:#fff;
-  --bg2:#f6f5f4;
-  --bg3:#efefed;
-  --tx:rgba(0,0,0,.95);
-  --tx2:#615d59;
-  --tx3:#a39e98;
-  --border:rgba(0,0,0,.10);
-  --blue:#0075de;
-  --blue-hover:#005bab;
-  --blue-bg:#f2f9ff;
-  --blue-text:#097fe8;
-  --green:#1aae39;
-  --teal:#2a9d99;
-  --orange:#dd5b00;
-  --pink:#ff64c8;
-  --purple:#391c57;
-  --brown:#523410;
-  --shadow-card:rgba(0,0,0,.04) 0 4px 18px,rgba(0,0,0,.027) 0 2.025px 7.84688px,rgba(0,0,0,.02) 0 .8px 2.925px,rgba(0,0,0,.01) 0 .175px 1.04062px;
-  --shadow-deep:rgba(0,0,0,.01) 0 1px 3px,rgba(0,0,0,.02) 0 3px 7px,rgba(0,0,0,.02) 0 7px 15px,rgba(0,0,0,.04) 0 14px 28px,rgba(0,0,0,.05) 0 23px 52px;
-  --nav-h:56px;
-  --font:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  /* Color tokens */
+  --canvas:        #ffffff;
+  --surface-1:     #fafaf9;
+  --surface-2:     #f5f4f0;
+  --soft-stone:    #eeece7;
+  --hairline:      #d9d9dd;
+  --muted:         #93939f;
+  --ink:           #212121;
+  --ink-soft:      #4a4a52;
+  --near-black:    #17171c;
+  --green:         #003c33;
+  --navy:          #071829;
+  --action-blue:   #1863dc;
+  --coral:         #ff7759;
+  --coral-soft:    #ffad9b;
+  --success:       #2a9d99;
+
+  /* Typography */
+  --font:        'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-mono:   'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* Radius */
+  --r-xs: 4px;
+  --r-sm: 8px;
+  --r-md: 16px;
+  --r-lg: 22px;   /* signature */
+  --r-xl: 30px;
+  --r-pill: 999px;
+
+  /* Layout */
+  --content-w: 1200px;
+  --nav-h: 64px;
 }
+
 [data-theme="dark"]{
-  --bg:#1a1916;
-  --bg2:#222120;
-  --bg3:#2e2d2b;
-  --tx:rgba(255,255,255,.92);
-  --tx2:#aaa5a0;
-  --tx3:#77716c;
-  --border:rgba(255,255,255,.10);
-  --blue:#4ea8f7;
-  --blue-hover:#3d9af0;
-  --blue-bg:rgba(0,117,222,.16);
-  --blue-text:#62aef0;
-  --shadow-card:rgba(0,0,0,.28) 0 4px 18px;
-  --shadow-deep:rgba(0,0,0,.5) 0 23px 52px;
+  --canvas:       #0f0f12;
+  --surface-1:    #16161b;
+  --surface-2:    #1c1c22;
+  --soft-stone:   #1f1f25;
+  --hairline:     #2c2c33;
+  --muted:        #6f6f7a;
+  --ink:          #ededee;
+  --ink-soft:    #b8b8bf;
+  --near-black:  #ededee;
+  --action-blue: #5b9bff;
+  --coral:       #ff8466;
+  --coral-soft:  #cf6a55;
 }
-*,*::before,*::after{box-sizing:border-box}
-html,body{height:100%;margin:0;overflow:hidden}
+
+*,*::before,*::after{ box-sizing: border-box; }
+html{ scroll-behavior: smooth; }
 body{
-  font-family:var(--font);
-  background:var(--bg);
-  color:var(--tx);
-  -webkit-font-smoothing:antialiased;
+  margin: 0;
+  font-family: var(--font);
+  background: var(--canvas);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
-button,a{font:inherit}
-button:focus-visible,a:focus-visible{outline:2px solid var(--blue-text);outline-offset:2px}
-#nav{
-  position:fixed;
-  inset:0 0 auto 0;
-  z-index:50;
-  height:var(--nav-h);
-  display:flex;
-  align-items:stretch;
-  background:rgba(255,255,255,.94);
-  border-bottom:1px solid var(--border);
-  backdrop-filter:blur(16px);
+
+a{ color: inherit; text-decoration: none; }
+button{ font: inherit; cursor: pointer; border: 0; background: none; color: inherit; }
+::selection{ background: var(--coral); color: var(--near-black); }
+
+.container{
+  width: 100%;
+  max-width: var(--content-w);
+  margin: 0 auto;
+  padding: 0 24px;
 }
-[data-theme="dark"] #nav{background:rgba(26,25,22,.94)}
+
+/* ── Nav ── */
+.nav{
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in srgb, var(--canvas) 88%, transparent);
+  backdrop-filter: saturate(140%) blur(12px);
+  -webkit-backdrop-filter: saturate(140%) blur(12px);
+  border-bottom: 1px solid var(--hairline);
+}
+.nav-inner{
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  height: var(--nav-h);
+  width: 100%;
+  max-width: var(--content-w);
+  margin: 0 auto;
+  padding: 0 24px;
+}
 .brand{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  min-width:214px;
-  padding:0 16px;
-  color:var(--tx);
-  text-decoration:none;
-  border-right:1px solid var(--border);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: -0.01em;
+  color: var(--ink);
 }
-.brand:hover{background:var(--bg2)}
-.logo{
-  width:34px;
-  height:34px;
-  display:grid;
-  place-items:center;
-  flex:0 0 auto;
+.brand-mark{
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--near-black);
+  color: var(--canvas);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: -0.02em;
 }
-.brand-name{font-size:14px;font-weight:700;letter-spacing:-.25px;line-height:1}
-.brand-sub{display:block;margin-top:3px;font-size:9px;font-weight:600;letter-spacing:.7px;text-transform:uppercase;color:var(--tx3)}
-.tabs{
-  display:flex;
-  align-items:stretch;
-  flex:1;
-  overflow-x:auto;
-  scrollbar-width:none;
-  padding:0 4px;
+[data-theme="dark"] .brand-mark{ background: var(--coral); color: #17171c; }
+
+.nav-links{
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin-left: auto;
 }
-.tabs::-webkit-scrollbar{display:none}
-.tab{
-  display:inline-flex;
-  align-items:center;
-  gap:7px;
-  padding:0 12px;
-  border:0;
-  border-bottom:2px solid transparent;
-  background:transparent;
-  color:var(--tx2);
-  cursor:pointer;
-  font-size:13px;
-  font-weight:600;
-  white-space:nowrap;
+.nav-link{
+  font-size: 14px;
+  color: var(--ink-soft);
+  transition: color .15s ease;
 }
-.tab:hover{color:var(--tx);background:var(--bg2)}
-.tab.on{color:var(--blue);border-bottom-color:var(--blue)}
-.badge{
-  border-radius:9999px;
-  padding:2px 7px;
-  font-size:9px;
-  font-weight:700;
-  line-height:1.25;
-}
-.badge.live{background:#f0fdf4;color:#15803d;border:1px solid rgba(21,128,61,.18)}
-.badge.soon{background:var(--bg3);color:var(--tx3);border:1px solid var(--border)}
-[data-theme="dark"] .badge.live{background:rgba(26,174,57,.14);color:#61d17a}
-.nav-actions{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:0 12px;
-  border-left:1px solid var(--border);
-}
+.nav-link:hover{ color: var(--ink); }
+
 .icon-btn{
-  width:32px;
-  height:32px;
-  display:grid;
-  place-items:center;
-  border:1px solid var(--border);
-  border-radius:9999px;
-  color:var(--tx);
-  background:var(--bg2);
-  cursor:pointer;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--hairline);
+  background: var(--canvas);
+  color: var(--ink);
+  transition: background .15s ease, border-color .15s ease;
 }
-.icon-btn:hover{background:var(--bg3)}
-#shell{
-  height:100vh;
-  padding-top:var(--nav-h);
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
+.icon-btn:hover{ background: var(--surface-1); border-color: var(--muted); }
+
+/* ── Buttons ── */
+.btn{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: var(--r-pill);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1;
+  transition: transform .15s ease, background .15s ease, border-color .15s ease;
+  border: 1px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
 }
-.view{
-  display:none;
-  min-height:0;
-  flex:1;
-  overflow:hidden;
+.btn:active{ transform: translateY(1px); }
+.btn-primary{
+  background: var(--near-black);
+  color: var(--canvas);
 }
-.view.on{display:flex;flex-direction:column}
-.frame{
-  width:100%;
-  height:100%;
-  border:0;
-  background:var(--bg);
+[data-theme="dark"] .btn-primary{
+  background: var(--coral);
+  color: #17171c;
 }
-#vhome{overflow:auto}
+.btn-primary:hover{ background: #000; }
+[data-theme="dark"] .btn-primary:hover{ background: var(--coral-soft); }
+.btn-ghost{
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--hairline);
+}
+.btn-ghost:hover{ border-color: var(--muted); background: var(--surface-1); }
+.btn-text{
+  padding: 12px 0;
+  color: var(--ink);
+  border-radius: 0;
+  position: relative;
+}
+.btn-text::after{
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 8px;
+  height: 1px;
+  background: var(--ink);
+  transition: opacity .15s ease;
+}
+.btn-text:hover::after{ opacity: .5; }
+
+.mono-label{
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ── Hero ── */
 .hero{
-  position:relative;
-  flex:0 0 auto;
-  overflow:hidden;
-  background:linear-gradient(180deg,var(--bg) 0%,var(--bg2) 100%);
-  border-bottom:1px solid var(--border);
+  padding: 80px 0 64px;
+  border-bottom: 1px solid var(--hairline);
 }
 .hero-inner{
-  max-width:1160px;
-  margin:0 auto;
-  padding:72px 24px 54px;
-  display:grid;
-  grid-template-columns:minmax(0,1fr) 320px;
-  gap:42px;
-  align-items:center;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 64px;
+  align-items: center;
+}
+.hero-eyebrow{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-pill);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+.hero-eyebrow .dot{
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--coral);
 }
 .hero h1{
-  margin:0 0 16px;
-  max-width:760px;
-  font-size:clamp(40px,6vw,64px);
-  font-weight:700;
-  line-height:1;
-  letter-spacing:-2.125px;
-  color:var(--tx);
+  font-size: clamp(40px, 7vw, 88px);
+  line-height: 1.0;
+  letter-spacing: -0.022em;
+  font-weight: 600;
+  margin: 0 0 24px;
+  color: var(--ink);
 }
-.hero h1 span{color:var(--blue)}
-.hero-copy{
-  max-width:650px;
-  margin:0 0 24px;
-  color:var(--tx2);
-  font-size:20px;
-  font-weight:500;
-  line-height:1.45;
-  letter-spacing:-.125px;
+.hero h1 em{
+  font-style: normal;
+  color: var(--coral);
 }
-.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:26px}
-.btn{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-  min-height:38px;
-  padding:8px 16px;
-  border-radius:4px;
-  border:1px solid transparent;
-  cursor:pointer;
-  font-size:15px;
-  font-weight:600;
-  text-decoration:none;
+.hero-lede{
+  font-size: 19px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  max-width: 520px;
+  margin: 0 0 32px;
 }
-.btn.primary{background:var(--blue);color:#fff}
-.btn.primary:hover{background:var(--blue-hover)}
-.btn.secondary{background:rgba(0,0,0,.055);color:var(--tx);border-color:var(--border)}
-.btn.secondary:hover{background:var(--bg3)}
-[data-theme="dark"] .btn.secondary{background:rgba(255,255,255,.07)}
-.hero-pills{display:flex;gap:8px;flex-wrap:wrap}
-.pill{
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  border:1px solid rgba(9,127,232,.16);
-  border-radius:9999px;
-  background:var(--blue-bg);
-  color:var(--blue-text);
-  padding:4px 10px;
-  font-size:12px;
-  font-weight:600;
-  letter-spacing:.125px;
+.hero-ctas{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 40px;
 }
-.mascot-card{
-  position:relative;
-  min-height:250px;
-  border:1px solid var(--border);
-  border-radius:16px;
-  background:var(--bg);
-  box-shadow:var(--shadow-card);
-  display:grid;
-  place-items:center;
-  padding:24px;
+.hero-meta{
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  gap: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--hairline);
 }
-.mascot-note{
-  position:absolute;
-  left:20px;
-  right:20px;
-  bottom:18px;
-  border:1px solid var(--border);
-  border-radius:12px;
-  background:var(--bg2);
-  padding:10px 12px;
-  color:var(--tx2);
-  font-size:12px;
-  line-height:1.45;
+.hero-meta-item .v{
+  display: block;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
 }
-.home-body{
-  flex:0 0 auto;
-  max-width:1160px;
-  margin:0 auto;
-  padding:44px 24px 76px;
+.hero-meta-item .l{
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 4px;
 }
-.section-label{
-  margin:0 0 16px;
-  color:var(--tx3);
-  font-size:11px;
-  font-weight:600;
-  letter-spacing:.8px;
-  text-transform:uppercase;
+
+.hero-visual{
+  position: relative;
+  height: 420px;
 }
-.module-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:12px;
+.stack-card{
+  position: absolute;
+  width: 100%;
+  max-width: 340px;
+  background: var(--surface-1);
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-lg);
+  padding: 24px;
+  font-family: var(--font-mono);
 }
-.module-card{
-  position:relative;
-  display:flex;
-  min-height:180px;
-  flex-direction:column;
-  justify-content:space-between;
-  padding:20px;
-  overflow:hidden;
-  border:1px solid var(--border);
-  border-radius:12px;
-  background:var(--bg);
-  color:inherit;
-  text-decoration:none;
-  box-shadow:var(--shadow-card);
-  cursor:pointer;
+.stack-card-1{
+  top: 0; right: 32px;
+  transform: rotate(-3deg);
+  z-index: 1;
 }
-.module-card::before{
-  content:"";
-  position:absolute;
-  inset:0 0 auto 0;
-  height:3px;
-  background:var(--accent);
-  opacity:0;
+.stack-card-2{
+  top: 80px; right: 0;
+  transform: rotate(2deg);
+  z-index: 2;
+  background: var(--canvas);
+  box-shadow: 0 12px 32px -8px rgba(0,0,0,0.08);
 }
-.module-card:hover{
-  transform:translateY(-2px);
-  box-shadow:var(--shadow-deep);
-  border-color:rgba(0,0,0,.14);
+[data-theme="dark"] .stack-card-2{ box-shadow: 0 12px 32px -8px rgba(0,0,0,0.4); }
+.stack-card-3{
+  top: 200px; right: 60px;
+  transform: rotate(-1deg);
+  z-index: 3;
+  background: var(--near-black);
+  color: var(--canvas);
+  border-color: var(--near-black);
 }
-.module-card:hover::before{opacity:1}
-.module-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
-.module-icon{font-size:30px;line-height:1}
-.module-state{
-  border-radius:9999px;
-  padding:3px 8px;
-  font-size:10px;
-  font-weight:700;
-  white-space:nowrap;
+[data-theme="dark"] .stack-card-3{
+  background: var(--coral);
+  color: #17171c;
+  border-color: var(--coral);
 }
-.module-state.live{background:#f0fdf4;color:#15803d;border:1px solid rgba(21,128,61,.18)}
-.module-state.soon{background:var(--bg3);color:var(--tx3);border:1px solid var(--border)}
-.module-title{margin:14px 0 6px;font-size:22px;font-weight:700;letter-spacing:-.25px;line-height:1.2}
-.module-desc{margin:0;color:var(--tx2);font-size:14px;line-height:1.5}
-.module-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:16px}
-.module-tag{
-  border:1px solid var(--border);
-  border-radius:4px;
-  background:var(--bg2);
-  color:var(--tx3);
-  padding:2px 7px;
-  font-size:11px;
-  font-weight:500;
+.stack-tag{
+  display: inline-block;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: var(--soft-stone);
+  color: var(--ink-soft);
+  margin-bottom: 12px;
 }
-.roadmap{
-  flex:1;
-  overflow:auto;
-  background:linear-gradient(180deg,var(--bg) 0%,var(--bg2) 100%);
+.stack-card-3 .stack-tag{
+  background: rgba(255,255,255,.15);
+  color: var(--canvas);
 }
-.roadmap-inner{
-  max-width:900px;
-  margin:0 auto;
-  padding:56px 24px 76px;
+[data-theme="dark"] .stack-card-3 .stack-tag{
+  background: rgba(0,0,0,.2);
+  color: #17171c;
 }
-.roadmap h1{
-  margin:0 0 10px;
-  font-size:clamp(34px,5vw,54px);
-  line-height:1.04;
-  letter-spacing:-1.875px;
+.stack-word{
+  font-size: 24px;
+  font-weight: 600;
+  font-family: var(--font);
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
 }
-.roadmap p{margin:0 0 22px;color:var(--tx2);font-size:18px;line-height:1.55}
-.feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin-top:22px}
-.feature{
-  border:1px solid var(--border);
-  border-radius:12px;
-  background:var(--bg);
-  box-shadow:var(--shadow-card);
-  padding:16px;
+.stack-meaning{
+  font-size: 14px;
+  opacity: 0.7;
+  font-family: var(--font);
 }
-.feature b{display:block;margin-bottom:5px;font-size:14px}
-.feature span{color:var(--tx2);font-size:13px;line-height:1.45}
-@media(max-width:820px){
-  .brand{min-width:0}
-  .brand-sub{display:none}
-  .tab{padding:0 10px}
-  .hero-inner{grid-template-columns:1fr;padding-top:48px}
-  .mascot-card{min-height:210px}
+.stack-ipa{
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 6px;
 }
-@media(max-width:560px){
-  :root{--nav-h:52px}
-  .tlbl,.badge{display:none}
-  .brand-name{font-size:13px}
-  .logo{width:30px;height:30px}
-  .hero-inner{padding:38px 18px 40px;gap:24px}
-  .hero h1{font-size:40px;letter-spacing:-1.5px}
-  .hero-copy{font-size:16px}
-  .home-body{padding:34px 16px 60px}
+.stack-card-3 .stack-ipa{ color: rgba(255,255,255,.6); }
+[data-theme="dark"] .stack-card-3 .stack-ipa{ color: rgba(0,0,0,.6); }
+
+/* ── Section base ── */
+.section{ padding: 80px 0; }
+.section-head{ margin-bottom: 48px; max-width: 720px; }
+.section-head h2{
+  font-size: clamp(28px, 4vw, 44px);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  font-weight: 600;
+  margin: 12px 0 16px;
+}
+.section-head p{
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+/* ── Languages grid ── */
+.langs{ background: var(--surface-1); }
+.langs-grid{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--hairline);
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+.lang-card{
+  background: var(--canvas);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  transition: background .15s ease;
+  position: relative;
+  min-height: 240px;
+}
+.lang-card.is-live{ cursor: pointer; }
+.lang-card.is-live:hover{ background: var(--surface-1); }
+.lang-card.is-soon{ opacity: 0.72; }
+
+.lang-head{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.lang-flag{ font-size: 28px; line-height: 1; }
+.lang-status{
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: var(--r-pill);
+  background: var(--soft-stone);
+  color: var(--ink-soft);
+}
+.lang-status.is-live{
+  background: var(--coral);
+  color: #17171c;
+}
+.lang-title{
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.lang-cert{
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--muted);
+  margin: -8px 0 0;
+}
+.lang-meta{
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin-top: auto;
+}
+.lang-meta strong{ color: var(--ink); font-weight: 500; }
+
+/* ── How section ── */
+.how-grid{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.how-card{
+  background: var(--surface-1);
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-lg);
+  padding: 32px 28px;
+}
+.how-num{
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--coral);
+  margin-bottom: 24px;
+  letter-spacing: 0.04em;
+}
+.how-card h3{
+  font-size: 22px;
+  letter-spacing: -0.01em;
+  font-weight: 600;
+  margin: 0 0 12px;
+}
+.how-card p{
+  margin: 0;
+  color: var(--ink-soft);
+  line-height: 1.55;
+}
+
+/* ── Trust band ── */
+.trust{
+  background: var(--surface-2);
+  border-top: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+  padding: 56px 0;
+}
+.trust-grid{
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+  text-align: left;
+}
+.trust-item .v{
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  display: block;
+  color: var(--ink);
+}
+.trust-item .l{
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 6px;
+  display: block;
+}
+
+/* ── Closing CTA ── */
+.cta-band{
+  padding: 96px 0;
+  background: var(--near-black);
+  color: var(--canvas);
+}
+[data-theme="dark"] .cta-band{ background: var(--surface-2); color: var(--ink); }
+.cta-inner{
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto;
+}
+.cta-band h2{
+  font-size: clamp(32px, 5vw, 56px);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-weight: 600;
+  margin: 0 0 20px;
+}
+.cta-band p{
+  font-size: 18px;
+  line-height: 1.55;
+  color: rgba(255,255,255,.7);
+  margin: 0 0 32px;
+}
+[data-theme="dark"] .cta-band p{ color: var(--ink-soft); }
+.cta-band .btn-primary{
+  background: var(--coral);
+  color: #17171c;
+  font-size: 16px;
+  padding: 14px 26px;
+}
+.cta-band .btn-primary:hover{ background: var(--coral-soft); }
+
+/* ── Footer ── */
+.footer{
+  background: var(--canvas);
+  border-top: 1px solid var(--hairline);
+  padding: 56px 0 32px;
+}
+.footer-grid{
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 40px;
+}
+.footer-brand{ max-width: 360px; }
+.footer-brand p{
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin: 16px 0 16px;
+  line-height: 1.55;
+}
+.footer-col h4{
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 16px;
+}
+.footer-col ul{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.footer-col a{
+  font-size: 14px;
+  color: var(--ink-soft);
+  transition: color .15s ease;
+}
+.footer-col a:hover{ color: var(--ink); }
+.footer-bottom{
+  padding-top: 24px;
+  border-top: 1px solid var(--hairline);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: var(--muted);
+}
+.footer-bottom .links{ display: flex; gap: 18px; }
+
+/* ── Responsive ── */
+@media (max-width: 960px){
+  .hero{ padding: 56px 0 40px; }
+  .hero-inner{ grid-template-columns: 1fr; gap: 40px; }
+  .hero-visual{ display: none; }
+  .hero-meta{ grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .section{ padding: 56px 0; }
+  .langs-grid{ grid-template-columns: repeat(2, 1fr); }
+  .how-grid{ grid-template-columns: 1fr; gap: 16px; }
+  .trust-grid{ grid-template-columns: repeat(2, 1fr); gap: 24px; }
+  .footer-grid{ grid-template-columns: 1fr; gap: 32px; }
+}
+@media (max-width: 640px){
+  .nav-inner{ gap: 12px; padding: 0 16px; }
+  .nav-links{ gap: 12px; }
+  .nav-link{ display: none; }
+  .container{ padding: 0 16px; }
+  .hero h1{ font-size: clamp(36px, 11vw, 56px); }
+  .hero-lede{ font-size: 17px; }
+  .hero-meta{ grid-template-columns: 1fr 1fr; }
+  .hero-meta-item:nth-child(3){ grid-column: span 2; }
+  .langs-grid{ grid-template-columns: 1fr; }
+  .trust-grid{ grid-template-columns: 1fr 1fr; }
+  .footer-bottom{ flex-direction: column; gap: 12px; align-items: flex-start; }
+  .cta-band{ padding: 64px 0; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
+
+:focus-visible{
+  outline: 2px solid var(--action-blue);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 </style>
 </head>
 <body>
-<nav id="nav" aria-label="Điều hướng chính">
-  <a class="brand" href="/" onclick="go('home');return false" aria-label="DinoDeutsch Home">
-    <span class="logo" aria-hidden="true">
-      <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
-        <rect x="2" y="2" width="30" height="30" rx="8" fill="#22c55e"/>
-        <path d="M9 21c3-6 9-11 16-8-3 2-4 5-3 9-4 2-9 2-13-1Z" fill="#fff"/>
-        <circle cx="22" cy="14" r="2" fill="#111"/>
-        <path d="M11 24h12" stroke="#15803d" stroke-width="2" stroke-linecap="round"/>
-        <path d="M7 10h12" stroke="#0075de" stroke-width="3" stroke-linecap="round"/>
-      </svg>
-    </span>
-    <span>
-      <span class="brand-name">DinoDeutsch</span>
-      <span class="brand-sub">German Learning System</span>
-    </span>
-  </a>
-  <div class="tabs" role="tablist">
-    <button class="tab" data-id="grammar" onclick="go('grammar')"><span>🏗️</span><span class="tlbl">Grammar</span><span class="badge live">LIVE</span></button>
-    <button class="tab" data-id="vocab" onclick="go('vocab')"><span>📚</span><span class="tlbl">Vocabulary</span><span class="badge live">LIVE</span></button>
-    <button class="tab" data-id="listening" onclick="go('listening')"><span>🎧</span><span class="tlbl">Listening</span><span class="badge live">LIVE</span></button>
-    <button class="tab" data-id="reading" onclick="go('reading')"><span>📖</span><span class="tlbl">Reading</span><span class="badge live">LIVE</span></button>
-    <button class="tab" data-id="writing" onclick="go('writing')"><span>✍️</span><span class="tlbl">Writing</span><span class="badge soon">Soon</span></button>
-    <button class="tab" data-id="test" onclick="go('test')"><span>📝</span><span class="tlbl">Test</span><span class="badge soon">Soon</span></button>
-    <button class="tab" onclick="window.location.href='/assistant'"><span>🤖</span><span class="tlbl">KI Tutor</span><span class="badge live">LIVE</span></button>
-  </div>
-  <div class="nav-actions">
-    <button id="themeBtn" class="icon-btn" onclick="toggleTheme()" title="Đổi theme" aria-label="Đổi theme">🌙</button>
+
+<!-- ── NAV ── -->
+<nav class="nav" aria-label="Primary">
+  <div class="nav-inner">
+    <a href="/" class="brand" aria-label="Dino Language home">
+      <span class="brand-mark" aria-hidden="true">D</span>
+      <span>Dino Language</span>
+    </a>
+    <div class="nav-links">
+      <a href="#languages" class="nav-link">Ngôn ngữ</a>
+      <a href="#how" class="nav-link">Cách học</a>
+      <a href="/deutsch" class="nav-link">Tiếng Đức</a>
+      <button class="icon-btn" id="themeBtn" aria-label="Đổi giao diện sáng/tối" title="Đổi giao diện">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
   </div>
 </nav>
 
-<main id="shell">
-  <section id="vhome" class="view on">
-    <div class="hero">
-      <div class="hero-inner">
+<!-- ── HERO ── -->
+<header class="hero">
+  <div class="container hero-inner">
+    <div>
+      <div class="hero-eyebrow"><span class="dot" aria-hidden="true"></span> Đang mở beta</div>
+      <h1>Sáu ngôn ngữ.<br>Một <em>mạng lưới</em>.</h1>
+      <p class="hero-lede">
+        Học ngôn ngữ theo phương pháp Zettelkasten. Mỗi khái niệm là một thẻ độc lập, liên kết qua ngữ pháp, từ vựng và bài tập. Không streak xanh. Không gamification rẻ tiền.
+      </p>
+      <div class="hero-ctas">
+        <a href="/deutsch" class="btn btn-primary">
+          Bắt đầu với tiếng Đức
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#how" class="btn-text">Xem phương pháp →</a>
+      </div>
+      <div class="hero-meta">
+        <div class="hero-meta-item">
+          <span class="v">6</span>
+          <span class="l">Ngôn ngữ planned</span>
+        </div>
+        <div class="hero-meta-item">
+          <span class="v">3.170</span>
+          <span class="l">Từ vựng Đức</span>
+        </div>
+        <div class="hero-meta-item">
+          <span class="v">30</span>
+          <span class="l">Chủ đề ngữ pháp</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual" aria-hidden="true">
+      <div class="stack-card stack-card-1">
+        <span class="stack-tag">A1 · Nomen</span>
+        <div class="stack-word">der Mann</div>
+        <div class="stack-meaning">người đàn ông</div>
+        <div class="stack-ipa">[deːɐ̯ man]</div>
+      </div>
+      <div class="stack-card stack-card-2">
+        <span class="stack-tag">A2 · Verben</span>
+        <div class="stack-word">arbeiten</div>
+        <div class="stack-meaning">làm việc</div>
+        <div class="stack-ipa">[ˈaʁbaɪ̯tn̩]</div>
+      </div>
+      <div class="stack-card stack-card-3">
+        <span class="stack-tag">B1 · Akkusativ</span>
+        <div class="stack-word">Ich sehe den Hund.</div>
+        <div class="stack-meaning">Tôi thấy con chó.</div>
+        <div class="stack-ipa">der → den (Akk.)</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ── LANGUAGES ── -->
+<section class="section langs" id="languages">
+  <div class="container">
+    <div class="section-head">
+      <span class="mono-label">01 · Roadmap</span>
+      <h2 style="margin-top:12px;">Sáu ngôn ngữ — cùng một mạng lưới Zettelkasten.</h2>
+      <p>Mỗi ngôn ngữ giữ riêng đặc trưng (chứng chỉ, hệ chữ, phonetics). Nhưng cách tổ chức tri thức và cách lặp lại đều dùng chung một bộ tools.</p>
+    </div>
+
+    <div class="langs-grid" role="list">
+      <article class="lang-card is-live" role="listitem" onclick="window.location.href='/deutsch'" tabindex="0" onkeydown="if(event.key==='Enter')window.location.href='/deutsch'">
+        <div class="lang-head">
+          <span class="lang-flag" aria-hidden="true">🇩🇪</span>
+          <span class="lang-status is-live">Live</span>
+        </div>
         <div>
-          <h1>Học tiếng Đức <span>A1-B2</span> như một workspace.</h1>
-          <p class="hero-copy">Ngữ pháp dạng Zettelkasten, từ vựng SRS, luyện nghe shadowing và đọc có glossary inline. Giao diện đồng bộ theo hệ Notion-like trong design spec.</p>
-          <div class="hero-actions">
-            <button class="btn primary" onclick="go('grammar')">Bắt đầu Grammar</button>
-            <button class="btn secondary" onclick="go('listening')">Luyện nghe</button>
-            <button class="btn secondary" onclick="go('reading')">Đọc theo level</button>
-          </div>
-          <div class="hero-pills">
-            <span class="pill">43+ grammar cards</span>
-            <span class="pill">3.190+ từ vựng</span>
-            <span class="pill">A1 đến B2</span>
-            <span class="pill">4 module live</span>
-          </div>
+          <h3 class="lang-title">Tiếng Đức</h3>
+          <p class="lang-cert">Goethe A1 — B2</p>
         </div>
-        <div class="mascot-card" aria-label="DinoDeutsch visual">
-          <svg width="210" height="150" viewBox="0 0 210 150" fill="none" aria-hidden="true">
-            <rect x="30" y="26" width="126" height="88" rx="16" fill="#fff" stroke="rgba(0,0,0,.1)"/>
-            <path d="M48 50h78M48 68h96M48 86h62" stroke="#a39e98" stroke-width="6" stroke-linecap="round"/>
-            <path d="M153 92c18-16 43-10 49 9 4 14-4 29-22 33-18 4-42-7-43-24-.1-7 5-13 16-18Z" fill="#22c55e"/>
-            <path d="M169 90c-1-20 13-31 29-25 9 4 14 13 10 23-4 11-20 16-39 2Z" fill="#22c55e"/>
-            <circle cx="193" cy="76" r="5" fill="#111"/>
-            <circle cx="194.5" cy="74.5" r="1.5" fill="#fff"/>
-            <path d="M151 116c-15 9-29 8-42-2" stroke="#16a34a" stroke-width="8" stroke-linecap="round"/>
-            <rect x="24" y="109" width="48" height="30" rx="7" fill="#0075de"/>
-            <text x="37" y="129" fill="#fff" font-size="14" font-weight="700" font-family="Arial">DE</text>
-          </svg>
-          <div class="mascot-note">Đi theo flow: học một điểm ngữ pháp, mở nhóm từ liên quan, nghe một đoạn ngắn, rồi đọc bài cùng level.</div>
+        <div class="lang-meta">
+          <span><strong>3.170</strong> từ · 15 nhóm chủ đề</span>
+          <span><strong>30</strong> thẻ ngữ pháp · 12 cabinets</span>
+          <span><strong>der/die/das</strong> · plural · 4 Fälle</span>
         </div>
+      </article>
+
+      <article class="lang-card is-soon" role="listitem">
+        <div class="lang-head">
+          <span class="lang-flag" aria-hidden="true">🇬🇧</span>
+          <span class="lang-status">Q3 2026</span>
+        </div>
+        <div>
+          <h3 class="lang-title">Tiếng Anh</h3>
+          <p class="lang-cert">TOEIC · IELTS · A1—C1</p>
+        </div>
+        <div class="lang-meta">
+          <span><strong>IPA phonetics</strong> · 45 chủ đề</span>
+          <span><strong>Collocations</strong> · phrasal verbs</span>
+          <span>Học thuật & business</span>
+        </div>
+      </article>
+
+      <article class="lang-card is-soon" role="listitem">
+        <div class="lang-head">
+          <span class="lang-flag" aria-hidden="true">🇫🇷</span>
+          <span class="lang-status">Q4 2026</span>
+        </div>
+        <div>
+          <h3 class="lang-title">Tiếng Pháp</h3>
+          <p class="lang-cert">DELF A1 — B2</p>
+        </div>
+        <div class="lang-meta">
+          <span><strong>Giống đực/cái</strong> · liaison</span>
+          <span><strong>Conjugaison</strong> · subjonctif</span>
+          <span>Phonetics nội bộ</span>
+        </div>
+      </article>
+
+      <article class="lang-card is-soon" role="listitem">
+        <div class="lang-head">
+          <span class="lang-flag" aria-hidden="true">🇯🇵</span>
+          <span class="lang-status">Q1 2027</span>
+        </div>
+        <div>
+          <h3 class="lang-title">Tiếng Nhật</h3>
+          <p class="lang-cert">JLPT N5 — N2</p>
+        </div>
+        <div class="lang-meta">
+          <span><strong>3 bảng chữ</strong> · kanji theo bộ thủ</span>
+          <span><strong>Keigo</strong> · thể lịch sự</span>
+          <span>Hệ trợ từ は が を</span>
+        </div>
+      </article>
+
+      <article class="lang-card is-soon" role="listitem">
+        <div class="lang-head">
+          <span class="lang-flag" aria-hidden="true">🇰🇷</span>
+          <span class="lang-status">Q2 2027</span>
+        </div>
+        <div>
+          <h3 class="lang-title">Tiếng Hàn</h3>
+          <p class="lang-cert">TOPIK 1 — 4</p>
+        </div>
+        <div class="lang-meta">
+          <span><strong>Hangul</strong> · ngữ pháp thân thể</span>
+          <span><strong>Particles</strong> 은/는 이/가</span>
+          <span>Văn nói vs viết</span>
+        </div>
+      </article>
+
+      <article class="lang-card is-soon" role="listitem">
+        <div class="lang-head">
+          <span class="lang-flag" aria-hidden="true">🇨🇳</span>
+          <span class="lang-status">Q3 2027</span>
+        </div>
+        <div>
+          <h3 class="lang-title">Tiếng Trung</h3>
+          <p class="lang-cert">HSK 1 — 5</p>
+        </div>
+        <div class="lang-meta">
+          <span><strong>4 tone pinyin</strong> · 214 bộ thủ</span>
+          <span><strong>Giản thể</strong> · stroke order</span>
+          <span>Hán tự theo cụm nghĩa</span>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ── HOW IT WORKS ── -->
+<section class="section" id="how">
+  <div class="container">
+    <div class="section-head">
+      <span class="mono-label">02 · Phương pháp</span>
+      <h2 style="margin-top:12px;">Mở thẻ. Lật xem nghĩa. Tự đánh giá.<br>Não nhớ đúng lúc.</h2>
+      <p>Không phải Duolingo. Không có streak chấm xanh. Mỗi thẻ là một đơn vị tri thức, liên kết với các thẻ khác. Bạn quyết định lần ôn tiếp theo dựa trên độ tự tin.</p>
+    </div>
+
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-num">01 / Cabinet</div>
+        <h3>Nhóm thẻ theo chủ đề</h3>
+        <p>30 chủ đề ngữ pháp tiếng Đức chia vào 12 cabinets: Grundlagen, Artikel, Die Fälle, Zeitformen, Präpositionen... Mỗi cabinet là một mảng kiến thức độc lập.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-num">02 / Card</div>
+        <h3>Thẻ độc lập có ID</h3>
+        <p>Mỗi từ vựng, mỗi quy tắc đều có ID riêng. Thẻ chứa: từ, IPA, nghĩa, ví dụ, ghi chú ngữ pháp, và link đến các thẻ liên quan trong mạng lưới.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-num">03 / Recall</div>
+        <h3>Tự đánh giá độ tự tin</h3>
+        <p>Sau khi xem nghĩa, bạn chọn mức độ nhớ. Hệ thống lập lịch ôn tập theo spaced repetition. Thẻ khó ôn sớm, thẻ dễ ôn muộn — não nhớ đúng lúc cần.</p>
       </div>
     </div>
-    <div class="home-body">
-      <p class="section-label">Tất cả module</p>
-      <div id="moduleGrid" class="module-grid"></div>
+  </div>
+</section>
+
+<!-- ── TRUST BAND ── -->
+<section class="trust" aria-label="Project status">
+  <div class="container trust-grid">
+    <div class="trust-item">
+      <span class="v">3.170</span>
+      <span class="l">Từ vựng Đức · IPA + ví dụ</span>
     </div>
-  </section>
+    <div class="trust-item">
+      <span class="v">30</span>
+      <span class="l">Chủ đề ngữ pháp · 12 cabinets</span>
+    </div>
+    <div class="trust-item">
+      <span class="v">A1 → B2</span>
+      <span class="l">Lộ trình theo CEFR</span>
+    </div>
+    <div class="trust-item">
+      <span class="v">Beta</span>
+      <span class="l">Free · không quảng cáo</span>
+    </div>
+  </div>
+</section>
 
-  <section id="vgrammar" class="view"><iframe id="fgrammar" class="frame" title="Grammar"></iframe></section>
-  <section id="vvocab" class="view"><iframe id="fvocab" class="frame" title="Vocabulary"></iframe></section>
-  <section id="vlistening" class="view"><iframe id="flistening" class="frame" title="Listening"></iframe></section>
-  <section id="vreading" class="view"><iframe id="freading" class="frame" title="Reading"></iframe></section>
+<!-- ── CLOSING CTA ── -->
+<section class="cta-band">
+  <div class="container cta-inner">
+    <span class="mono-label" style="color: rgba(255,255,255,.55);">Beta · free for now</span>
+    <h2 style="margin-top: 12px;">Bắt đầu với tiếng Đức.<br>Năm ngôn ngữ còn lại đang xếp hàng.</h2>
+    <p>Mở thẻ đầu tiên ngay — không cần đăng ký, không cần thẻ tín dụng.</p>
+    <a href="/deutsch" class="btn btn-primary">
+      Vào trang tiếng Đức
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</section>
 
-  <section id="vwriting" class="view">
-    <div class="roadmap">
-      <div class="roadmap-inner">
-        <h1>Writing</h1>
-        <p>Module viết đang giữ cùng hệ UI: prompt theo CEFR, bài mẫu, checklist grammar và vùng AI feedback.</p>
-        <div class="hero-pills"><span class="pill">AI grammar check</span><span class="pill">B1/B2 email</span><span class="pill">Rewrite loop</span></div>
-        <div class="feature-grid">
-          <div class="feature"><b>Writing prompts</b><span>Chủ đề viết theo A1-B2, có tiêu chí rõ trước khi làm.</span></div>
-          <div class="feature"><b>Correction layers</b><span>Sửa grammar, word choice, register và cohesion tách lớp.</span></div>
-          <div class="feature"><b>Portfolio</b><span>Lưu bản nháp, bản sửa và lỗi hay lặp lại để ôn.</span></div>
+<!-- ── FOOTER ── -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">D</span>
+          <span>Dino Language</span>
         </div>
+        <p>Học ngôn ngữ theo phương pháp Zettelkasten. Bắt đầu với tiếng Đức. Một dự án indie từ Việt Nam.</p>
+        <a href="mailto:hi@dinolanguage.com" class="btn-text" style="padding: 0;">hi@dinolanguage.com</a>
+      </div>
+      <div class="footer-col">
+        <h4>Ngôn ngữ</h4>
+        <ul>
+          <li><a href="/deutsch">🇩🇪 Tiếng Đức</a></li>
+          <li><a href="#languages">🇬🇧 Anh — Q3 2026</a></li>
+          <li><a href="#languages">🇫🇷 Pháp — Q4 2026</a></li>
+          <li><a href="#languages">🇯🇵 Nhật — Q1 2027</a></li>
+          <li><a href="#languages">🇰🇷 Hàn — Q2 2027</a></li>
+          <li><a href="#languages">🇨🇳 Trung — Q3 2027</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Tài nguyên</h4>
+        <ul>
+          <li><a href="/LEARN_GERMAN_RESOURCES.md">Tài liệu học tiếng Đức</a></li>
+          <li><a href="/assistant">KI Tutor (AI)</a></li>
+          <li><a href="#how">Phương pháp Zettelkasten</a></li>
+          <li><a href="mailto:hi@dinolanguage.com">Liên hệ</a></li>
+        </ul>
       </div>
     </div>
-  </section>
-
-  <section id="vtest" class="view">
-    <div class="roadmap">
-      <div class="roadmap-inner">
-        <h1>Test</h1>
-        <p>Mock test sẽ gom grammar, vocab, listening và reading thành bài kiểm tra theo level.</p>
-        <div class="hero-pills"><span class="pill">Goethe-style</span><span class="pill">4 kỹ năng</span><span class="pill">Score report</span></div>
-        <div class="feature-grid">
-          <div class="feature"><b>Adaptive quiz</b><span>Độ khó tăng theo điểm đúng và giảm khi lỗi lặp lại.</span></div>
-          <div class="feature"><b>Timed sections</b><span>Giới hạn thời gian theo dạng đề thật để luyện nhịp.</span></div>
-          <div class="feature"><b>Error review</b><span>Tự gom câu sai về grammar card và vocab group liên quan.</span></div>
-        </div>
+    <div class="footer-bottom">
+      <span>© 2026 Dino Language · Made in Vietnam</span>
+      <div class="links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
       </div>
     </div>
-  </section>
-</main>
+  </div>
+</footer>
 
 <script>
-const MODULES = [
-  {id:"grammar", icon:"🏗️", title:"Grammar", live:true, color:"#0075de", desc:"Thẻ ngữ pháp A1-B2 theo Zettelkasten, có ví dụ, lỗi hay gặp và liên kết chéo.", tags:["Zettelkasten","A1-B2","43+ cards"]},
-  {id:"vocab", icon:"📚", title:"Vocabulary", live:true, color:"#2a9d99", desc:"3.190+ từ vựng theo nhóm chủ đề, flashcard, quiz, TTS và bảng biến cách.", tags:["SRS","TTS","A1-B2"]},
-  {id:"listening", icon:"🎧", title:"Listening", live:true, color:"#dd5b00", desc:"Bài nghe theo level với transcript, listen-for tags, dictation và shadowing checklist.", tags:["Dictation","Shadowing","TTS"]},
-  {id:"reading", icon:"📖", title:"Reading", live:true, color:"#391c57", desc:"Graded texts A1-B2 với glossary inline, comprehension quiz, note và rewrite prompt.", tags:["Inline dict","Quiz","Notes"]},
-  {id:"writing", icon:"✍️", title:"Writing", live:false, color:"#ff64c8", desc:"Writing prompts, grammar check và portfolio bài viết đang chuẩn bị.", tags:["Prompts","Feedback"]},
-  {id:"test", icon:"📝", title:"Test", live:false, color:"#1aae39", desc:"Mock Goethe/TestDaF, adaptive test và score report đang chuẩn bị.", tags:["Mock test","Report"]},
-  {id:"assistant", icon:"🤖", title:"KI Tutor", live:true, color:"#0075de", desc:"Trợ lý học tiếng Đức dùng học liệu của web để giải thích và gợi ý ôn tập.", tags:["AI tutor","Review"]}
-];
+/* ── Theme toggle ── */
+(function(){
+  const root = document.documentElement;
+  const btn = document.getElementById('themeBtn');
+  const KEY = 'dl-theme';
 
-const MODULE_SRC = {
-  grammar:"modules/grammar.html",
-  vocab:"modules/vocab.html",
-  listening:"modules/listening.html",
-  reading:"modules/reading.html"
-};
-const VIEW_IDS = new Set(["home","grammar","vocab","listening","reading","writing","test"]);
-const loaded = {};
-let dark = false;
+  function setTheme(t){
+    root.setAttribute('data-theme', t);
+    try{ localStorage.setItem(KEY, t); }catch(_){}
+  }
 
-document.getElementById("moduleGrid").innerHTML = MODULES.map((m) => `
-  <a class="module-card" style="--accent:${m.color}" href="#" onclick="go('${m.id}');return false">
-    <div>
-      <div class="module-top">
-        <span class="module-icon">${m.icon}</span>
-        <span class="module-state ${m.live ? "live" : "soon"}">${m.live ? "LIVE" : "ROADMAP"}</span>
-      </div>
-      <h2 class="module-title">${m.title}</h2>
-      <p class="module-desc">${m.desc}</p>
-    </div>
-    <div class="module-tags">${m.tags.map((tag) => `<span class="module-tag">${tag}</span>`).join("")}</div>
-  </a>
-`).join("");
-
-function loadModule(id){
-  if(loaded[id]) return;
-  const frame = document.getElementById("f" + id);
-  const src = MODULE_SRC[id];
-  if(!frame || !src) return;
-  loaded[id] = true;
-  frame.addEventListener("load", () => postTheme(frame));
-  frame.src = src;
-}
-
-function postTheme(frame){
   try{
-    frame.contentWindow.postMessage({type:"SET_THEME", theme:dark ? "dark" : "light"}, "*");
+    const saved = localStorage.getItem(KEY);
+    if(saved === 'dark' || saved === 'light'){
+      setTheme(saved);
+    } else if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches){
+      setTheme('dark');
+    }
   }catch(_){}
-}
 
-function pathToView(pathname){
-  const clean = ((pathname || "/").replace(/\/+$/, "")) || "/";
-  if(clean === "/" || clean === "/home") return "home";
-  const key = clean.slice(1);
-  return VIEW_IDS.has(key) ? key : "home";
-}
-
-function viewToPath(id){
-  return id === "home" ? "/" : "/" + id;
-}
-
-function go(id, push = true){
-  if(id === "assistant"){
-    window.location.href = "/assistant";
-    return;
-  }
-  if(!VIEW_IDS.has(id)) id = "home";
-  document.querySelectorAll(".view").forEach((view) => view.classList.remove("on"));
-  document.querySelectorAll(".tab").forEach((tab) => tab.classList.remove("on"));
-  const view = id === "home" ? document.getElementById("vhome") : document.getElementById("v" + id);
-  (view || document.getElementById("vhome")).classList.add("on");
-  const tab = document.querySelector(`.tab[data-id="${id}"]`);
-  if(tab) tab.classList.add("on");
-  if(MODULE_SRC[id]) loadModule(id);
-  if(push){
-    const next = viewToPath(id);
-    if(window.location.pathname !== next) history.pushState({view:id}, "", next);
-  }
-}
-
-function toggleTheme(){
-  dark = !dark;
-  document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
-  document.getElementById("themeBtn").textContent = dark ? "☀️" : "🌙";
-  Object.keys(MODULE_SRC).forEach((id) => {
-    const frame = document.getElementById("f" + id);
-    if(frame && frame.contentWindow) postTheme(frame);
+  btn && btn.addEventListener('click', () => {
+    const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    setTheme(next);
   });
-}
+})();
 
-window.addEventListener("popstate", () => go(pathToView(window.location.pathname), false));
-document.addEventListener("DOMContentLoaded", () => go(pathToView(window.location.pathname), false));
+/* ── Smooth scroll for in-page anchors ── */
+document.querySelectorAll('a[href^="#"]').forEach((a) => {
+  a.addEventListener('click', (e) => {
+    const id = a.getAttribute('href').slice(1);
+    if(!id) return;
+    const target = document.getElementById(id);
+    if(!target) return;
+    e.preventDefault();
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    history.pushState(null, '', '#' + id);
+  });
+});
 </script>
+
 </body>
 </html>

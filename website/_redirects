@@ -1,3 +1,8 @@
-/assistant    /assistant/index.html   200
-/assistant/   /assistant/index.html   200
-/*            /index.html             200
+/grammar       /modules/grammar.html    200
+/vocab         /modules/vocab.html      200
+/listening     /modules/listening.html  200
+/reading       /modules/reading.html    200
+/deutsch       /deutsch.html            200
+/deutsch/      /deutsch.html            200
+/assistant     /assistant/index.html    200
+/assistant/    /assistant/index.html    200
