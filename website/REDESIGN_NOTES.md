@@ -101,18 +101,27 @@ Modules cũ (`grammar.html`, `vocab.html`, `listening.html`, `reading.html`) và
 
 **Trước:** SPA — toàn bộ URLs serve `/index.html`, JS lo routing nội bộ.
 
-**Sau:** Multi-page với `_redirects` rõ ràng:
+**Sau:** Multi-page. `_redirects` chỉ rewrite cho 4 modules vì các path khác Cloudflare tự xử lý:
 ```
-/                  → website/index.html        (Homepage 6 lang)
-/deutsch           → website/deutsch.html      (Landing Đức)
-/grammar           → website/modules/grammar.html
-/vocab             → website/modules/vocab.html
-/listening         → website/modules/listening.html
-/reading           → website/modules/reading.html
-/assistant         → website/assistant/index.html
+/grammar       → /modules/grammar.html    200
+/vocab         → /modules/vocab.html      200
+/listening     → /modules/listening.html  200
+/reading       → /modules/reading.html    200
 ```
 
-**Lý do:** Khi migrate Next.js sprint sau, mapping page → route cleaner. URL friendly cho SEO.
+**Cloudflare auto-serve (KHÔNG được rewrite trong `_redirects`):**
+- `/` → `index.html` (auto)
+- `/deutsch` → `deutsch.html` (auto-clean-URL strip `.html`)
+- `/assistant` → `/assistant/index.html` (auto-trailing-slash + index)
+
+**⚠️ Gotcha — `ERR_TOO_MANY_REDIRECTS`:**
+Lần đầu tao thêm rule `/deutsch /deutsch.html 200` vào `_redirects` — gây loop:
+1. User → `/deutsch`
+2. `_redirects` rewrite → `/deutsch.html`
+3. Cloudflare canonical: redirect `/deutsch.html` → `/deutsch` (301)
+4. Loop về step 1
+
+→ Quy tắc: với file HTML ở root build (như `deutsch.html`) và folder có `index.html` (như `assistant/`), KHÔNG thêm rule trong `_redirects`. Cloudflare lo. Chỉ thêm rule khi path không match file trực tiếp (như `/grammar` → file ở `/modules/grammar.html`).
 
 ---
 
