@@ -100,6 +100,58 @@ textarea{width:100%;min-height:112px;resize:vertical;border:1px solid var(--bord
 .dl-shell-btn{width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;border-radius:999px;border:1px solid var(--border);background:var(--bg);color:var(--tx);cursor:pointer;padding:0;font:inherit;transition:background .15s ease,border-color .15s ease}
 .dl-shell-btn:hover{background:var(--bg2);border-color:var(--tx3)}
 @media(max-width:640px){.dl-shell-inner{padding:0 16px;gap:10px}.dl-shell-brand-name{display:none}.dl-shell-crumbs{font-size:12px;gap:6px}}
+
+/* ════ COHERE v9 ATMOSPHERE LAYER (unified across all pages) ════ */
+:root{
+  --bittersweet:#FF7759;
+  --bittersweet-d:#E65A3D;
+  --bittersweet-l:#FFA88C;
+  --pink-gold:#D9A557;
+  --warm-slate:#4F4A5C;
+  --gradient-warm:linear-gradient(135deg,#FF7759 0%,#D9A557 50%,#4F4A5C 100%);
+  --gradient-mesh:radial-gradient(circle at 20% 20%,rgba(255,119,89,0.14) 0%,transparent 45%),
+                  radial-gradient(circle at 80% 30%,rgba(79,74,92,0.10) 0%,transparent 50%),
+                  radial-gradient(circle at 50% 80%,rgba(217,165,87,0.10) 0%,transparent 45%);
+  --f-geist:'Geist','Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+}
+[data-theme=dark]{
+  --gradient-mesh:radial-gradient(circle at 20% 20%,rgba(255,119,89,0.08) 0%,transparent 45%),
+                  radial-gradient(circle at 80% 30%,rgba(79,74,92,0.06) 0%,transparent 50%),
+                  radial-gradient(circle at 50% 80%,rgba(217,165,87,0.06) 0%,transparent 45%);
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:var(--gradient-mesh);
+  pointer-events:none;z-index:0;opacity:0.55;
+}
+[data-theme=dark] body::before{opacity:0.30;}
+body::after{
+  content:'';position:fixed;inset:0;
+  background-image:radial-gradient(circle at 1px 1px,rgba(33,33,33,0.04) 1px,transparent 0);
+  background-size:24px 24px;pointer-events:none;z-index:0;
+}
+[data-theme=dark] body::after{
+  background-image:radial-gradient(circle at 1px 1px,rgba(250,250,250,0.03) 1px,transparent 0);
+}
+/* Keep content above bg layers */
+body > *{position:relative;z-index:1;}
+
+/* Unified focus-visible (a11y) */
+*:focus-visible{
+  outline:2px solid var(--bittersweet-d);
+  outline-offset:2px;
+  border-radius:4px;
+}
+
+/* Coral text alias — use bittersweet-d for small text (better contrast) */
+.dl-text-accent{color:var(--bittersweet-d);}
+
+/* v9 atmosphere — ensure shell uses unified Geist font */
+.dl-shell,.dl-shell-brand,.dl-shell-crumbs,.dl-shell-search,.dl-shell-btn,
+.dl-shell-search input,.dl-shell-lang button{
+  font-family:var(--f-geist);
+}
+
 </style>
 </head>
 <body>
