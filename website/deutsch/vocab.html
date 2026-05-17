@@ -443,78 +443,189 @@ body > *{position:relative;z-index:1;}
   font-family:var(--f-geist);
 }
 
+
+/* DLX UNIFIED CHROME */
+.dlx-topbar{position:sticky;top:0;z-index:1000;background:color-mix(in srgb,var(--bg,#FAFAFA) 80%,transparent);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid var(--rule,#E0E0E0)}
+[data-theme=dark] .dlx-topbar{background:color-mix(in srgb,#0E0E0E 80%,transparent);border-bottom-color:#2A2A2A}
+.dlx-topbar-inner{max-width:1280px;margin:0 auto;height:68px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:24px;padding:0 28px}
+.dlx-logo{display:flex;align-items:center;gap:12px;cursor:pointer;transition:opacity .2s;text-decoration:none}
+.dlx-logo:hover{opacity:0.75}
+.dlx-logo-mark{width:32px;height:32px;background:linear-gradient(135deg,#FF7759 0%,#D9A557 50%,#4F4A5C 100%);border-radius:40% 60% 55% 45% / 50% 45% 55% 50%;display:flex;align-items:center;justify-content:center;color:#FAFAFA;font-weight:700;font-size:16px;letter-spacing:-.04em;transition:border-radius .8s ease;flex-shrink:0}
+.dlx-logo:hover .dlx-logo-mark{animation:dlx-morph 4s ease-in-out infinite}
+@keyframes dlx-morph{0%,100%{border-radius:40% 60% 55% 45% / 50% 45% 55% 50%}33%{border-radius:55% 45% 40% 60% / 45% 60% 40% 55%}66%{border-radius:50% 50% 60% 40% / 55% 40% 60% 45%}}
+.dlx-logo-name{font-family:'Geist','Inter',sans-serif;font-weight:600;font-size:18px;letter-spacing:-.025em;color:var(--ink,#212121);line-height:1}
+[data-theme=dark] .dlx-logo-name{color:#FAFAFA}
+.dlx-logo-group{display:flex;align-items:center;gap:10px;min-width:0}
+.dlx-lang-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px 4px 9px;font-family:'Geist Mono','JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;background:#FFFFFF;border:1px solid #C8C8C8;border-radius:999px;color:#404040;user-select:none;flex-shrink:0;white-space:nowrap;text-decoration:none}
+[data-theme=dark] .dlx-lang-pill{background:#181818;border-color:#3D3D3D;color:#E0E0E0}
+.dlx-pill-dot{width:6px;height:6px;background:#FF7759;border-radius:50%;animation:dlx-pulse 2s ease-in-out infinite}
+@keyframes dlx-pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,119,89,0.5)}50%{box-shadow:0 0 0 6px rgba(255,119,89,0)}}
+@media(max-width:880px){.dlx-lang-pill{display:none}}
+.dlx-main-nav{display:flex;gap:4px;justify-self:center;overflow-x:auto;scrollbar-width:none}
+.dlx-main-nav::-webkit-scrollbar{display:none}
+.dlx-nav-item{padding:8px 14px;font-family:'Geist','Inter',sans-serif;font-size:14px;font-weight:500;color:#6B6B6B;white-space:nowrap;transition:color .15s,background .15s;letter-spacing:-.005em;border-radius:6px;position:relative;text-decoration:none;cursor:pointer}
+.dlx-nav-item:hover:not(.disabled){color:#212121;background:#F7F7F7}
+[data-theme=dark] .dlx-nav-item{color:#A8A8A8}
+[data-theme=dark] .dlx-nav-item:hover:not(.disabled){color:#FAFAFA;background:#1F1F1F}
+.dlx-nav-item.active{color:#212121;font-weight:600}
+[data-theme=dark] .dlx-nav-item.active{color:#FAFAFA}
+.dlx-nav-item.active::after{content:'';position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);width:24px;height:2px;background:#FF7759;border-radius:2px}
+.dlx-nav-item.disabled{color:#BABABA;cursor:not-allowed}
+[data-theme=dark] .dlx-nav-item.disabled{color:#555555}
+.dlx-nav-item.disabled::after{content:' •';margin-left:4px;color:#BABABA}
+.dlx-actions{display:flex;align-items:center;gap:12px;justify-self:end}
+.dlx-theme-btn{width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;color:#6B6B6B;padding:0;border-radius:6px;transition:all .15s;border:1px solid #E0E0E0;background:transparent;cursor:pointer}
+.dlx-theme-btn:hover{color:#FF7759;border-color:#C8C8C8;background:#F7F7F7}
+[data-theme=dark] .dlx-theme-btn{border-color:#2A2A2A;color:#A8A8A8}
+[data-theme=dark] .dlx-theme-btn:hover{background:#1F1F1F;border-color:#3D3D3D}
+.dlx-theme-btn .dlx-icon-sun{display:none}
+[data-theme=dark] .dlx-theme-btn .dlx-icon-moon{display:none}
+[data-theme=dark] .dlx-theme-btn .dlx-icon-sun{display:block}
+.dlx-btn-login{font-family:'Geist','Inter',sans-serif;font-size:14px;font-weight:500;color:#404040;transition:color .15s;text-decoration:none;padding:8px 0}
+[data-theme=dark] .dlx-btn-login{color:#E0E0E0}
+.dlx-btn-login:hover{color:#FF7759}
+.dlx-btn-register{padding:9px 18px;font-family:'Geist','Inter',sans-serif;font-size:14px;font-weight:600;background:#212121;color:#FAFAFA;border-radius:999px;transition:all .2s;letter-spacing:-.01em;position:relative;overflow:hidden;text-decoration:none;display:inline-flex;align-items:center;gap:6px;border:none;cursor:pointer}
+[data-theme=dark] .dlx-btn-register{background:#FAFAFA;color:#212121}
+.dlx-btn-register::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,#FF7759 0%,#D9A557 50%,#4F4A5C 100%);opacity:0;transition:opacity .25s}
+.dlx-btn-register>*{position:relative;z-index:1}
+.dlx-btn-register:hover::before{opacity:1}
+.dlx-btn-register:hover{transform:translateY(-1px);color:#FAFAFA}
+@media(max-width:880px){.dlx-main-nav{display:none}.dlx-btn-login{display:none}.dlx-topbar-inner{grid-template-columns:auto 1fr auto}.dlx-actions{justify-self:end}}
+
+.dlx-toolbar{max-width:1280px;margin:0 auto;padding:14px 28px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid var(--rule,#E0E0E0)}
+[data-theme=dark] .dlx-toolbar{border-bottom-color:#2A2A2A}
+.dlx-toolbar:empty{display:none}
+.dlx-search{display:flex;align-items:center;gap:8px;padding:8px 14px;background:#FFFFFF;border:1px solid #E0E0E0;border-radius:999px;min-width:200px;flex:1;max-width:420px;transition:border-color .15s,background .15s}
+[data-theme=dark] .dlx-search{background:#181818;border-color:#2A2A2A}
+.dlx-search:focus-within{border-color:#FF7759}
+.dlx-search svg{color:#909090;flex-shrink:0}
+.dlx-search input{background:transparent;border:0;outline:0;font-family:'Geist','Inter',sans-serif;color:#212121;flex:1;font-size:14px;min-width:0}
+[data-theme=dark] .dlx-search input{color:#FAFAFA}
+.dlx-search input::placeholder{color:#909090}
+.dlx-tool-btn{height:36px;min-width:36px;padding:0 14px;display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:999px;border:1px solid #E0E0E0;background:transparent;color:#404040;cursor:pointer;font-family:'Geist','Inter',sans-serif;font-size:13px;font-weight:500;transition:all .15s}
+[data-theme=dark] .dlx-tool-btn{border-color:#2A2A2A;color:#E0E0E0}
+.dlx-tool-btn:hover{background:#F7F7F7;border-color:#C8C8C8}
+[data-theme=dark] .dlx-tool-btn:hover{background:#1F1F1F;border-color:#3D3D3D}
+.dlx-tool-btn.is-on{background:#FF7759;border-color:#FF7759;color:#FAFAFA}
+.dlx-lang-toggle{display:inline-flex;border:1px solid #E0E0E0;border-radius:999px;padding:3px}
+[data-theme=dark] .dlx-lang-toggle{border-color:#2A2A2A}
+.dlx-lang-toggle button{padding:4px 12px;border-radius:999px;font-family:'Geist Mono','JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.04em;color:#6B6B6B;background:transparent;border:0;cursor:pointer}
+[data-theme=dark] .dlx-lang-toggle button{color:#A8A8A8}
+.dlx-lang-toggle button.is-on{background:#212121;color:#FAFAFA}
+[data-theme=dark] .dlx-lang-toggle button.is-on{background:#FAFAFA;color:#212121}
+
+.dlx-footer{background:#1A1A1A;color:#FAFAFA;padding:52px 0 0;margin-top:60px;position:relative;z-index:1;overflow:hidden}
+[data-theme=dark] .dlx-footer{background:#060606}
+.dlx-footer::before{content:'';position:absolute;top:-100px;right:-100px;width:500px;height:500px;background:linear-gradient(135deg,#FF7759 0%,#D9A557 50%,#4F4A5C 100%);opacity:0.06;border-radius:50%;filter:blur(100px);pointer-events:none}
+.dlx-footer-content{max-width:1280px;margin:0 auto;padding:0 28px;display:grid;grid-template-columns:1.8fr 1fr 1fr;gap:36px;position:relative;z-index:1}
+@media(max-width:780px){.dlx-footer-content{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.dlx-footer{padding:36px 0 0;margin-top:32px}.dlx-footer-content{grid-template-columns:1fr;gap:14px;padding:0 20px}}
+.dlx-footer-brand{font-family:'Geist','Inter',sans-serif;font-size:28px;font-weight:500;color:#FAFAFA;letter-spacing:-.03em;margin-bottom:14px}
+.dlx-footer-brand .gradient{background:linear-gradient(135deg,#FF7759 0%,#D9A557 50%,#4F4A5C 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.dlx-footer-tag{font-family:'Geist','Inter',sans-serif;font-size:13px;color:#909090;line-height:1.55;max-width:340px}
+.dlx-footer-col h4{font-family:'Geist Mono','JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#FF7759;margin-bottom:14px;letter-spacing:.12em;text-transform:uppercase}
+.dlx-footer-col ul{list-style:none;display:flex;flex-direction:column;gap:8px;padding:0;margin:0}
+.dlx-footer-col a{font-family:'Geist','Inter',sans-serif;font-size:14px;color:#B8B8B8;text-decoration:none;transition:color .15s}
+.dlx-footer-col a:hover{color:#FAFAFA}
+.dlx-footer-col a.disabled{color:#555;cursor:not-allowed}
+.dlx-footer-col a.disabled::after{content:' •';color:#FF7759;opacity:.5}
+.dlx-footer-bottom{max-width:1280px;margin:32px auto 0;padding:18px 28px;border-top:1px solid #303030;display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center;position:relative;z-index:1}
+.dlx-footer-bottom .copyright{font-family:'Geist Mono','JetBrains Mono',monospace;font-size:11px;color:#909090;letter-spacing:.04em}
+.dlx-footer-bottom .copyright .accent{color:#FF7759}
+.dlx-footer-bottom a{font-family:'Geist','Inter',sans-serif;font-size:13px;color:#B8B8B8;text-decoration:none}
+.dlx-footer-bottom a:hover{color:#FAFAFA}
+
+/* Hide old shell entirely */
+.dl-shell{display:none !important}
+
 </style>
 </head>
 <body>
 
-<header class="dl-shell" role="banner">
-  <div class="dl-shell-inner">
-    <a href="/" class="dl-shell-brand" aria-label="Dino Language home">
-      <span class="dl-shell-brand-mark" aria-hidden="true">D</span>
-      <span class="dl-shell-brand-name">Dino Language</span>
-    </a>
-    <nav class="dl-shell-crumbs" aria-label="Breadcrumb">
-      <a href="/deutsch" class="dl-shell-crumb">Tiếng Đức</a>
-      <span class="dl-shell-crumb-sep" aria-hidden="true">/</span>
-      <span class="dl-shell-crumb dl-shell-crumb-current" aria-current="page">Từ vựng</span>
+<header class="dlx-topbar">
+  <div class="dlx-topbar-inner">
+    <div class="dlx-logo-group">
+      <a class="dlx-logo" href="/" aria-label="Về Dino Language">
+        <div class="dlx-logo-mark">D</div>
+        <span class="dlx-logo-name">Dino Language</span>
+      </a>
+      <a class="dlx-lang-pill" href="/deutsch"><span class="dlx-pill-dot"></span>DEUTSCH</a>
+    </div>
+    <nav class="dlx-main-nav" aria-label="Module navigation">
+      <a class="dlx-nav-item" href="/deutsch/grammar">Ngữ pháp</a>
+      <a class="dlx-nav-item active" href="/deutsch/vocab">Từ vựng</a>
+      <a class="dlx-nav-item" href="/deutsch/listening">Nghe</a>
+      <a class="dlx-nav-item" href="/deutsch/reading">Đọc</a>
+      <span class="dlx-nav-item disabled">Nói</span>
+      <span class="dlx-nav-item disabled">Viết</span>
+      <span class="dlx-nav-item disabled">Test</span>
     </nav>
-    <div class="dl-shell-actions">
-      <label class="dl-shell-search">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-        <input type="text" id="dlShellSearch" placeholder="Tìm từ vựng · Mann, gehen..." autocomplete="off" aria-label="Tìm từ vựng">
-      </label>
-      <button type="button" class="dl-shell-btn is-on" id="dlShellTTS" title="Bật/tắt phát âm" aria-label="Bật/tắt phát âm">
-        <span aria-hidden="true">🔊</span>
-        <span class="dl-shell-tts-label">TTS</span>
-      </button>
-      <button type="button" class="dl-shell-btn dl-shell-btn-icon" id="dlShellStats" title="Thống kê học tập" aria-label="Thống kê">
-        <span aria-hidden="true">📊</span>
-      </button>
-      <button type="button" class="dl-shell-btn dl-shell-btn-icon" id="dlShellTheme" aria-label="Đổi giao diện sáng/tối" title="Đổi giao diện">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-      </button>
+    <div class="dlx-actions">
+      <button class="dlx-theme-btn" id="dlxThemeBtn" type="button" aria-label="Đổi giao diện sáng/tối"><svg class="dlx-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="dlx-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.07" y2="4.93"/></svg></button>
+      <a class="dlx-btn-login" href="/assistant">KI Tutor</a>
+      <a class="dlx-btn-register" href="/deutsch"><span>← Tiếng Đức</span></a>
     </div>
   </div>
 </header>
+<div class="dlx-toolbar">
+  <label class="dlx-search"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input type="text" id="dlShellSearch" placeholder="Tìm từ vựng · Mann, gehen..." autocomplete="off"></label>
+  <button type="button" class="dlx-tool-btn is-on" id="dlShellTTS"><span>🔊</span><span>TTS</span></button>
+  <button type="button" class="dlx-tool-btn" id="dlShellStats"><span>📊</span><span>Thống kê</span></button>
+</div>
 <script>
 (function(){
-  var ROOT=document.documentElement,KEY='dl-theme';
-  function read(){try{var t=localStorage.getItem(KEY);if(t==='light'||t==='dark')return t}catch(e){}return (window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light'}
-  function write(t){ROOT.setAttribute('data-theme',t);try{localStorage.setItem(KEY,t);localStorage.setItem('theme',t);localStorage.setItem('dm',t==='dark'?'1':'0')}catch(e){}}
+  var ROOT=document.documentElement,KEY="dl-theme";
+  function read(){try{var t=localStorage.getItem(KEY);if(t==="light"||t==="dark")return t}catch(e){}return (window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light"}
+  function write(t){ROOT.setAttribute("data-theme",t);try{localStorage.setItem(KEY,t);localStorage.setItem("theme",t);localStorage.setItem("dm",t==="dark"?"1":"0")}catch(e){}}
   write(read());
-  document.addEventListener('DOMContentLoaded',function(){
-    // Theme toggle — write() sets data-theme + dl-theme + theme + dm.
-    // Avoid calling vocab's applyDark() here because it reads block-scoped `dark`
-    // variable which we cannot update from outside; write() already does the work.
-    var b=document.getElementById('dlShellTheme');
-    if(b)b.addEventListener('click',function(){
-      var next=ROOT.getAttribute('data-theme')==='dark'?'light':'dark';
-      write(next);
-    });
-    // Search delegate
-    var shellSearch=document.getElementById('dlShellSearch');
-    var legacySearch=document.getElementById('sI');
-    if(shellSearch&&legacySearch){
-      shellSearch.addEventListener('input',function(){
-        legacySearch.value=this.value;
-        legacySearch.dispatchEvent(new Event('input',{bubbles:true}));
-        legacySearch.dispatchEvent(new Event('keyup',{bubbles:true}));
+  document.addEventListener("DOMContentLoaded",function(){
+    var b=document.getElementById("dlxThemeBtn");
+    if(b)b.addEventListener("click",function(){write(ROOT.getAttribute("data-theme")==="dark"?"light":"dark")});
+  });
+})();
+</script>
+<script>
+(function(){
+  // Forward search input
+  function bridge(){
+    var shellIn = document.getElementById("dlShellSearch");
+    if (!shellIn) return;
+    var legacyG = document.getElementById("searchInput");
+    var legacyV = document.getElementById("sI");
+    var legacy = legacyG || legacyV;
+    if (legacy && shellIn !== legacy) {
+      shellIn.addEventListener("input", function(){
+        legacy.value = this.value;
+        legacy.dispatchEvent(new Event("input",{bubbles:true}));
+        legacy.dispatchEvent(new Event("keyup",{bubbles:true}));
       });
     }
-    // TTS toggle
-    var ttsBtn=document.getElementById('dlShellTTS');
-    if(ttsBtn)ttsBtn.addEventListener('click',function(){
-      if(typeof window.toggleTTS==='function')try{window.toggleTTS()}catch(e){}
-      ttsBtn.classList.toggle('is-on');
-      var lbl=ttsBtn.querySelector('.dl-shell-tts-label');
-      if(lbl)lbl.textContent=ttsBtn.classList.contains('is-on')?'TTS':'Tắt';
+    // VI/EN
+    var lv=document.getElementById("dlShellLangVI"), le=document.getElementById("dlShellLangEN");
+    if(lv && le){
+      function setLang(l){
+        if(typeof window.setLang==="function") try{window.setLang(l)}catch(e){}
+        else document.documentElement.setAttribute("data-lang",l);
+        lv.classList.toggle("is-on",l==="vi");
+        le.classList.toggle("is-on",l==="en");
+      }
+      lv.addEventListener("click",function(){setLang("vi")});
+      le.addEventListener("click",function(){setLang("en")});
+    }
+    // TTS
+    var tts=document.getElementById("dlShellTTS");
+    if(tts) tts.addEventListener("click",function(){
+      if(typeof window.toggleTTS==="function") try{window.toggleTTS()}catch(e){}
+      tts.classList.toggle("is-on");
     });
-    // Stats button → trigger existing stats overlay
-    var statsBtn=document.getElementById('dlShellStats');
-    if(statsBtn)statsBtn.addEventListener('click',function(){
-      var ov=document.getElementById('stov');if(ov)ov.classList.add('show');
+    // Stats
+    var stats=document.getElementById("dlShellStats");
+    if(stats) stats.addEventListener("click",function(){
+      var ov=document.getElementById("stov"); if(ov) ov.classList.add("show");
     });
-  });
+  }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",bridge);
+  else bridge();
 })();
 </script>
 
@@ -4388,5 +4499,39 @@ window.addEventListener("message", function(e) {
   }
 });
 </script>
+<footer class="dlx-footer">
+  <div class="dlx-footer-content">
+    <div>
+      <div class="dlx-footer-brand"><span class="gradient">Dino Language</span></div>
+      <div class="dlx-footer-tag">Sáu ngôn ngữ, cùng một mạng lưới Zettelkasten. Một dự án mở, làm bởi người Việt cho người Việt.</div>
+    </div>
+    <div class="dlx-footer-col">
+      <h4>Module</h4>
+      <ul>
+        <li><a href="/deutsch/grammar">Ngữ pháp</a></li>
+        <li><a href="/deutsch/vocab">Từ vựng</a></li>
+        <li><a href="/deutsch/listening">Nghe</a></li>
+        <li><a href="/deutsch/reading">Đọc</a></li>
+        <li><a class="disabled">Nói</a></li>
+        <li><a class="disabled">Viết</a></li>
+        <li><a class="disabled">Test</a></li>
+      </ul>
+    </div>
+    <div class="dlx-footer-col">
+      <h4>Hỗ trợ</h4>
+      <ul>
+        <li><a href="/assistant">KI Tutor (AI)</a></li>
+        <li><a href="/LEARN_GERMAN_RESOURCES.md">Tài liệu Đức</a></li>
+        <li><a href="/deutsch">Tổng quan</a></li>
+        <li><a href="/">← Homepage</a></li>
+        <li><a href="mailto:hi@dinolanguage.com">Liên hệ</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="dlx-footer-bottom">
+    <span class="copyright">© 2026 Dino Language <span class="accent">·</span> Made in Vietnam <span class="accent">·</span> v9</span>
+    <a href="mailto:hi@dinolanguage.com">Email</a>
+  </div>
+</footer>
 </body>
 </html>
