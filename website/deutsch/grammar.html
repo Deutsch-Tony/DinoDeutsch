@@ -181,34 +181,55 @@ body {
 /* ─── Main Layout ─── */
 #app { min-height: calc(100vh - var(--nav-h)); }
 
-/* ─── Hero ─── */
+/* ─── Hero — Editorial Cohere style ─── */
 .hero {
-  background: linear-gradient(180deg, var(--white) 0%, var(--warm-white) 100%);
-  padding: 56px 24px 48px;
-  text-align: center;
+  background: var(--bg);
+  padding: 72px 24px 56px;
   border-bottom: 1px solid var(--border);
 }
-[data-theme="dark"] .hero { background: linear-gradient(180deg, var(--bg) 0%, var(--bg-alt) 100%); }
+.hero > * { max-width: 1200px; margin-left: auto; margin-right: auto; }
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 12px; margin-bottom: 24px;
+  border: 1px solid var(--border); border-radius: var(--r-pill);
+  font-family: var(--font-mono, 'JetBrains Mono', ui-monospace, monospace);
+  font-size: 12px; letter-spacing: 0.04em; color: var(--text-muted);
+  width: fit-content;
+}
+.hero-eyebrow::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--coral);
+}
 .hero h1 {
-  font-size: clamp(32px, 5vw, 54px);
-  font-weight: 700;
-  letter-spacing: -1.5px;
-  line-height: 1.04;
+  font-size: clamp(38px, 6.5vw, 80px);
+  font-weight: 600;
+  letter-spacing: -0.022em;
+  line-height: 1.02;
   color: var(--text);
-  margin-bottom: 14px;
+  margin: 0 0 20px;
+  max-width: 900px;
 }
+.hero h1 em { font-style: normal; color: var(--coral); }
 .hero-sub {
-  font-size: 18px; font-weight: 400; color: var(--text-muted);
-  max-width: 540px; margin: 0 auto 24px; line-height: 1.5;
+  font-size: 19px; font-weight: 400; color: var(--text-muted);
+  max-width: 620px; margin: 0 0 32px; line-height: 1.55;
 }
-.hero-badges { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.hero-badges {
+  display: flex; flex-wrap: wrap; gap: 24px;
+  padding-top: 24px; border-top: 1px solid var(--border);
+  max-width: 900px;
+}
 .badge-pill {
-  background: var(--badge-bg);
-  color: var(--badge-txt);
-  border-radius: var(--r-pill);
-  font-size: 12px; font-weight: 600; letter-spacing: 0.125px;
-  padding: 4px 12px;
-  border: 1px solid rgba(9,127,232,0.15);
+  display: flex; flex-direction: column; gap: 4px;
+  background: transparent; border: 0; padding: 0;
+  border-radius: 0; color: var(--text);
+  font-size: 22px; font-weight: 600; letter-spacing: -0.01em;
+}
+.badge-pill::after {
+  content: attr(data-label);
+  font-family: var(--font-mono, 'JetBrains Mono', ui-monospace, monospace);
+  font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--text-dim); font-weight: 500;
 }
 
 /* ─── Search Results Panel ─── */
@@ -235,55 +256,90 @@ body {
 /* ─── Cabinet Grid ─── */
 #cabinetView { padding: 40px 24px 80px; max-width: 1200px; margin: 0 auto; }
 .section-label {
-  font-size: 11px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase;
-  color: var(--text-dim); margin-bottom: 20px;
+  font-size: clamp(22px, 3vw, 32px); font-weight: 600; letter-spacing: -0.015em; line-height: 1.2;
+  color: var(--text); margin: 0 auto 32px;
+  max-width: 1200px; padding: 0 24px;
+  text-transform: none;
 }
+/* ─── Section eyebrow + label (Cohere editorial) ─── */
+.section-eyebrow {
+  font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 56px 0 12px;
+  display: flex; align-items: baseline; gap: 10px;
+  max-width: 1200px; margin-left: auto; margin-right: auto;
+  padding: 0 24px;
+}
+.section-eyebrow .se-num {
+  color: var(--coral); font-weight: 600;
+}
+
+/* ─── Cabinet grid + card (Cohere bold refresh) ─── */
 .cabinet-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px 64px;
 }
 .cabinet-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--r-lg);
-  padding: 20px;
+  border-radius: 22px;
+  padding: 28px;
   cursor: pointer;
-  transition: all .2s ease;
-  box-shadow: var(--shadow-sm);
-  display: flex; flex-direction: column; gap: 10px;
-  position: relative; overflow: hidden;
+  transition: background .15s ease, border-color .15s ease;
+  box-shadow: none;
+  display: flex; flex-direction: column; gap: 14px;
+  position: relative;
+  min-height: 180px;
 }
 .cabinet-card::before {
   content: '';
   position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: var(--cab-color);
+  left: 28px; top: 28px;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--cab-color, var(--coral));
   opacity: 0;
-  transition: opacity .2s;
+  transition: opacity .15s ease;
+}
+.cabinet-card:hover {
+  background: var(--bg-alt);
+  border-color: var(--border-md);
 }
 .cabinet-card:hover::before { opacity: 1; }
-.cabinet-card:hover {
-  border-color: rgba(0,0,0,0.2);
-  box-shadow: var(--shadow-card);
-  transform: translateY(-2px);
+.cabinet-card:active { transform: scale(0.99); }
+.cab-icon {
+  width: 56px; height: 56px;
+  border-radius: 14px;
+  background: var(--bg-alt);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 30px; line-height: 1;
+  flex-shrink: 0;
 }
-.cabinet-card:active { transform: scale(0.98); }
-.cab-icon { font-size: 28px; }
-.cab-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
-.cab-title { font-size: 16px; font-weight: 700; color: var(--text); letter-spacing: -0.2px; }
+.cabinet-card:hover .cab-icon { background: var(--surface); }
+.cab-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.cab-title { font-size: 19px; font-weight: 600; color: var(--text); letter-spacing: -0.01em; line-height: 1.2; }
 .cab-count {
-  background: var(--badge-bg); color: var(--badge-txt);
-  border-radius: var(--r-pill); font-size: 11px; font-weight: 600;
-  padding: 2px 9px; white-space: nowrap; flex-shrink: 0;
+  background: transparent; color: var(--text-dim);
+  border-radius: 0; font-size: 13px; font-weight: 500;
+  padding: 0; white-space: nowrap; flex-shrink: 0;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  letter-spacing: 0.02em;
+  align-self: center;
 }
-.cab-subtitle { font-size: 13px; color: var(--text-muted); line-height: 1.4; }
-.cab-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 4px; }
+.cab-subtitle { font-size: 14px; color: var(--text-muted); line-height: 1.5; }
+.cab-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; padding-top: 4px; }
 .cab-tag {
   font-size: 11px; font-weight: 500; color: var(--text-dim);
-  background: var(--warm-white); border-radius: 4px; padding: 2px 7px;
+  background: transparent; border: 1px solid var(--border); border-radius: 4px; padding: 2px 8px;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  letter-spacing: 0.02em;
 }
+.cabinet-card:hover .cab-tag { border-color: var(--border-md); }
 
 /* ─── Cabinet Drawer (slide in from right) ─── */
 #cabinetDrawer {
@@ -660,9 +716,14 @@ footer strong { color: white; }
   .topbar-logo span { display: none; }
   .tb-btn span { display: none; }
   .tb-btn { padding: 7px 10px; }
-  #cabinetView { padding: 24px 14px 80px; }
-  .cabinet-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-  .hero { padding: 36px 16px 32px; }
+  .hero { padding: 48px 16px 36px; }
+  .hero-badges { gap: 20px; }
+  .badge-pill { font-size: 18px; }
+  .section-eyebrow { margin: 40px 0 10px; padding: 0 16px; }
+  .section-label { padding: 0 16px; margin-bottom: 24px; }
+  .cabinet-grid { padding: 0 16px 48px; gap: 12px; grid-template-columns: 1fr; }
+  .cabinet-card { padding: 20px; min-height: 0; }
+  .cab-icon { width: 48px; height: 48px; font-size: 24px; }
   #cabinetDrawer { width: 100vw; border-left: none; }
   #detailModal { padding: 0; align-items: flex-end; }
   .modal-panel { border-radius: var(--r-lg) var(--r-lg) 0 0; max-width: 100%; max-height: 92vh; }
@@ -672,8 +733,8 @@ footer strong { color: white; }
   .v2-arrow, .tk-arrow { transform: rotate(90deg); }
 }
 @media(max-width:480px) {
-  .cabinet-grid { grid-template-columns: 1fr; }
-  .hero h1 { font-size: 28px; letter-spacing: -0.8px; }
+  .hero { padding: 36px 16px 28px; }
+  .hero-badges { gap: 16px; flex-wrap: wrap; }
   .conj-grid { grid-template-columns: 1fr; }
 }
 
@@ -865,25 +926,26 @@ body { overflow-y: auto !important; }
 
   <!-- Hero -->
   <div id="heroSection" class="hero">
+    <div class="hero-eyebrow"><span class="vi-text">Ngữ pháp · Goethe A1 — B2</span><span class="en-text">Grammar · Goethe A1 — B2</span></div>
     <h1>
-      <span class="vi-text">Ngữ Pháp Tiếng Đức<br>theo Zettelkasten</span>
-      <span class="en-text">German Grammar<br>via Zettelkasten</span>
+      <span class="vi-text">Ngữ pháp tiếng Đức,<br>theo <em>Zettelkasten</em>.</span>
+      <span class="en-text">German grammar,<br>via <em>Zettelkasten</em>.</span>
     </h1>
     <p class="hero-sub">
-      <span class="vi-text">Khám phá ngữ pháp A1→B2 qua hệ thống thẻ liên kết — nhấp vào tủ để mở, nhấp vào thẻ để học chi tiết</span>
-      <span class="en-text">Explore A1→B2 grammar through linked flashcards — click a cabinet to open, click a card to study</span>
+      <span class="vi-text">Mỗi quy tắc là một thẻ độc lập, có ID, liên kết qua mạng lưới. Nhấp tủ để mở, nhấp thẻ để học chi tiết.</span>
+      <span class="en-text">Each rule is an independent card with an ID, linked through a network. Click a cabinet to open, click a card to study.</span>
     </p>
     <div class="hero-badges">
-      <span class="badge-pill">📚 30 thẻ ngữ pháp</span>
-      <span class="badge-pill">🗂️ <span class="vi-text">12 nhóm chủ đề</span><span class="en-text">12 topic groups</span></span>
-      <span class="badge-pill">🔗 <span class="vi-text">Zettelkasten liên kết</span><span class="en-text">Zettelkasten linked</span></span>
-      <span class="badge-pill">🇩🇪 A1 → B2</span>
+      <span class="badge-pill" data-label="THẺ NGỮ PHÁP">30</span>
+      <span class="badge-pill" data-label="CABINETS">12</span>
+      <span class="badge-pill" data-label="LEVEL">A1 — B2</span>
     </div>
   </div>
 
   <!-- Cabinet View -->
   <div id="cabinetView">
-    <div class="section-label"><span class="vi-text">Chọn nhóm ngữ pháp — </span><span class="en-text">Choose a grammar cabinet — </span>12<span class="vi-text"> tủ · </span><span class="en-text"> cabinets · </span>30<span class="vi-text"> thẻ</span><span class="en-text"> cards</span></div>
+    <div class="section-eyebrow"><span class="se-num">01</span> <span class="se-label vi-text">Cabinets · Chọn một tủ ngữ pháp</span><span class="se-label en-text">Cabinets · Choose a grammar cabinet</span></div>
+    <div class="section-label"><span class="vi-text">12 tủ · 30 thẻ ngữ pháp</span><span class="en-text">12 cabinets · 30 grammar cards</span></div>
     <div class="cabinet-grid" id="cabinetGrid">
       <div class="cabinet-card" style="--cab-color:#0075de" onclick="openCabinet('grundlagen')">
         <div class="cab-icon">🏗️</div>

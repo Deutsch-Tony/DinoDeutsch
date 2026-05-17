@@ -242,3 +242,108 @@ Hai trang landing đều dưới ngưỡng brief PHẦN 6.3 (`< 100 KB per page`
 ---
 
 *Updated May 17, 2026.*
+
+---
+
+## 11. Sprint 3 — URL restructure + Bold visual refresh (May 18, 2026)
+
+### 11.1. URL restructure
+
+User feedback: `/modules/grammar` không semantic, muốn `/deutsch/grammar`.
+
+Cấu trúc mới:
+```
+website/
+├── index.html                  → /
+├── deutsch/
+│   ├── index.html              → /deutsch  (cũ: deutsch.html)
+│   ├── grammar.html            → /deutsch/grammar  (cũ: modules/grammar.html)
+│   ├── vocab.html              → /deutsch/vocab
+│   ├── listening.html          → /deutsch/listening
+│   └── reading.html            → /deutsch/reading
+└── assistant/
+    └── index.html              → /assistant
+```
+
+`_redirects` mới:
+```
+/grammar       → /deutsch/grammar.html  200
+/vocab         → /deutsch/vocab.html    200
+/listening     → /deutsch/listening.html 200
+/reading       → /deutsch/reading.html  200
+```
+(Cloudflare auto-clean-URL serves `/deutsch/grammar.html` tại `/deutsch/grammar` không cần rule)
+
+`_headers` đổi `/modules/*` → `/deutsch/*`.
+
+Internal links updated: `deutsch/index.html` + `assistant/index.html`: `/grammar` → `/deutsch/grammar`, etc.
+
+### 11.2. Bold visual refresh
+
+Sprint 2 chỉ swap color tokens + thêm shell — user feedback "vẫn thấy như cũ". Sprint 3 redesign **bold** 2 module dense nhất: grammar + vocab.
+
+#### Hero (editorial Cohere)
+
+| Element | Trước | Sau |
+|---|---|---|
+| Layout | Center-aligned, gradient bg | Left-aligned trong container 1200px, flat bg |
+| Eyebrow | (không có) | Mono chip với coral dot · "Ngữ pháp · Goethe A1 — B2" |
+| H1 | 32-54px, weight 700, tracking -1.5px | **clamp(38px, 6.5vw, 80px)**, weight 600, tracking -0.022em |
+| H1 highlight | (không có) | `<em>` coral color trên 1 từ key ("Zettelkasten" / "thẻ") |
+| Lede | 18px, max 540px, centered | 19px, max 620px, left |
+| Stat badges | 4 pill nhỏ với emoji ("📚 30 thẻ", "🗂️ 12 nhóm chủ đề", etc.) | **3 stat blocks** to: số 22px + mono uppercase label below (`30` / `THẺ NGỮ PHÁP`) |
+| Border | bottom 1px | bottom 1px + top hairline divider trước stat row |
+
+#### Cabinet cards (Cohere "more whitespace, no shadow")
+
+| Element | Trước | Sau |
+|---|---|---|
+| Grid | `minmax(260px, 1fr)` gap 14px | `minmax(300px, 1fr)` gap 16px, max-width 1200px container |
+| Padding | 20px | **28px** |
+| Border-radius | 12-16px | **22px (Cohere signature)** |
+| Box-shadow | `0 4px 18px` multi-layer | **none** — depth qua hairline border |
+| Icon | 28px emoji inline | **56×56 square** với bg surface-1, radius 14px, emoji 30px inside |
+| Title | 16px weight 700 tracking -0.2px | 19px weight 600 tracking -0.01em |
+| Count badge | Pill blue bg #f2f9ff | Plain mono text "X thẻ" right-aligned |
+| Tags | 9-11px font, soft bg | 11px mono, transparent bg, hairline border, radius 4px |
+| Hover | translateY(-2px) + shadow | Chỉ background change → surface-1 (Cohere "no shadow") |
+| Active strip top | 3px colored bar `::before` opacity 0→1 | Bỏ. Thay bằng 6px coral dot ở góc top-left khi hover |
+
+#### Section labels
+
+| Element | Trước | Sau |
+|---|---|---|
+| Markup | Single `<div class="section-label">` plain | 2-line: `<div class="section-eyebrow"><span class="se-num">01</span> CABINETS</div>` + `<div class="section-label">12 cabinets · 30 thẻ</div>` |
+| Eyebrow style | (chưa có) | Mono font, 12px, uppercase, letter-spacing 0.06em, coral số prefix |
+| Label style | 11px uppercase 0.8px letter-spacing | clamp(22px, 3vw, 32px), weight 600, no transform (now is the h2-style section title) |
+
+### 11.3. Files modified
+
+- `website/deutsch/grammar.html` — `:root` + hero CSS + hero HTML (eyebrow, em highlight, stat badges) + cabinet-card CSS + section-eyebrow markup + mobile breakpoints
+- `website/deutsch/vocab.html` — same pattern: hero CSS + HTML + `.cab` cabinet CSS refresh + cabinet cell labels (`.cd`, `.cc`, `.ctag`) + section-eyebrow markup + JS `totPill` text formatting (vi-VN locale)
+
+### 11.4. Verification
+
+- ✅ Visual diff confirmed via Preview MCP inspect — H1 78px desktop (1100px width), 38px mobile (375px)
+- ✅ Cabinet cards 22px radius, no box-shadow, 56×56 icon square with surface bg
+- ✅ Pills render as stat blocks (number + mono label below)
+- ✅ Section eyebrow shows "01 · CABINETS · Chọn một tủ" với coral số prefix
+- ✅ Cross-page theme persistence: `/deutsch/grammar` dark → vào `/deutsch/vocab` dark giữ
+- ✅ Functional: grammar cabinet open → drawer hiện 4 cards ✓; search "Perfekt" → 10 results ✓
+- ✅ Mobile 375px: H1 scale down properly, grid stack 1-col, no horizontal scroll
+- ✅ All 7 HTML files balance check pass (`<script>`, `<style>`, `<div>`, `<section>` etc. open=close)
+- ✅ No console errors
+
+### 11.5. Trade-offs Sprint 3
+
+| Decision | Lý do |
+|---|---|
+| Bỏ box-shadow → border-only depth | Cohere principle "no drop shadows"; visual cleaner; performance tốt hơn |
+| Hover: chỉ change bg, no transform | "Restrained" — Cohere/Stripe/Linear không bouncy. User cảm giác serious |
+| Stat-style pills thay pill chips | Information density cao hơn ít chip noise hơn. Số to dễ scan |
+| Keep emoji icon trong card | Mỗi cabinet đã có identity emoji (🏗️🔗📦...) — bỏ hết thì cabinet mất distinction. Compromise: emoji trong soft-stone square (less prominent) |
+| H1 dùng `<em>` coral | Tạo focal point editorial, không phải decoration. 1 từ duy nhất per page |
+
+---
+
+*Updated May 18, 2026.*

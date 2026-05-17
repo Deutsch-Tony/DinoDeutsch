@@ -58,16 +58,37 @@ body{background:var(--bg);color:var(--tx);font-family:'Space Grotesk',-apple-sys
 .spw{display:flex;align-items:center;gap:3px;font-size:10px;color:var(--tx3);}
 .spw input{width:46px;accent-color:var(--blue);}
 
-/* ── HERO ── */
-.hero{background:var(--bg2);border-bottom:var(--b);padding:32px 16px 22px;text-align:center;}
-.hero h1{font-size:clamp(22px,5vw,44px);font-weight:700;letter-spacing:-1.5px;line-height:1.05;margin-bottom:8px;color:var(--tx);}
-.hero p{font-size:14px;color:var(--tx2);max-width:440px;margin:0 auto 13px;}
-.pills{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;}
-.pill{background:var(--bb);color:var(--bt);border:1px solid rgba(9,127,232,.2);border-radius:9999px;padding:3px 10px;font-size:10px;font-weight:600;}
-.pill.g{background:#f0fdf4;color:#15803d;border-color:rgba(21,128,61,.2);}
-.pill.o{background:#fff7ed;color:#c2410c;border-color:rgba(194,65,12,.2);}
-[data-theme=dark] .pill.g{background:#052e16;color:#4ade80;border-color:rgba(74,222,128,.2);}
-[data-theme=dark] .pill.o{background:#2d1b00;color:#fb923c;border-color:rgba(251,146,60,.2);}
+/* ── HERO (Cohere editorial) ── */
+.hero{background:var(--bg);border-bottom:var(--b);padding:72px 24px 56px;text-align:left;}
+.hero > *{max-width:1200px;margin-left:auto;margin-right:auto;}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 12px;margin-bottom:24px;
+  border:var(--b);border-radius:9999px;
+  font-family:'JetBrains Mono',ui-monospace,monospace;
+  font-size:12px;letter-spacing:0.04em;color:var(--tx2);
+  width:fit-content;
+}
+.hero-eyebrow::before{
+  content:'';width:6px;height:6px;border-radius:50%;background:var(--coral);
+}
+.hero h1{font-size:clamp(38px,6.5vw,80px);font-weight:600;letter-spacing:-0.022em;line-height:1.02;margin:0 0 20px;color:var(--tx);max-width:900px;}
+.hero h1 em{font-style:normal;color:var(--coral);}
+.hero p{font-size:19px;color:var(--tx2);max-width:620px;margin:0 0 32px;line-height:1.55;}
+.pills{display:flex;gap:24px;flex-wrap:wrap;padding-top:24px;border-top:var(--b);max-width:900px;}
+.pill{
+  display:flex;flex-direction:column;gap:4px;
+  background:transparent;border:0;padding:0;color:var(--tx);
+  font-size:22px;font-weight:600;letter-spacing:-0.01em;border-radius:0;
+}
+.pill::after{
+  content:attr(data-label);
+  font-family:'JetBrains Mono',ui-monospace,monospace;
+  font-size:11px;letter-spacing:0.06em;text-transform:uppercase;
+  color:var(--tx3);font-weight:500;
+}
+.pill.g, .pill.o{background:transparent;color:var(--tx);border:0;}
+[data-theme=dark] .pill.g, [data-theme=dark] .pill.o{background:transparent;color:var(--tx);}
 
 /* ── NAV TABS ── */
 .nav-tabs{display:flex;gap:0;border-bottom:var(--b);background:var(--bg);overflow-x:auto;scrollbar-width:none;padding:0 16px;}
@@ -80,25 +101,39 @@ body{background:var(--bg);color:var(--tx);font-family:'Space Grotesk',-apple-sys
 .page{display:none;}
 .page.show{display:block;}
 
-/* ── SECTION LABEL ── */
-.slbl{padding:14px 16px 8px;font-size:10px;font-weight:600;color:var(--tx3);letter-spacing:.8px;text-transform:uppercase;}
+/* ── SECTION LABEL (Cohere editorial) ── */
+.section-eyebrow{
+  font-family:'JetBrains Mono',ui-monospace,monospace;
+  font-size:12px;letter-spacing:0.06em;text-transform:uppercase;
+  color:var(--tx2);
+  margin:48px auto 12px;max-width:1200px;padding:0 24px;
+  display:flex;align-items:baseline;gap:10px;
+}
+.section-eyebrow .se-num{color:var(--coral);font-weight:600;}
+.slbl{padding:0 24px;max-width:1200px;margin:0 auto 28px;font-size:clamp(22px,3vw,32px);font-weight:600;letter-spacing:-0.015em;line-height:1.2;color:var(--tx);text-transform:none;}
 
-/* ── CABINET GRID ── */
-.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px;padding:0 16px 16px;}
-.cab{background:var(--bg);border:var(--b);border-radius:11px;padding:15px 13px 11px;cursor:pointer;position:relative;overflow:hidden;box-shadow:var(--sh);transition:transform .15s,box-shadow .15s,border-color .15s;}
-.cab:hover{transform:translateY(-2px);box-shadow:var(--shd);}
-.cab:active{transform:scale(.985);}
-.cab.open{border-color:var(--blue);}
-.cst{position:absolute;top:0;left:0;right:0;height:3px;border-radius:11px 11px 0 0;}
-.cem{font-size:22px;margin-bottom:6px;display:block;}
-.ct{font-size:13px;font-weight:700;letter-spacing:-.15px;margin-bottom:2px;color:var(--tx);}
-.cd{font-size:11px;color:var(--tx2);line-height:1.35;margin-bottom:8px;}
-.cf{display:flex;align-items:center;justify-content:space-between;}
-.cc{font-size:10px;font-weight:600;background:var(--bb);color:var(--bt);border-radius:9999px;padding:2px 8px;}
-.ca{font-size:12px;color:var(--tx3);transition:transform .15s,color .15s;}
-.cab:hover .ca,.cab.open .ca{color:var(--blue);transform:rotate(90deg);}
-.ctags{display:flex;flex-wrap:wrap;gap:3px;margin-top:5px;}
-.ctag{font-size:9px;color:var(--tx3);background:var(--bg2);border:var(--b);border-radius:3px;padding:1px 4px;}
+/* ── CABINET GRID (Cohere bold refresh) ── */
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;padding:0 24px 64px;max-width:1200px;margin:0 auto;}
+.cab{background:var(--bg);border:var(--b);border-radius:22px;padding:28px;cursor:pointer;position:relative;box-shadow:none;transition:background .15s ease,border-color .15s ease;min-height:180px;display:flex;flex-direction:column;gap:14px;}
+.cab:hover{background:var(--bg2);border-color:var(--tx3);transform:none;box-shadow:none;}
+.cab:active{transform:scale(.99);}
+.cab.open{border-color:var(--coral);background:var(--bg2);}
+.cst{display:none;}
+.cem{
+  width:56px;height:56px;border-radius:14px;background:var(--bg2);
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:30px;line-height:1;flex-shrink:0;margin-bottom:0;
+  align-self:flex-start;
+}
+.cab:hover .cem{background:var(--bg);}
+.ct{font-size:19px;font-weight:600;letter-spacing:-0.01em;margin-bottom:0;color:var(--tx);line-height:1.2;}
+.cd{font-size:14px;color:var(--tx2);line-height:1.5;margin-bottom:0;}
+.cf{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:4px;}
+.cc{font-size:13px;font-weight:500;background:transparent;color:var(--tx3);border-radius:0;padding:0;font-family:'JetBrains Mono',ui-monospace,monospace;letter-spacing:0.02em;}
+.ca{font-size:14px;color:var(--tx3);transition:transform .15s,color .15s;}
+.cab:hover .ca,.cab.open .ca{color:var(--coral);transform:translateX(3px);}
+.ctags{display:flex;flex-wrap:wrap;gap:6px;margin-top:0;}
+.ctag{font-size:11px;color:var(--tx3);background:transparent;border:var(--b);border-radius:4px;padding:2px 8px;font-family:'JetBrains Mono',ui-monospace,monospace;letter-spacing:0.02em;}
 
 /* ── STUDY MODES BAR ── */
 .mbar{display:none;border-top:var(--b);background:var(--bg);}
@@ -295,13 +330,18 @@ mark{background:rgba(0,117,222,.2);color:var(--tx);border-radius:2px;padding:0 2
 @media(max-width:640px){
   .tb{padding:0 10px;gap:6px;}
   .brand sup,.spw{display:none;}
-  .hero{padding:22px 12px 16px;}
-  .hero h1{font-size:20px;}
-  .cgrid{grid-template-columns:1fr 1fr;gap:7px;padding:0 10px 12px;}
-  .cab{padding:12px 10px 9px;}
-  .cem{font-size:19px;}
-  .ct{font-size:12px;}
-  .cd{display:none;}
+  .hero{padding:40px 16px 32px;}
+  .hero h1{font-size:clamp(32px,9vw,48px);}
+  .hero p{font-size:16px;}
+  .pills{gap:16px;}
+  .pill{font-size:18px;}
+  .section-eyebrow{margin:32px auto 8px;padding:0 16px;}
+  .slbl{padding:0 16px;margin-bottom:20px;}
+  .cgrid{grid-template-columns:1fr;gap:12px;padding:0 16px 48px;}
+  .cab{padding:20px;min-height:0;}
+  .cem{width:48px;height:48px;font-size:24px;border-radius:12px;}
+  .ct{font-size:17px;}
+  .cd{font-size:13px;}
   .panel,.fcp,.qp{padding:10px 11px 16px;}
   .wg{grid-template-columns:1fr 1fr;}
   .pop{border-radius:12px;}
@@ -311,13 +351,12 @@ mark{background:rgba(0,117,222,.2);color:var(--tx);border-radius:2px;padding:0 2
   .qchoices{grid-template-columns:1fr 1fr;}
   .stnums{grid-template-columns:1fr 1fr;}
   .stcats{grid-template-columns:1fr;}
-  .slbl,.nav-tabs{padding-left:10px;}
+  .nav-tabs{padding-left:10px;}
   .irreg-page{padding:12px;}
   .itable{font-size:11px;}
   .itable td,.itable th{padding:5px 7px;}
 }
 @media(max-width:380px){
-  .cgrid{grid-template-columns:1fr;}
   .qchoices{grid-template-columns:1fr;}
 }
 
@@ -440,14 +479,18 @@ body { overflow-y: auto !important; }
 </nav>
 
 <section class="hero">
-  <h1>Wortschatz · Từ vựng A1—B2</h1>
-  <p>3.192 từ chia theo 15 chủ đề. Mở tủ — học từ — chia động từ, biến cách, B1/B2 nâng cao.</p>
+  <div class="hero-eyebrow">Từ vựng · Goethe A1 — B2</div>
+  <h1>Học từ, theo <em>thẻ</em>.<br>Đến đâu nhớ đến đó.</h1>
+  <p>3.192 từ chia theo 15 chủ đề. Mỗi thẻ có IPA, ví dụ, chia động từ, biến cách. Spaced repetition tự lập lịch ôn.</p>
   <div class="pills">
-    <span class="pill" id="totPill">– từ</span>
-    <span class="pill g">15 chủ đề</span>
-    <span class="pill o">A1 → B2</span>
+    <span class="pill" id="totPill" data-label="WORTSCHATZ">3.192</span>
+    <span class="pill g" data-label="CHỦ ĐỀ">15</span>
+    <span class="pill o" data-label="LEVEL">A1 → B2</span>
   </div>
 </section>
+
+<!-- SECTION EYEBROW -->
+<div class="section-eyebrow" id="cabEyebrow"><span class="se-num">01</span> Cabinets · Chọn một tủ từ vựng</div>
 
 <!-- TOP NAVIGATION TABS -->
 <div class="nav-tabs">
@@ -458,7 +501,7 @@ body { overflow-y: auto !important; }
 
 <!-- PAGE: HOME -->
 <div class="page show" id="page-home">
-  <div class="slbl" id="cabLbl">15 nhóm chủ đề (A1→B2) — nhấn để mở</div>
+  <div class="slbl" id="cabLbl">15 chủ đề · 3.192 từ vựng</div>
   <div class="cgrid" id="cabG"></div>
 
   <div id="msec" class="mbar">
@@ -4020,7 +4063,7 @@ function recordStudy(){
 
 // ── CABINETS ──
 function buildCabs(){
-  document.getElementById('totPill').textContent=vocab.length+' từ';
+  document.getElementById('totPill').textContent=vocab.length.toLocaleString('vi-VN');
   const g=document.getElementById('cabG');g.innerHTML='';
   GROUPS.forEach(gr=>{
     const ws=vocab.filter(w=>gr.cats.includes(w.cat));
@@ -4035,7 +4078,7 @@ function buildCabs(){
 
 function toggleCab(id,ws,gr){
   const ms=document.getElementById('msec');
-  if(activeGrp===id){activeGrp=null;ms.classList.remove('show');document.querySelectorAll('.cab').forEach(c=>c.classList.remove('open'));document.getElementById('cabLbl').textContent='15 nhóm chủ đề (A1→B2) — nhấn để mở';return;}
+  if(activeGrp===id){activeGrp=null;ms.classList.remove('show');document.querySelectorAll('.cab').forEach(c=>c.classList.remove('open'));document.getElementById('cabLbl').textContent='15 chủ đề · 3.192 từ vựng';return;}
   activeGrp=id;activeTyp='all';curWords=ws;
   document.querySelectorAll('.cab').forEach(c=>c.classList.remove('open'));
   document.getElementById('c-'+id).classList.add('open');
