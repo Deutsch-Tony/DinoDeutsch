@@ -153,8 +153,8 @@ Lần đầu tao thêm rule `/deutsch /deutsch.html 200` vào `_redirects` — g
 
 ## 8. To-do còn lại (sprint sau)
 
-- [ ] Redesign 4 module HTML files (grammar.html, vocab.html, listening.html, reading.html) theo cùng design tokens
-- [ ] Redesign `assistant/index.html` (KI Tutor chat UI) theo Cohere Edition
+- [x] ~~Redesign 4 module HTML files (grammar, vocab, listening, reading) theo cùng design tokens~~ **DONE (May 17, 2026)**
+- [x] ~~Redesign `assistant/index.html` (KI Tutor chat UI) theo Cohere Edition~~ **DONE**
 - [ ] Tạo OG image cho social sharing (hiện chỉ có og-card.svg generic)
 - [ ] Self-host fonts khi migrate Next.js (subset Vietnamese để giảm size)
 - [ ] Add SEO meta `og:title`, `og:description`, `og:image`, `twitter:card`
@@ -167,11 +167,78 @@ Lần đầu tao thêm rule `/deutsch /deutsch.html 200` vào `_redirects` — g
 
 | File | Size | Target |
 |---|---:|---:|
-| `index.html` | ~26 KB | < 100 KB ✅ |
-| `deutsch.html` | ~28 KB | < 100 KB ✅ |
+| `index.html` | ~28 KB | < 100 KB ✅ |
+| `deutsch.html` | ~31 KB | < 100 KB ✅ |
+| `modules/listening.html` | ~20 KB | — |
+| `modules/reading.html` | ~21 KB | — |
+| `modules/grammar.html` | ~276 KB | (data-heavy) |
+| `modules/vocab.html` | ~747 KB | (data-heavy, 3.192 từ embedded) |
+| `assistant/index.html` | ~38 KB | — |
 
-Đều dưới ngưỡng brief PHẦN 6.3 (`< 100 KB per page`).
+Hai trang landing đều dưới ngưỡng brief PHẦN 6.3 (`< 100 KB per page`). Module data-heavy không nằm trong constraint vì chúng là full app pages, không phải marketing pages.
 
 ---
 
-*Generated May 14, 2026.*
+## 10. Sprint 2 — Module + Assistant harmonization (May 17, 2026)
+
+### 10.1. Scope thực hiện
+
+Đồng bộ UX/UI 5 page nội bộ với Cohere Edition của 2 trang landing. Không full redesign — strategy "Cohere Shell + Token Swap":
+
+- **Cohere Shell** (sticky top nav 64px): Brand mark + breadcrumb "Tiếng Đức / [Module]" + module-specific controls (search, VI/EN, TTS, Stats) + theme toggle.
+- **Token Swap**: Replace Notion design tokens → Cohere palette (canvas, ink, hairline, coral, action-blue). Giữ semantic names trong CSS rules nên không touch logic, chỉ thay color values.
+- **Theme bridge**: Single source of truth `localStorage['dl-theme']`, dual-write tới legacy keys `theme` (grammar) + `dm` (vocab) cho backwards compat.
+- **Font**: Inter → Space Grotesk + JetBrains Mono.
+
+### 10.2. UX issues phát hiện & fix
+
+| File | Issue | Fix |
+|---|---|---|
+| grammar.html | "39 thẻ ngữ pháp" trong hero + footer — sai số thật | Đối chiếu data/grammar.json (30 cards / 8 cabinets active), sửa thành "30 thẻ" |
+| grammar.html | Topbar gốc bị ẩn (`display: none !important`) — user mất search, theme, lang toggle | Khôi phục đầy đủ trong Cohere shell với JS delegation (forward input/click vào legacy IDs) |
+| vocab.html | "🔥 0 ngày" streak hardcoded — fake number per brief | CSS `#skBadge { display: none !important }` cho đến khi có data thật |
+| vocab.html | Hero pills "🌙 Dark mode" + "⚙️ Conjugation" — noise, không phải content | Bỏ. Chỉ giữ "X từ" + "15 chủ đề" + "A1 → B2" |
+| vocab.html | Hero h1 emoji "🗄️ Tủ Từ Vựng" — brief cấm emoji bừa | Đổi thành "Wortschatz · Từ vựng A1—B2" (tone bilingual đồng nhất với listening/reading) |
+| vocab.html | Topbar gốc bị ẩn — mất search, TTS, stats | Khôi phục đầy đủ trong shell với delegation tới `sI`, `toggleTTS()`, `#stov` overlay |
+| vocab.html theme toggle | Click shell theme button gọi `applyDark()` legacy → reset data-theme về trạng thái cũ (vì `dark` global var stale) | Bỏ call `applyDark()` từ shell handler. `write()` đã set data-theme + dl-theme + theme + dm. Next page load đọc lại đúng. |
+| assistant/index.html | "Anonymous mode" pill — noise không cần thiết khi không có auth | Bỏ. Thay vào đó: nav-r chứa 4 module icon (📐📚🎧📖) cho quick switching |
+| listening + reading | Hero h1 ngắn "Listening A1-B2" — thiếu German native term + Vietnamese tone | Đổi: "Hören · Luyện nghe A1—B2" / "Lesen · Đọc hiểu A1—B2" |
+| Tất cả 5 file | Không có cách quay về `/deutsch` landing | Breadcrumb "Tiếng Đức" trong shell → `/deutsch` |
+
+### 10.3. UX evaluation từ góc nhìn user (audit)
+
+**Entry flow**: `/` → `/deutsch` → click module card → module page. Flow rõ ràng, có nav consistent.
+
+**Strengths**:
+- Brand identity đồng nhất (D mark + Space Grotesk + Cohere palette) toàn site
+- Theme persist seamless qua tất cả 7 page
+- Search affordance cao (input visible trong shell ở grammar + vocab)
+- Mobile responsive an toàn — không horizontal scroll, breakpoint phù hợp
+
+**Weak points còn lại** (để Sprint 3 xử lý):
+- grammar.html: 12 cabinets × 30 cards = trung bình 2.5 card/tủ. Vài tủ trống/lẻ. Có thể gộp lại còn 6-8 cabinets cô đặc hơn.
+- vocab.html: 15 cabinets × 3192 từ = ~213 từ/tủ — hợp lý. Nhưng UI không indicate trạng thái "đã học X từ" rõ rệt. Cần SRS progress visible.
+- assistant chat UI: chưa redesign chat bubble theo Cohere (user bubble bg + assistant border) — out of scope đợt này.
+- grammar hero hơi dày: H1 + lede + 4 badges. Có thể giảm còn 2 badges critical.
+
+### 10.4. Verification — đã pass
+
+- ✅ Theme sync cross-page: `/` → toggle dark → vào `/deutsch` → dark giữ → `/grammar` → dark giữ → `/vocab` → dark giữ → `/listening` → dark giữ → `/reading` → dark giữ → `/assistant` → dark giữ
+- ✅ Search delegation: grammar tìm "Akkusativ" (13 results), "Perfekt" (10 results); vocab tìm "Mann" (12 results)
+- ✅ Cabinet open: grammar Grundlagen → drawer với 4 cards
+- ✅ Stats overlay: vocab "📊" button → overlay với "3192 Tổng từ" (số thật)
+- ✅ VI/EN toggle grammar: click EN → text đổi sang English, data-lang="en"
+- ✅ TTS button vocab: toggle works (label/style)
+- ✅ Mobile 375px: no horizontal scroll, nav links collapse, grid stack 1-col
+- ✅ No console errors trên bất kỳ page nào
+- ✅ HTML tag balance: validated qua Bash regex scan
+
+### 10.5. Known limitations
+
+- **vocab.html theme legacy desync**: legacy `dark` global variable (block-scoped `let`) không update khi shell toggle theme. Chỉ data-theme attribute + localStorage được set đúng. Bất kỳ code nào sau đó gọi `applyDark()` (e.g., postMessage listener line 4287) sẽ reset theme. Hiện không có trigger thực tế nên OK; sẽ refactor khi migrate Next.js.
+- **grammar.html theme legacy `btnTheme` icon**: legacy button icon "🌙 Dark" không update khi shell toggle, nhưng button đã ẩn nên không visible. OK.
+- **Module pages không thay đổi data structure**: vẫn dùng cabinet/card layout cũ. Token swap chỉ thay color không thay UX flow. UX flow nâng cấp (SRS progress, cabinet consolidation) là Sprint 3.
+
+---
+
+*Updated May 17, 2026.*

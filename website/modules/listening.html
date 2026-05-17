@@ -3,24 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>DinoDeutsch Listening A1-B2</title>
+<title>Hören · Dino Language</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#fff;--bg2:#f6f5f4;--bg3:#efefed;
-  --tx:rgba(0,0,0,.95);--tx2:#615d59;--tx3:#a39e98;
-  --border:rgba(0,0,0,.1);
-  --blue:#0075de;--blue-hover:#005bab;--blue-bg:#f2f9ff;--blue-text:#097fe8;
-  --green:#1aae39;--orange:#dd5b00;--teal:#2a9d99;--purple:#391c57;
-  --shadow:rgba(0,0,0,.04) 0 4px 18px,rgba(0,0,0,.027) 0 2px 8px,rgba(0,0,0,.02) 0 1px 3px;
-  --shadow-deep:rgba(0,0,0,.01) 0 1px 3px,rgba(0,0,0,.02) 0 3px 7px,rgba(0,0,0,.04) 0 14px 28px,rgba(0,0,0,.05) 0 23px 52px;
-  --font:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  --bg:#fff;--bg2:#fafaf9;--bg3:#f5f4f0;
+  --tx:#212121;--tx2:#4a4a52;--tx3:#93939f;
+  --border:#d9d9dd;
+  --blue:#1863dc;--blue-hover:#0b4cb7;--blue-bg:#eef4fe;--blue-text:#1863dc;
+  --coral:#ff7759;
+  --green:#2a9d99;--orange:#dd5b00;--teal:#2a9d99;--purple:#391c57;
+  --shadow:0 1px 2px rgba(0,0,0,.04);
+  --shadow-deep:0 12px 32px -8px rgba(0,0,0,.08);
+  --font:'Space Grotesk',-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
 }
 [data-theme="dark"]{
-  --bg:#1a1916;--bg2:#222120;--bg3:#2e2d2b;
-  --tx:rgba(255,255,255,.92);--tx2:#aaa5a0;--tx3:#77716c;
-  --border:rgba(255,255,255,.1);
-  --blue:#4ea8f7;--blue-hover:#3d9af0;--blue-bg:rgba(0,117,222,.16);--blue-text:#62aef0;
-  --shadow:rgba(0,0,0,.28) 0 4px 18px;--shadow-deep:rgba(0,0,0,.5) 0 23px 52px;
+  --bg:#0f0f12;--bg2:#16161b;--bg3:#1c1c22;
+  --tx:#ededee;--tx2:#b8b8bf;--tx3:#6f6f7a;
+  --border:#2c2c33;
+  --blue:#5b9bff;--blue-hover:#7eb1ff;--blue-bg:rgba(91,155,255,.12);--blue-text:#5b9bff;
+  --coral:#ff8466;
+  --shadow:0 1px 2px rgba(0,0,0,.3);--shadow-deep:0 12px 32px -8px rgba(0,0,0,.5);
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--tx);font-family:var(--font);font-size:16px;-webkit-font-smoothing:antialiased}
@@ -77,11 +83,57 @@ textarea{width:100%;min-height:112px;resize:vertical;border:1px solid var(--bord
 .score{margin-top:10px;color:var(--tx2);font-size:13px;line-height:1.5}
 .empty{max-width:620px;margin:80px auto;text-align:center;color:var(--tx2)}
 @media(max-width:860px){.app{grid-template-columns:1fr}.side{border-right:0;border-bottom:1px solid var(--border)}.main{padding:16px}.content{grid-template-columns:1fr}.rate{margin-left:0}.panel-title{font-size:24px}}
+
+/* ─── Dino Language Shell ─── */
+.dl-shell{position:sticky;top:0;z-index:1000;background:color-mix(in srgb, var(--bg) 88%, transparent);backdrop-filter:saturate(140%) blur(12px);-webkit-backdrop-filter:saturate(140%) blur(12px);border-bottom:1px solid var(--border);font-family:var(--font)}
+.dl-shell-inner{display:flex;align-items:center;gap:16px;height:64px;max-width:1200px;margin:0 auto;padding:0 24px}
+.dl-shell-brand{display:inline-flex;align-items:center;gap:10px;font-weight:600;font-size:15px;letter-spacing:-.01em;color:var(--tx);text-decoration:none}
+.dl-shell-brand-mark{width:26px;height:26px;border-radius:7px;background:#17171c;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;letter-spacing:-.02em}
+[data-theme="dark"] .dl-shell-brand-mark{background:var(--coral);color:#17171c}
+.dl-shell-crumbs{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--tx2)}
+.dl-shell-crumb{color:var(--tx2);text-decoration:none;transition:color .15s ease}
+.dl-shell-crumb:hover{color:var(--tx)}
+.dl-shell-crumb-current{color:var(--tx);font-weight:500}
+.dl-shell-crumb-sep{color:var(--border)}
+.dl-shell-actions{display:flex;align-items:center;gap:8px;margin-left:auto}
+.dl-shell-btn{width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;border-radius:999px;border:1px solid var(--border);background:var(--bg);color:var(--tx);cursor:pointer;padding:0;font:inherit;transition:background .15s ease,border-color .15s ease}
+.dl-shell-btn:hover{background:var(--bg2);border-color:var(--tx3)}
+@media(max-width:640px){.dl-shell-inner{padding:0 16px;gap:10px}.dl-shell-brand-name{display:none}.dl-shell-crumbs{font-size:12px;gap:6px}}
 </style>
 </head>
 <body>
+<header class="dl-shell" role="banner">
+  <div class="dl-shell-inner">
+    <a href="/" class="dl-shell-brand" aria-label="Dino Language home">
+      <span class="dl-shell-brand-mark" aria-hidden="true">D</span>
+      <span class="dl-shell-brand-name">Dino Language</span>
+    </a>
+    <nav class="dl-shell-crumbs" aria-label="Breadcrumb">
+      <a href="/deutsch" class="dl-shell-crumb">Tiếng Đức</a>
+      <span class="dl-shell-crumb-sep" aria-hidden="true">/</span>
+      <span class="dl-shell-crumb dl-shell-crumb-current" aria-current="page">Nghe</span>
+    </nav>
+    <div class="dl-shell-actions">
+      <button type="button" class="dl-shell-btn" id="dlShellTheme" aria-label="Đổi giao diện sáng/tối" title="Đổi giao diện">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+    </div>
+  </div>
+</header>
+<script>
+(function(){
+  var ROOT=document.documentElement,KEY='dl-theme';
+  function read(){try{var t=localStorage.getItem(KEY);if(t==='light'||t==='dark')return t}catch(e){}return (window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light'}
+  function write(t){ROOT.setAttribute('data-theme',t);try{localStorage.setItem(KEY,t);localStorage.setItem('theme',t);localStorage.setItem('dm',t==='dark'?'1':'0')}catch(e){}}
+  write(read());
+  document.addEventListener('DOMContentLoaded',function(){
+    var b=document.getElementById('dlShellTheme');if(!b)return;
+    b.addEventListener('click',function(){write(ROOT.getAttribute('data-theme')==='dark'?'light':'dark');if(typeof window.applyDark==='function')try{window.applyDark()}catch(e){}});
+  });
+})();
+</script>
 <header class="hero">
-  <h1>Listening A1-B2</h1>
+  <h1>Hören · Luyện nghe A1—B2</h1>
   <p>Nghe theo tình huống, bắt từ khóa trước, rồi dùng transcript, dictation và shadowing để biến nghe thụ động thành phản xạ.</p>
   <div class="pills"><span class="pill">Transcript ẩn/hiện</span><span class="pill">German TTS</span><span class="pill">Dictation score</span><span class="pill">Shadowing checklist</span></div>
 </header>

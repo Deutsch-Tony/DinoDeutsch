@@ -1,47 +1,68 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KI Tutor | DinoDeutsch</title>
+<title>KI Tutor · Dino Language</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-/* ═══ NOTION DESIGN SYSTEM ═══════════════════════════════════ */
+/* ═══ COHERE EDITION ═══════════════════════════════════ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 
 :root {
-  /* Colors */
+  /* Colors — Cohere Edition */
   --white:      #ffffff;
-  --warm-white: #f6f5f4;
-  --near-black: rgba(0,0,0,0.95);
-  --gray-500:   #615d59;
-  --gray-300:   #a39e98;
-  --gray-100:   #e8e7e5;
-  --warm-dark:  #31302e;
-  --blue:       #0075de;
-  --blue-dark:  #005bab;
-  --blue-focus: #097fe8;
-  --blue-bg:    #f2f9ff;
+  --warm-white: #fafaf9;
+  --near-black: #212121;
+  --gray-500:   #4a4a52;
+  --gray-300:   #93939f;
+  --gray-100:   #d9d9dd;
+  --warm-dark:  #17171c;
+  --blue:       #1863dc;
+  --blue-dark:  #0b4cb7;
+  --blue-focus: #1863dc;
+  --blue-bg:    #eef4fe;
+  --coral:      #ff7759;
   --teal:       #2a9d99;
-  --green:      #1aae39;
+  --green:      #2a9d99;
   --orange:     #dd5b00;
 
   /* Borders */
-  --border:     1px solid rgba(0,0,0,0.1);
+  --border:     1px solid #d9d9dd;
 
-  /* Shadows */
-  --shadow-card: rgba(0,0,0,0.04) 0px 4px 18px,rgba(0,0,0,0.027) 0px 2.025px 7.85px,rgba(0,0,0,0.02) 0px 0.8px 2.93px,rgba(0,0,0,0.01) 0px 0.175px 1.04px;
-  --shadow-deep: rgba(0,0,0,0.01) 0px 1px 3px,rgba(0,0,0,0.02) 0px 3px 7px,rgba(0,0,0,0.02) 0px 7px 15px,rgba(0,0,0,0.04) 0px 14px 28px,rgba(0,0,0,0.05) 0px 23px 52px;
+  /* Shadows — reduced per Cohere "no drop shadows" principle */
+  --shadow-card: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-deep: 0 12px 32px -8px rgba(0,0,0,0.08);
 
   /* Radius */
   --r4:  4px;
   --r8:  8px;
-  --r12: 12px;
-  --r16: 16px;
+  --r12: 16px;
+  --r16: 22px;
   --rpill: 9999px;
 
-  --font: 'Inter', -apple-system, system-ui, sans-serif;
+  --font: 'Space Grotesk', -apple-system, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+}
+
+[data-theme="dark"]{
+  --white:      #0f0f12;
+  --warm-white: #16161b;
+  --near-black: #ededee;
+  --gray-500:   #b8b8bf;
+  --gray-300:   #6f6f7a;
+  --gray-100:   #2c2c33;
+  --warm-dark:  #ededee;
+  --blue:       #5b9bff;
+  --blue-dark:  #7eb1ff;
+  --blue-focus: #5b9bff;
+  --blue-bg:    rgba(91,155,255,.12);
+  --coral:      #ff8466;
+  --border:     1px solid #2c2c33;
+  --shadow-card: 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-deep: 0 12px 32px -8px rgba(0,0,0,0.5);
 }
 
 html,body { height:100%; }
@@ -78,12 +99,20 @@ nav {
   display: flex; align-items: center; gap: 8px;
 }
 .logo-mark {
-  width: 24px; height: 24px;
-  background: var(--near-black);
-  color: white;
-  border-radius: var(--r4);
+  width: 26px; height: 26px;
+  background: #17171c;
+  color: #ffffff;
+  border-radius: 7px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 12px; font-weight: 700;
+  font-size: 13px; font-weight: 700;
+  letter-spacing: -0.02em;
+}
+[data-theme="dark"] .logo-mark { background: var(--coral); color: #17171c; }
+.logo-copy strong { font-size: 15px; }
+.nav-sep {
+  color: var(--gray-100);
+  font-size: 14px;
+  user-select: none;
 }
 .nav-link {
   font-size: 14px; font-weight: 500;
@@ -95,6 +124,28 @@ nav {
 }
 .nav-link:hover { color: var(--near-black); background: var(--warm-white); }
 .nav-link.active { color: var(--near-black); font-weight: 600; }
+.nav-link-sm {
+  width: 32px; height: 32px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 999px;
+  font-size: 15px;
+  padding: 0;
+  color: var(--gray-500);
+}
+.nav-link-sm:hover { background: var(--warm-white); color: var(--near-black); }
+.dl-shell-btn {
+  width: 32px; height: 32px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 999px;
+  border: 1px solid var(--gray-100);
+  background: var(--white);
+  color: var(--near-black);
+  cursor: pointer;
+  padding: 0;
+  font: inherit;
+  transition: background .12s, border-color .12s;
+}
+.dl-shell-btn:hover { background: var(--warm-white); border-color: var(--gray-300); }
 .nav-abbr { font-size: 11px; font-weight: 600; color: var(--gray-300); margin-right: 2px; }
 .nav-r { margin-left: auto; display: flex; align-items: center; gap: 8px; }
 .anon-pill { font-size: 12px; font-weight: 700; color: var(--gray-300); background: var(--warm-white); border: var(--border); border-radius: 999px; padding: 7px 12px; letter-spacing: .04em; text-transform: uppercase; }
@@ -484,33 +535,38 @@ nav {
 </head>
 <body>
 
-<!-- NAV -->
+<!-- NAV — Dino Language Shell -->
 <nav>
-  <a href="/" class="logo">
-  <span class="logo-mark" aria-hidden="true">
-    <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="2" y="2" width="28" height="28" rx="8" fill="url(#dinoGrad)"/>
-      <path d="M10 21C10 16.58 13.58 13 18 13H19.4C21.94 13 24 15.06 24 17.6C24 20.14 21.94 22.2 19.4 22.2H18.2C17.54 22.2 17 21.66 17 21V18.3" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-      <circle cx="19.2" cy="16.7" r="1.1" fill="white"/>
-      <path d="M10.5 22.3L8.2 24.4H10.3" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-      <defs>
-        <linearGradient id="dinoGrad" x1="4" y1="4" x2="28" y2="28" gradientUnits="userSpaceOnUse">
-          <stop stop-color="#1F2937"/>
-          <stop offset="1" stop-color="#455468"/>
-        </linearGradient>
-      </defs>
-    </svg>
-  </span>
-  <span class="logo-copy"><strong>DinoDeutsch</strong><small>KI Tutor</small></span>
-</a>
-  <a href="/grammar"   class="nav-link"><span class="nav-abbr">G</span>Grammatik</a>
-  <a href="/vocab"     class="nav-link"><span class="nav-abbr">W</span>Wortschatz</a>
-  <a href="/listening" class="nav-link"><span class="nav-abbr">H</span>Hören</a>
-  <a href="/reading"   class="nav-link"><span class="nav-abbr">L</span>Lesen</a>
-  <a href="/test"      class="nav-link"><span class="nav-abbr">T</span>Tests</a>
-  <a href="/assistant" class="nav-link active"><span class="nav-abbr">A</span>KI Tutor</a>
-  <div class="nav-r"><span class="anon-pill">Anonymous mode</span></div>
+  <a href="/" class="logo" aria-label="Dino Language home">
+    <span class="logo-mark" aria-hidden="true">D</span>
+    <span class="logo-copy"><strong>Dino Language</strong></span>
+  </a>
+  <span class="nav-sep" aria-hidden="true">/</span>
+  <a href="/deutsch" class="nav-link">Tiếng Đức</a>
+  <span class="nav-sep" aria-hidden="true">/</span>
+  <span class="nav-link active" aria-current="page">KI Tutor</span>
+  <div class="nav-r">
+    <a href="/grammar"   class="nav-link nav-link-sm" title="Ngữ pháp">📐</a>
+    <a href="/vocab"     class="nav-link nav-link-sm" title="Từ vựng">📚</a>
+    <a href="/listening" class="nav-link nav-link-sm" title="Nghe">🎧</a>
+    <a href="/reading"   class="nav-link nav-link-sm" title="Đọc">📖</a>
+    <button type="button" class="dl-shell-btn" id="dlShellTheme" aria-label="Đổi giao diện sáng/tối" title="Đổi giao diện">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </div>
 </nav>
+<script>
+(function(){
+  var ROOT=document.documentElement,KEY='dl-theme';
+  function read(){try{var t=localStorage.getItem(KEY);if(t==='light'||t==='dark')return t}catch(e){}return (window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light'}
+  function write(t){ROOT.setAttribute('data-theme',t);try{localStorage.setItem(KEY,t);localStorage.setItem('theme',t);localStorage.setItem('dm',t==='dark'?'1':'0')}catch(e){}}
+  write(read());
+  document.addEventListener('DOMContentLoaded',function(){
+    var b=document.getElementById('dlShellTheme');if(!b)return;
+    b.addEventListener('click',function(){write(ROOT.getAttribute('data-theme')==='dark'?'light':'dark')});
+  });
+})();
+</script>
 
 <div class="app">
 

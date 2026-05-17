@@ -3,85 +3,88 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Ngữ Pháp Tiếng Đức A1+A2 — Zettelkasten</title>
+<title>Grammatik · Dino Language</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════════════════════
    NOTION DESIGN SYSTEM — Zettelkasten German Grammar
 ═══════════════════════════════════════════════════════════ */
 
 :root {
-  /* Notion Color System */
-  --notion-ink:      rgba(0,0,0,0.95);
-  --notion-blue:     #0075de;
-  --notion-blue-act: #005bab;
-  --notion-navy:     #213183;
+  /* Cohere Edition tokens (mapped to Notion var names for backwards compat) */
+  --notion-ink:      #212121;
+  --notion-blue:     #1863dc;
+  --notion-blue-act: #0b4cb7;
+  --notion-navy:     #071829;
   --white:           #ffffff;
-  --warm-white:      #f6f5f4;
-  --warm-dark:       #31302e;
-  --warm-gray-500:   #615d59;
-  --warm-gray-300:   #a39e98;
+  --warm-white:      #fafaf9;
+  --warm-dark:       #17171c;
+  --warm-gray-500:   #4a4a52;
+  --warm-gray-300:   #93939f;
   --teal:            #2a9d99;
-  --green:           #1aae39;
+  --green:           #2a9d99;
   --orange:          #dd5b00;
-  --pink:            #ff64c8;
+  --pink:            #ff7759;
   --purple:          #391c57;
-  --badge-bg:        #f2f9ff;
-  --badge-txt:       #097fe8;
-  --focus:           #097fe8;
+  --coral:           #ff7759;
+  --badge-bg:        #eef4fe;
+  --badge-txt:       #1863dc;
+  --focus:           #1863dc;
 
   /* Semantic Mapping */
   --bg:         var(--white);
-  --bg-alt:     var(--warm-white);
+  --bg-alt:     #f5f4f0;
   --surface:    var(--white);
   --text:       var(--notion-ink);
   --text-muted: var(--warm-gray-500);
   --text-dim:   var(--warm-gray-300);
-  --border:     rgba(0,0,0,0.1);
-  --border-md:  rgba(0,0,0,0.15);
+  --border:     #d9d9dd;
+  --border-md:  #c5c5cb;
   --accent:     var(--notion-blue);
 
-  /* Shadows */
-  --shadow-card: rgba(0,0,0,0.04) 0px 4px 18px, rgba(0,0,0,0.027) 0px 2px 7.8px, rgba(0,0,0,0.02) 0px 0.8px 2.9px, rgba(0,0,0,0.01) 0px 0.175px 1px;
-  --shadow-deep: rgba(0,0,0,0.01) 0px 1px 3px, rgba(0,0,0,0.02) 0px 3px 7px, rgba(0,0,0,0.02) 0px 7px 15px, rgba(0,0,0,0.04) 0px 14px 28px, rgba(0,0,0,0.05) 0px 23px 52px;
-  --shadow-sm:   rgba(0,0,0,0.04) 0px 2px 8px;
+  /* Shadows — reduced per Cohere "no drop shadows" */
+  --shadow-card: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-deep: 0 12px 32px -8px rgba(0,0,0,0.08);
+  --shadow-sm:   0 1px 2px rgba(0,0,0,0.04);
 
-  /* Radii */
-  --r-btn:  4px;
-  --r-sm:   8px;
-  --r-card: 12px;
-  --r-lg:   16px;
+  /* Radii — bumped to Cohere signature */
+  --r-btn:  6px;
+  --r-sm:   10px;
+  --r-card: 16px;
+  --r-lg:   22px;
   --r-pill: 9999px;
 
   /* Spacing */
-  --nav-h: 0px;
+  --nav-h: 64px;
 }
 
 [data-theme="dark"] {
-  --bg:         #1a1a1a;
-  --bg-alt:     #111111;
-  --surface:    #222222;
-  --text:       rgba(255,255,255,0.92);
-  --text-muted: #9a9693;
-  --text-dim:   #666360;
-  --border:     rgba(255,255,255,0.1);
-  --border-md:  rgba(255,255,255,0.18);
-  --shadow-card: rgba(0,0,0,0.3) 0px 4px 18px;
-  --shadow-deep: rgba(0,0,0,0.5) 0px 14px 28px;
-  --badge-bg:   rgba(0,117,222,0.15);
-  --badge-txt:  #62aef0;
-  --warm-white: #1e1e1e;
-  --warm-dark:  #f0ede9;
-  --warm-gray-500: #9a9693;
+  --bg:         #0f0f12;
+  --bg-alt:     #16161b;
+  --surface:    #1c1c22;
+  --text:       #ededee;
+  --text-muted: #b8b8bf;
+  --text-dim:   #6f6f7a;
+  --border:     #2c2c33;
+  --border-md:  #3a3a42;
+  --shadow-card: 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-deep: 0 12px 32px -8px rgba(0,0,0,0.5);
+  --badge-bg:   rgba(91,155,255,0.12);
+  --badge-txt:  #5b9bff;
+  --warm-white: #16161b;
+  --warm-dark:  #ededee;
+  --warm-gray-500: #b8b8bf;
+  --coral:      #ff8466;
+  --notion-blue: #5b9bff;
 }
 
 /* ─── Reset ─── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-size: 16px; overflow-x: hidden; scroll-behavior: smooth; }
 body {
-  font-family: 'Inter', -apple-system, system-ui, 'Segoe UI', Helvetica, Arial, sans-serif;
+  font-family: 'Space Grotesk', -apple-system, system-ui, 'Segoe UI', Helvetica, Arial, sans-serif;
   font-size: 16px;
   font-weight: 400;
   line-height: 1.5;
@@ -725,13 +728,110 @@ footer strong { color: white; }
 #reading-bar { display: none !important; }
 #app { padding-top: 0 !important; min-height: 100vh !important; }
 body { overflow-y: auto !important; }
+
+/* ─── Dino Language Shell ─── */
+.dl-shell{position:sticky;top:0;z-index:1000;background:color-mix(in srgb, var(--bg) 88%, transparent);backdrop-filter:saturate(140%) blur(12px);-webkit-backdrop-filter:saturate(140%) blur(12px);border-bottom:1px solid var(--border);font-family:'Space Grotesk',-apple-system,system-ui,sans-serif}
+.dl-shell-inner{display:flex;align-items:center;gap:14px;height:64px;max-width:1280px;margin:0 auto;padding:0 24px}
+.dl-shell-brand{display:inline-flex;align-items:center;gap:10px;font-weight:600;font-size:15px;letter-spacing:-.01em;color:var(--text);text-decoration:none;flex-shrink:0}
+.dl-shell-brand-mark{width:26px;height:26px;border-radius:7px;background:#17171c;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;letter-spacing:-.02em}
+[data-theme="dark"] .dl-shell-brand-mark{background:var(--coral);color:#17171c}
+.dl-shell-crumbs{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-muted);flex-shrink:0}
+.dl-shell-crumb{color:var(--text-muted);text-decoration:none;transition:color .15s ease}
+.dl-shell-crumb:hover{color:var(--text)}
+.dl-shell-crumb-current{color:var(--text);font-weight:500}
+.dl-shell-crumb-sep{color:var(--border)}
+.dl-shell-actions{display:flex;align-items:center;gap:8px;margin-left:auto}
+.dl-shell-search{display:flex;align-items:center;gap:8px;padding:7px 14px;background:var(--bg-alt);border:1px solid var(--border);border-radius:999px;min-width:240px;max-width:360px;flex:1;transition:border-color .15s ease, background .15s ease}
+.dl-shell-search:focus-within{border-color:var(--accent);background:var(--bg)}
+.dl-shell-search input{background:transparent;border:0;outline:0;font:inherit;color:var(--text);flex:1;font-size:13px;min-width:0}
+.dl-shell-search input::placeholder{color:var(--text-dim)}
+.dl-shell-search svg{color:var(--text-dim);flex-shrink:0}
+.dl-shell-lang{display:inline-flex;background:var(--bg-alt);border:1px solid var(--border);border-radius:999px;padding:2px}
+.dl-shell-lang button{padding:5px 12px;border-radius:999px;font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer;border:0;background:transparent;font-family:inherit;letter-spacing:.04em}
+.dl-shell-lang button.is-on{background:#17171c;color:#fff}
+[data-theme="dark"] .dl-shell-lang button.is-on{background:var(--coral);color:#17171c}
+.dl-shell-btn{width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;border-radius:999px;border:1px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;padding:0;font:inherit;transition:background .15s ease,border-color .15s ease}
+.dl-shell-btn:hover{background:var(--bg-alt);border-color:var(--text-dim)}
+@media(max-width:980px){.dl-shell-search{min-width:160px}}
+@media(max-width:760px){.dl-shell-inner{padding:0 16px;gap:8px}.dl-shell-brand-name{display:none}.dl-shell-crumbs{font-size:12px;gap:6px}.dl-shell-search{min-width:0}.dl-shell-lang{display:none}}
+@media(max-width:480px){.dl-shell-search{display:none}.dl-shell-actions .dl-shell-search-mobile{display:inline-flex}}
 </style>
 </head>
 <body>
 
+<header class="dl-shell" role="banner">
+  <div class="dl-shell-inner">
+    <a href="/" class="dl-shell-brand" aria-label="Dino Language home">
+      <span class="dl-shell-brand-mark" aria-hidden="true">D</span>
+      <span class="dl-shell-brand-name">Dino Language</span>
+    </a>
+    <nav class="dl-shell-crumbs" aria-label="Breadcrumb">
+      <a href="/deutsch" class="dl-shell-crumb">Tiếng Đức</a>
+      <span class="dl-shell-crumb-sep" aria-hidden="true">/</span>
+      <span class="dl-shell-crumb dl-shell-crumb-current" aria-current="page">Ngữ pháp</span>
+    </nav>
+    <div class="dl-shell-actions">
+      <label class="dl-shell-search">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" id="dlShellSearch" placeholder="Tìm ngữ pháp · Akkusativ, Perfekt..." autocomplete="off" aria-label="Tìm ngữ pháp">
+      </label>
+      <div class="dl-shell-lang" role="group" aria-label="Ngôn ngữ giao diện">
+        <button type="button" class="is-on" data-lang="vi" id="dlShellLangVI">VI</button>
+        <button type="button" data-lang="en" id="dlShellLangEN">EN</button>
+      </div>
+      <button type="button" class="dl-shell-btn" id="dlShellTheme" aria-label="Đổi giao diện sáng/tối" title="Đổi giao diện">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+<script>
+(function(){
+  var ROOT=document.documentElement,KEY='dl-theme';
+  function read(){try{var t=localStorage.getItem(KEY);if(t==='light'||t==='dark')return t}catch(e){}return (window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light'}
+  function write(t){ROOT.setAttribute('data-theme',t);try{localStorage.setItem(KEY,t);localStorage.setItem('theme',t);localStorage.setItem('dm',t==='dark'?'1':'0')}catch(e){}}
+  write(read());
+  document.addEventListener('DOMContentLoaded',function(){
+    // Theme toggle
+    var b=document.getElementById('dlShellTheme');
+    if(b)b.addEventListener('click',function(){
+      var next=ROOT.getAttribute('data-theme')==='dark'?'light':'dark';
+      write(next);
+      // sync legacy toggleTheme button label if exists
+      var legacyBtn=document.getElementById('btnTheme');
+      if(legacyBtn){var span=legacyBtn.querySelector('span');if(span)span.textContent=next==='dark'?'Light':'Dark';}
+    });
+    // Search delegate: forward input from shell to legacy #searchInput
+    var shellSearch=document.getElementById('dlShellSearch');
+    var legacySearch=document.getElementById('searchInput');
+    if(shellSearch&&legacySearch){
+      shellSearch.addEventListener('input',function(){
+        legacySearch.value=this.value;
+        legacySearch.dispatchEvent(new Event('input',{bubbles:true}));
+        legacySearch.dispatchEvent(new Event('keyup',{bubbles:true}));
+      });
+    }
+    // VI/EN delegate
+    var lv=document.getElementById('dlShellLangVI'),le=document.getElementById('dlShellLangEN');
+    function setLangShell(lang){
+      if(typeof window.setLang==='function')try{window.setLang(lang)}catch(e){}
+      else document.documentElement.setAttribute('data-lang',lang);
+      if(lv)lv.classList.toggle('is-on',lang==='vi');
+      if(le)le.classList.toggle('is-on',lang==='en');
+    }
+    if(lv)lv.addEventListener('click',function(){setLangShell('vi')});
+    if(le)le.addEventListener('click',function(){setLangShell('en')});
+    // Initial lang from data-lang
+    var curLang=document.documentElement.getAttribute('data-lang')||'vi';
+    if(lv)lv.classList.toggle('is-on',curLang==='vi');
+    if(le)le.classList.toggle('is-on',curLang==='en');
+  });
+})();
+</script>
+
 <div id="reading-bar"></div>
 
-<!-- ─── TOPBAR ─── -->
+<!-- ─── TOPBAR (legacy, hidden) ─── -->
 <header id="topbar">
   <a class="topbar-logo" href="#" onclick="showHome(); return false;">
     <div class="logo-icon">🇩🇪</div>
@@ -774,7 +874,7 @@ body { overflow-y: auto !important; }
       <span class="en-text">Explore A1→B2 grammar through linked flashcards — click a cabinet to open, click a card to study</span>
     </p>
     <div class="hero-badges">
-      <span class="badge-pill">📚 39 thẻ ngữ pháp</span>
+      <span class="badge-pill">📚 30 thẻ ngữ pháp</span>
       <span class="badge-pill">🗂️ <span class="vi-text">12 nhóm chủ đề</span><span class="en-text">12 topic groups</span></span>
       <span class="badge-pill">🔗 <span class="vi-text">Zettelkasten liên kết</span><span class="en-text">Zettelkasten linked</span></span>
       <span class="badge-pill">🇩🇪 A1 → B2</span>
@@ -783,7 +883,7 @@ body { overflow-y: auto !important; }
 
   <!-- Cabinet View -->
   <div id="cabinetView">
-    <div class="section-label"><span class="vi-text">Chọn nhóm ngữ pháp — </span><span class="en-text">Choose a grammar cabinet — </span>12<span class="vi-text"> tủ · </span><span class="en-text"> cabinets · </span>39<span class="vi-text"> thẻ</span><span class="en-text"> cards</span></div>
+    <div class="section-label"><span class="vi-text">Chọn nhóm ngữ pháp — </span><span class="en-text">Choose a grammar cabinet — </span>12<span class="vi-text"> tủ · </span><span class="en-text"> cabinets · </span>30<span class="vi-text"> thẻ</span><span class="en-text"> cards</span></div>
     <div class="cabinet-grid" id="cabinetGrid">
       <div class="cabinet-card" style="--cab-color:#0075de" onclick="openCabinet('grundlagen')">
         <div class="cab-icon">🏗️</div>
@@ -935,7 +1035,7 @@ body { overflow-y: auto !important; }
 <!-- ─── FOOTER ─── -->
 <footer>
   <p><span class="vi-text">🇩🇪 <strong>Ngữ Pháp Tiếng Đức A1→B2</strong> — Zettelkasten Edition v17</span><span class="en-text">🇩🇪 <strong>German Grammar A1→B2</strong> — Zettelkasten Edition v17</span></p>
-  <p style="margin-top:6px">39 thẻ · 12<span class="vi-text"> tủ · </span><span class="en-text"> cabinets · </span>Notion Design · Zettelkasten method</p>
+  <p style="margin-top:6px">30 thẻ · 12<span class="vi-text"> tủ · </span><span class="en-text"> cabinets · </span>Notion Design · Zettelkasten method</p>
 </footer>
 
 <script>
