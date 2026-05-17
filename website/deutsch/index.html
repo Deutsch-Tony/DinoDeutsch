@@ -2,709 +2,2729 @@
 <html lang="vi" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Học tiếng Đức từ A1 đến B2 theo phương pháp Zettelkasten. 3.170 từ vựng, 30 chủ đề ngữ pháp, KI Tutor AI.">
-<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0f0f12" media="(prefers-color-scheme: dark)">
-<title>Tiếng Đức · Dino Language</title>
-<link rel="icon" href="/og-card.svg" type="image/svg+xml">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Tiếng Đức theo Zettelkasten — Dino Language</title>
+<meta name="description" content="3.192 từ vựng tiếng Đức + 30 chủ đề ngữ pháp A1—B2 theo phương pháp Zettelkasten. 12 cabinets thẻ ngữ pháp. Đang mở beta cho người Việt.">
+<meta name="keywords" content="học tiếng Đức, Goethe A1 A2 B1 B2, Zettelkasten Deutsch, flashcard tiếng Đức, ngữ pháp Đức, từ vựng Đức">
+<meta name="author" content="Dino Language">
+<link rel="canonical" href="https://dinodeutsch.pages.dev/deutsch">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Tiếng Đức theo Zettelkasten — Dino Language">
+<meta property="og:description" content="3.192 từ vựng + 30 chủ đề ngữ pháp A1—B2. Phương pháp Zettelkasten cho người Việt.">
+<meta property="og:url" content="https://dinodeutsch.pages.dev/deutsch">
+<meta property="og:image" content="/og-card.svg">
+<meta property="og:locale" content="vi_VN">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Tiếng Đức theo Zettelkasten — Dino Language">
+<meta name="twitter:description" content="3.192 từ vựng + 30 chủ đề ngữ pháp A1—B2.">
+<meta name="twitter:image" content="/og-card.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* ─────────────────────────────────────────────────────────────
-   DEUTSCH · Cohere Edition v9
-───────────────────────────────────────────────────────────── */
+/* ════════════════════════════════════════════════════════════════
+   DINO LANGUAGE v9 — COHERE EDITION
+   Direction: Pentagram's "New Nature" identity
+   - Voronoi cell pattern (CSS-only approximation)
+   - Mine Shaft + Alabaster + Bittersweet coral signature
+   - Vibrant gradient: pink → purple → coral (sparingly)
+   - Geist sans (approximates Cohere Sans) + Geist Mono
+   - Data-rich dashboard aesthetic
+   ════════════════════════════════════════════════════════════════ */
 
-:root{
-  --canvas:#ffffff; --surface-1:#fafaf9; --surface-2:#f5f4f0;
-  --soft-stone:#eeece7; --hairline:#d9d9dd; --muted:#93939f;
-  --ink:#212121; --ink-soft:#4a4a52; --near-black:#17171c;
-  --green:#003c33; --navy:#071829; --action-blue:#1863dc;
-  --coral:#ff7759; --coral-soft:#ffad9b; --success:#2a9d99;
-  --font:'Space Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
-  --font-mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
-  --r-xs:4px; --r-sm:8px; --r-md:16px; --r-lg:22px; --r-xl:30px; --r-pill:999px;
-  --content-w:1200px; --nav-h:64px;
-}
+:root {
+  /* === COHERE CORE PALETTE === */
+  --mine-shaft: #212121;       /* Cohere primary dark */
+  --alabaster:  #FAFAFA;       /* Cohere primary light */
+  --bittersweet:#FF7759;       /* Cohere coral signature */
+  --bittersweet-d: #E65A3D;    /* darker variant */
+  --bittersweet-l: #FFA88C;    /* lighter variant */
 
-[data-theme="dark"]{
-  --canvas:#0f0f12; --surface-1:#16161b; --surface-2:#1c1c22;
-  --soft-stone:#1f1f25; --hairline:#2c2c33; --muted:#6f6f7a;
-  --ink:#ededee; --ink-soft:#b8b8bf; --near-black:#ededee;
-  --action-blue:#5b9bff; --coral:#ff8466; --coral-soft:#cf6a55;
-}
+  /* === GRADIENT TIERS (neutral, warm masculine — names kept for back-compat) === */
+  --pink:       #D9A557;   /* warm amber gold (was pink #FF8AB8) */
+  --pink-l:     #E8C589;   /* soft champagne (was #FFB8D2) */
+  --purple:     #4F4A5C;   /* warm slate (was purple #A67FF0) */
+  --purple-d:   #312E3B;   /* deep slate (was #7C5DD9) */
+  --magenta:    #A66339;   /* rich ochre rust (was magenta #E66EAA) */
 
-*,*::before,*::after{ box-sizing: border-box; }
-html{ scroll-behavior: smooth; }
-body{ margin:0; font-family:var(--font); background:var(--canvas); color:var(--ink); font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
-a{ color:inherit; text-decoration:none; }
-button{ font:inherit; cursor:pointer; border:0; background:none; color:inherit; }
-::selection{ background:var(--coral); color:#17171c; }
+  /* === SEMANTIC SURFACES (light mode default) === */
+  --bg:         #FAFAFA;       /* alabaster */
+  --bg-2:       #F2F2F2;
+  --bg-3:       #E8E8E8;
+  --surface:    #FFFFFF;
+  --surface-2:  #F7F7F7;
+  --surface-3:  #EFEFEF;
+  --ink:        #212121;       /* mine shaft */
+  --ink-2:      #404040;
+  --ink-3:      #6B6B6B;
+  --ink-4:      #909090;
+  --ink-5:      #BABABA;
+  --rule:       #E0E0E0;
+  --rule-2:     #C8C8C8;
 
-.container{ width:100%; max-width:var(--content-w); margin:0 auto; padding:0 24px; }
+  /* === GRADIENTS (Cohere signature) === */
+  --gradient-warm: linear-gradient(135deg, #FF7759 0%, #D9A557 50%, #4F4A5C 100%);    /* coral → gold → slate (DE flag warm) */
+  --gradient-soft: linear-gradient(135deg, #E8C589 0%, #FFA88C 50%, #FF7759 100%);    /* champagne → terracotta */
+  --gradient-cool: linear-gradient(135deg, #4F4A5C 0%, #A66339 50%, #D9A557 100%);    /* slate → ochre → gold */
+  --gradient-mesh: radial-gradient(circle at 20% 20%, rgba(255,119,89,0.22) 0%, transparent 45%),
+                   radial-gradient(circle at 80% 30%, rgba(79,74,92,0.18) 0%, transparent 50%),
+                   radial-gradient(circle at 50% 80%, rgba(217,165,87,0.18) 0%, transparent 45%);
 
-/* ── Nav ── */
-.nav{
-  position:sticky; top:0; z-index:50;
-  background:color-mix(in srgb, var(--canvas) 88%, transparent);
-  backdrop-filter:saturate(140%) blur(12px);
-  -webkit-backdrop-filter:saturate(140%) blur(12px);
-  border-bottom:1px solid var(--hairline);
-}
-.nav-inner{
-  display:flex; align-items:center; gap:16px;
-  height:var(--nav-h);
-  width:100%; max-width:var(--content-w);
-  margin:0 auto; padding:0 24px;
-}
-.brand{ display:inline-flex; align-items:center; gap:10px; font-weight:600; font-size:17px; letter-spacing:-0.01em; color:var(--ink); }
-.brand-mark{
-  width:28px; height:28px; border-radius:8px;
-  background:var(--near-black); color:var(--canvas);
-  display:inline-flex; align-items:center; justify-content:center;
-  font-weight:700; font-size:14px; letter-spacing:-0.02em;
-}
-[data-theme="dark"] .brand-mark{ background:var(--coral); color:#17171c; }
-.breadcrumb{ font-family:var(--font-mono); font-size:12px; color:var(--muted); letter-spacing:0.04em; }
-.breadcrumb::before{ content:"/"; margin:0 6px; color:var(--hairline); }
-.nav-links{ display:flex; align-items:center; gap:24px; margin-left:auto; }
-.nav-link{ font-size:14px; color:var(--ink-soft); transition:color .15s ease; }
-.nav-link:hover{ color:var(--ink); }
-.icon-btn{
-  width:36px; height:36px;
-  display:inline-flex; align-items:center; justify-content:center;
-  border-radius:var(--r-pill);
-  border:1px solid var(--hairline);
-  background:var(--canvas); color:var(--ink);
-  transition:background .15s ease, border-color .15s ease;
-}
-.icon-btn:hover{ background:var(--surface-1); border-color:var(--muted); }
+  /* === TYPE SCALE === */
+  --t-xs:   11px;
+  --t-sm:   13px;
+  --t-base: 15px;
+  --t-md:   17px;
+  --t-lg:   22px;
+  --t-xl:   28px;
+  --t-2xl:  40px;
+  --t-3xl:  56px;
+  --t-4xl:  80px;
+  --t-5xl:  112px;
 
-/* ── Buttons ── */
-.btn{
-  display:inline-flex; align-items:center; gap:8px;
-  padding:12px 22px;
-  border-radius:var(--r-pill);
-  font-size:15px; font-weight:500; line-height:1;
-  transition:transform .15s ease, background .15s ease, border-color .15s ease;
-  border:1px solid transparent;
-  cursor:pointer; white-space:nowrap;
-}
-.btn:active{ transform:translateY(1px); }
-.btn-primary{ background:var(--near-black); color:var(--canvas); }
-[data-theme="dark"] .btn-primary{ background:var(--coral); color:#17171c; }
-.btn-primary:hover{ background:#000; }
-[data-theme="dark"] .btn-primary:hover{ background:var(--coral-soft); }
-.btn-ghost{ background:transparent; color:var(--ink); border-color:var(--hairline); }
-.btn-ghost:hover{ border-color:var(--muted); background:var(--surface-1); }
-.btn-text{ padding:12px 0; color:var(--ink); border-radius:0; position:relative; }
-.btn-text::after{ content:""; position:absolute; left:0; right:0; bottom:8px; height:1px; background:var(--ink); transition:opacity .15s ease; }
-.btn-text:hover::after{ opacity:.5; }
+  /* === FONTS === */
+  --f-sans:    'Geist', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --f-mono:    'Geist Mono', 'JetBrains Mono', ui-monospace, monospace;
 
-.mono-label{ font-family:var(--font-mono); font-size:12px; letter-spacing:0.04em; text-transform:uppercase; color:var(--muted); }
+  /* === SHADOWS === */
+  --sh-1: 0 1px 2px rgba(33,33,33,0.04);
+  --sh-2: 0 4px 12px rgba(33,33,33,0.06), 0 1px 3px rgba(33,33,33,0.04);
+  --sh-3: 0 12px 32px rgba(33,33,33,0.08), 0 4px 8px rgba(33,33,33,0.04);
+  --sh-glow: 0 0 32px rgba(255,119,89,0.25);
 
-/* ── Hero ── */
-.hero{ padding:80px 0 64px; border-bottom:1px solid var(--hairline); }
-.hero-inner{ display:grid; grid-template-columns:1.15fr 1fr; gap:64px; align-items:center; }
-.hero-eyebrow{
-  display:inline-flex; align-items:center; gap:8px;
-  padding:6px 12px;
-  border:1px solid var(--hairline);
-  border-radius:var(--r-pill);
-  font-family:var(--font-mono); font-size:12px; letter-spacing:0.04em;
-  color:var(--muted); margin-bottom:20px;
-}
-.hero-eyebrow .dot{ width:6px; height:6px; border-radius:50%; background:var(--success); }
-.hero h1{
-  font-size:clamp(40px, 7vw, 84px);
-  line-height:1.02; letter-spacing:-0.022em;
-  font-weight:600; margin:0 0 24px; color:var(--ink);
-}
-.hero h1 em{ font-style:normal; color:var(--coral); }
-.hero-lede{ font-size:19px; line-height:1.55; color:var(--ink-soft); max-width:520px; margin:0 0 32px; }
-.hero-ctas{ display:flex; flex-wrap:wrap; align-items:center; gap:16px; margin-bottom:40px; }
-.hero-meta{ display:grid; grid-template-columns:repeat(3,auto); gap:32px; padding-top:24px; border-top:1px solid var(--hairline); }
-.hero-meta-item .v{ display:block; font-size:22px; font-weight:600; letter-spacing:-0.01em; color:var(--ink); }
-.hero-meta-item .l{ display:block; font-family:var(--font-mono); font-size:11px; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted); margin-top:4px; }
+  /* === RADIUS === */
+  --r-sm: 6px;
+  --r: 10px;
+  --r-lg: 16px;
+  --r-xl: 24px;
+  --r-2xl: 32px;
 
-/* ── Flashcard demo in hero ── */
-.flashcard{
-  position:relative;
-  background:var(--canvas);
-  border:1px solid var(--hairline);
-  border-radius:var(--r-lg);
-  padding:32px;
-  min-height:380px;
-  display:flex; flex-direction:column;
-  box-shadow:0 24px 56px -16px rgba(0,0,0,0.06);
-}
-[data-theme="dark"] .flashcard{ box-shadow:0 24px 56px -16px rgba(0,0,0,0.4); }
-.fc-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; }
-.fc-id{ font-family:var(--font-mono); font-size:11px; color:var(--muted); letter-spacing:0.06em; text-transform:uppercase; }
-.fc-tag{ background:var(--coral); color:#17171c; font-family:var(--font-mono); font-size:11px; letter-spacing:0.04em; padding:4px 10px; border-radius:var(--r-pill); }
-.fc-word{ font-size:48px; font-weight:600; letter-spacing:-0.02em; line-height:1.1; margin:8px 0 8px; }
-.fc-art{ color:var(--coral); }
-.fc-ipa{ font-family:var(--font-mono); font-size:15px; color:var(--ink-soft); margin-bottom:20px; }
-.fc-meaning{
-  padding:16px 0;
-  border-top:1px solid var(--hairline);
-  border-bottom:1px solid var(--hairline);
-  margin-bottom:16px;
-}
-.fc-meaning .lbl{ font-family:var(--font-mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
-.fc-meaning .val{ font-size:16px; color:var(--ink); }
-.fc-meaning .val + .lbl{ margin-top:12px; }
-.fc-ex{ font-style:italic; color:var(--ink-soft); font-size:14px; line-height:1.5; margin-top:auto; padding-top:12px; }
-.fc-ex strong{ font-style:normal; color:var(--coral); font-weight:500; }
+  /* === GERMAN FLAG PASTELS (Schwarz · Rot · Gold) === */
+  --de-slate:     #D6D2DE;    /* Pastel Schwarz */
+  --de-slate-on:  #2D2838;
+  --de-blush:     #FBCABA;    /* Pastel Rot */
+  --de-blush-on:  #7C1A0A;
+  --de-butter:    #FCE090;    /* Pastel Gold */
+  --de-butter-on: #6B4500;
 
-/* ── Section ── */
-.section{ padding:80px 0; }
-.section-head{ margin-bottom:48px; max-width:720px; }
-.section-head h2{ font-size:clamp(28px, 4vw, 44px); line-height:1.15; letter-spacing:-0.015em; font-weight:600; margin:12px 0 16px; }
-.section-head p{ font-size:17px; line-height:1.55; color:var(--ink-soft); margin:0; }
-
-/* ── Modules grid ── */
-.modules{ background:var(--surface-1); }
-.modules-grid{
-  display:grid;
-  grid-template-columns:repeat(4, 1fr);
-  gap:1px;
-  background:var(--hairline);
-  border:1px solid var(--hairline);
-  border-radius:var(--r-md);
-  overflow:hidden;
-}
-.module-card{
-  background:var(--canvas);
-  padding:24px;
-  display:flex; flex-direction:column;
-  gap:14px;
-  min-height:220px;
-  transition:background .15s ease;
-  position:relative;
-}
-.module-card.is-live{ cursor:pointer; }
-.module-card.is-live:hover{ background:var(--surface-1); }
-.module-card.is-locked{ opacity:0.7; }
-.module-card.is-locked:hover{ background:var(--surface-1); }
-.mod-head{ display:flex; justify-content:space-between; align-items:flex-start; }
-.mod-icon{ font-size:22px; line-height:1; }
-.mod-status{
-  font-family:var(--font-mono); font-size:10px; letter-spacing:0.06em;
-  text-transform:uppercase;
-  padding:3px 8px; border-radius:var(--r-pill);
-  background:var(--soft-stone); color:var(--ink-soft);
-}
-.mod-status.is-live{ background:var(--coral); color:#17171c; }
-.mod-title{ font-size:18px; font-weight:600; letter-spacing:-0.01em; margin:0; }
-.mod-de{ font-family:var(--font-mono); font-size:12px; color:var(--muted); margin:-6px 0 0; }
-.mod-desc{ font-size:13px; color:var(--ink-soft); line-height:1.5; margin:0; }
-.mod-action{
-  margin-top:auto; padding-top:8px;
-  font-family:var(--font-mono); font-size:12px;
-  color:var(--ink); display:inline-flex; align-items:center; gap:6px;
-}
-.module-card.is-locked .mod-action{ color:var(--muted); }
-
-/* ── Roadmap ── */
-.roadmap-grid{
-  display:grid;
-  grid-template-columns:repeat(4, 1fr);
-  gap:1px;
-  background:var(--hairline);
-  border:1px solid var(--hairline);
-  border-radius:var(--r-md);
-  overflow:hidden;
-}
-.roadmap-card{ background:var(--canvas); padding:28px 24px; display:flex; flex-direction:column; gap:12px; min-height:200px; }
-.roadmap-card.is-active{ background:var(--surface-2); }
-.rc-level{ font-size:32px; font-weight:600; letter-spacing:-0.02em; line-height:1; }
-.rc-tag{
-  display:inline-block;
-  font-family:var(--font-mono); font-size:10px; letter-spacing:0.06em;
-  text-transform:uppercase; padding:3px 8px; border-radius:var(--r-pill);
-  background:var(--soft-stone); color:var(--ink-soft);
-  align-self:flex-start;
-}
-.rc-tag.is-done{ background:var(--success); color:#fff; }
-.rc-tag.is-active{ background:var(--coral); color:#17171c; }
-.rc-title{ font-size:16px; font-weight:600; margin:0; }
-.rc-time{ font-family:var(--font-mono); font-size:12px; color:var(--muted); }
-.rc-note{ font-size:13px; color:var(--ink-soft); margin-top:auto; line-height:1.45; }
-
-/* ── How (3-step Zettelkasten) ── */
-.how-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:24px; }
-.how-card{ background:var(--surface-1); border:1px solid var(--hairline); border-radius:var(--r-lg); padding:32px 28px; }
-.how-num{ font-family:var(--font-mono); font-size:13px; color:var(--coral); margin-bottom:24px; letter-spacing:0.04em; }
-.how-card h3{ font-size:22px; letter-spacing:-0.01em; font-weight:600; margin:0 0 12px; }
-.how-card p{ margin:0; color:var(--ink-soft); line-height:1.55; }
-.how-card code{
-  display:inline-block; margin-top:12px;
-  font-family:var(--font-mono); font-size:12px;
-  background:var(--canvas); border:1px solid var(--hairline);
-  padding:4px 8px; border-radius:6px; color:var(--ink);
+  /* === THEME-AWARE PRIMARY BUTTON & FOOTER === */
+  --btn-primary-bg: #212121;
+  --btn-primary-fg: #FAFAFA;
+  --footer-bg:     #1A1A1A;
+  --footer-fg:     #FAFAFA;
+  --footer-fg-2:   #B8B8B8;
+  --footer-fg-3:   #909090;
+  --footer-fg-4:   #555555;
+  --footer-rule:   #303030;
 }
 
-/* ── AI band ── */
-.ai-band{
-  background:var(--navy);
-  color:#fff;
-  padding:80px 0;
-}
-[data-theme="dark"] .ai-band{ background:var(--surface-2); color:var(--ink); }
-.ai-inner{ display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center; }
-.ai-band .mono-label{ color:rgba(255,255,255,.55); }
-[data-theme="dark"] .ai-band .mono-label{ color:var(--muted); }
-.ai-band h2{
-  font-size:clamp(28px, 4vw, 44px);
-  line-height:1.15; letter-spacing:-0.015em;
-  font-weight:600; margin:12px 0 16px;
-}
-.ai-band p{ color:rgba(255,255,255,.7); margin:0 0 24px; font-size:17px; line-height:1.55; }
-[data-theme="dark"] .ai-band p{ color:var(--ink-soft); }
-.ai-band .btn-primary{ background:var(--coral); color:#17171c; }
-.ai-band .btn-primary:hover{ background:var(--coral-soft); }
-.ai-mock{
-  background:rgba(255,255,255,0.05);
-  border:1px solid rgba(255,255,255,0.15);
-  border-radius:var(--r-lg);
-  padding:24px;
-  font-family:var(--font-mono); font-size:13px;
-  line-height:1.7;
-}
-[data-theme="dark"] .ai-mock{ background:var(--canvas); border-color:var(--hairline); color:var(--ink); }
-.ai-msg{ margin-bottom:16px; }
-.ai-msg .role{ color:var(--coral); font-size:11px; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:4px; display:block; }
-.ai-msg .text{ color:rgba(255,255,255,0.9); }
-[data-theme="dark"] .ai-msg .text{ color:var(--ink); }
-
-/* ── Footer (shared with index) ── */
-.footer{ background:var(--canvas); border-top:1px solid var(--hairline); padding:56px 0 32px; }
-.footer-grid{ display:grid; grid-template-columns:2fr 1fr 1fr; gap:48px; margin-bottom:40px; }
-.footer-brand{ max-width:360px; }
-.footer-brand p{ font-size:14px; color:var(--ink-soft); margin:16px 0 16px; line-height:1.55; }
-.footer-col h4{ font-family:var(--font-mono); font-size:12px; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted); margin:0 0 16px; }
-.footer-col ul{ list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px; }
-.footer-col a{ font-size:14px; color:var(--ink-soft); transition:color .15s ease; }
-.footer-col a:hover{ color:var(--ink); }
-.footer-bottom{ padding-top:24px; border-top:1px solid var(--hairline); display:flex; justify-content:space-between; align-items:center; font-size:13px; color:var(--muted); }
-.footer-bottom .links{ display:flex; gap:18px; }
-
-/* ── Responsive ── */
-@media (max-width: 960px){
-  .hero{ padding:56px 0 40px; }
-  .hero-inner{ grid-template-columns:1fr; gap:32px; }
-  .flashcard{ min-height:auto; }
-  .fc-word{ font-size:36px; }
-  .section{ padding:56px 0; }
-  .modules-grid{ grid-template-columns:repeat(2,1fr); }
-  .roadmap-grid{ grid-template-columns:repeat(2,1fr); }
-  .how-grid{ grid-template-columns:1fr; gap:16px; }
-  .ai-inner{ grid-template-columns:1fr; gap:32px; }
-  .footer-grid{ grid-template-columns:1fr; gap:32px; }
-}
-@media (max-width: 640px){
-  .nav-inner{ gap:8px; padding:0 16px; }
-  .nav-link{ display:none; }
-  .breadcrumb{ display:none; }
-  .container{ padding:0 16px; }
-  .hero h1{ font-size:clamp(36px, 11vw, 56px); }
-  .hero-lede{ font-size:17px; }
-  .hero-meta{ grid-template-columns:1fr 1fr; gap:16px; }
-  .hero-meta-item:nth-child(3){ grid-column:span 2; }
-  .modules-grid{ grid-template-columns:1fr; }
-  .roadmap-grid{ grid-template-columns:1fr; }
-  .footer-bottom{ flex-direction:column; gap:12px; align-items:flex-start; }
+[data-theme=dark] {
+  --bg: #0E0E0E;
+  --bg-2: #161616;
+  --bg-3: #1E1E1E;
+  --surface: #181818;
+  --surface-2: #1F1F1F;
+  --surface-3: #262626;
+  --ink: #FAFAFA;
+  --ink-2: #E0E0E0;
+  --ink-3: #A8A8A8;
+  --ink-4: #808080;
+  --ink-5: #555555;
+  --rule: #2A2A2A;
+  --rule-2: #3D3D3D;
+  --de-slate:     #2C2A34;
+  --de-slate-on:  #C0BAD0;
+  --de-blush:     #3B1510;
+  --de-blush-on:  #FFB3A8;
+  --de-butter:    #312900;
+  --de-butter-on: #FFE48A;
+  --btn-primary-bg: #FAFAFA;
+  --btn-primary-fg: #212121;
+  --footer-bg:     #060606;
+  --footer-rule:   #1F1F1F;
 }
 
-@media (prefers-reduced-motion: reduce){
-  *{ animation-duration:0.01ms !important; transition-duration:0.01ms !important; scroll-behavior:auto !important; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--f-sans);
+  font-size: var(--t-base);
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'kern', 'liga', 'calt', 'ss01';
+  letter-spacing: -0.011em;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  position: relative;
+  transition: background .3s, color .3s;
 }
-:focus-visible{ outline:2px solid var(--action-blue); outline-offset:2px; border-radius:4px; }
+
+button { font-family: inherit; cursor: pointer; border: none; background: transparent; color: inherit; padding: 0; }
+a { color: inherit; text-decoration: none; }
+::selection { background: var(--bittersweet); color: var(--alabaster); }
+h1, h2, h3, h4 { text-wrap: balance; }
+p, .hero-lede, .sec-deck, .feat-brief, .module-sub, .testi-body { text-wrap: pretty; }
+
+/* ════════════════ VORONOI CELL PATTERN (CSS-only) ════════════════ */
+/* Approximation using SVG mask + radial gradients */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: var(--gradient-mesh);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.7;
+}
+[data-theme=dark] body::before { opacity: 0.4; }
+
+/* Subtle dot/cell pattern overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(33,33,33,0.05) 1px, transparent 0);
+  background-size: 24px 24px;
+  pointer-events: none;
+  z-index: 0;
+}
+[data-theme=dark] body::after {
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(250,250,250,0.04) 1px, transparent 0);
+}
+
+/* ════════════════ VORONOI BLOBS (animated background ornaments) ════════════════ */
+.voronoi-bg {
+  position: fixed;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(80px);
+  opacity: 0.5;
+}
+[data-theme=dark] .voronoi-bg { opacity: 0.3; }
+
+.voronoi-bg.v1 {
+  top: 10%; left: -8%;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, var(--bittersweet) 0%, transparent 70%);
+  animation: drift-1 18s ease-in-out infinite;
+}
+.voronoi-bg.v2 {
+  top: 45%; right: -10%;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, var(--purple) 0%, transparent 70%);
+  animation: drift-2 22s ease-in-out infinite;
+}
+.voronoi-bg.v3 {
+  bottom: 5%; left: 30%;
+  width: 380px; height: 380px;
+  background: radial-gradient(circle, var(--pink) 0%, transparent 70%);
+  animation: drift-3 26s ease-in-out infinite;
+}
+@keyframes drift-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(30px, -40px) scale(1.1); }
+}
+@keyframes drift-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-40px, 30px) scale(0.9); }
+}
+@keyframes drift-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(50px, -30px) scale(1.05); }
+}
+
+/* ════════════════ TOPBAR ════════════════ */
+.topbar {
+  position: sticky; top: 0; z-index: 100;
+  background: color-mix(in srgb, var(--bg) 80%, transparent);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--rule);
+}
+
+.topbar-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  height: 68px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 24px;
+  padding: 0 28px;
+}
+
+/* === LOGO with Voronoi cell symbol === */
+.logo {
+  display: flex; align-items: center; gap: 12px;
+  cursor: pointer;
+  transition: opacity .2s;
+}
+.logo:hover { opacity: 0.75; }
+
+.logo-mark {
+  width: 32px; height: 32px;
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+}
+/* Three cells forming organic "D" — Voronoi inspired (animate only on hover) */
+.logo-mark::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gradient-warm);
+  border-radius: 40% 60% 55% 45% / 50% 45% 55% 50%;
+  transition: border-radius .8s ease;
+}
+.logo:hover .logo-mark::before {
+  animation: morph 4s ease-in-out infinite;
+}
+.logo-mark::after {
+  content: 'D';
+  position: relative;
+  color: var(--alabaster);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: -0.04em;
+  z-index: 1;
+}
+@keyframes morph {
+  0%, 100% { border-radius: 40% 60% 55% 45% / 50% 45% 55% 50%; }
+  33% { border-radius: 55% 45% 40% 60% / 45% 60% 40% 55%; }
+  66% { border-radius: 50% 50% 60% 40% / 55% 40% 60% 45%; }
+}
+
+.logo-name {
+  font-family: var(--f-sans);
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  line-height: 1;
+}
+
+/* === LOGO GROUP wrapper (logo + pill DEUTSCH) === */
+.logo-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+/* === LANGUAGE PILL [DEUTSCH] cạnh logo === */
+.lang-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px 4px 9px;
+  font-family: var(--f-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: var(--surface);
+  border: 1px solid var(--rule-2);
+  border-radius: 999px;
+  color: var(--ink-2);
+  user-select: none;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.pill-dot {
+  width: 6px; height: 6px;
+  background: var(--bittersweet);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+@media (max-width: 880px) {
+  .lang-pill { display: none; }
+}
+
+/* === MAIN NAV === */
+.main-nav {
+  display: flex;
+  gap: 4px;
+  justify-self: center;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.main-nav::-webkit-scrollbar { display: none; }
+.nav-item {
+  padding: 8px 14px;
+  font-family: var(--f-sans);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-3);
+  white-space: nowrap;
+  transition: color .15s;
+  letter-spacing: -0.005em;
+  border-radius: var(--r-sm);
+  position: relative;
+}
+.nav-item:hover:not(.disabled) {
+  color: var(--ink);
+  background: var(--surface-2);
+}
+.nav-item.active {
+  color: var(--ink);
+  font-weight: 600;
+}
+.nav-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: -22px; left: 50%;
+  transform: translateX(-50%);
+  width: 24px; height: 2px;
+  background: var(--bittersweet);
+  border-radius: 2px;
+}
+.nav-item.disabled {
+  color: var(--ink-5);
+  cursor: not-allowed;
+}
+.nav-item.disabled::after {
+  content: '•';
+  margin-left: 4px;
+  color: var(--ink-5);
+}
+
+.tb-actions { display: flex; align-items: center; gap: 12px; justify-self: end; }
+
+.theme-btn {
+  width: 36px; height: 36px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--ink-3);
+  padding: 0;
+  border-radius: var(--r-sm);
+  transition: all .15s;
+  border: 1px solid var(--rule);
+}
+.theme-btn:hover {
+  color: var(--bittersweet);
+  border-color: var(--rule-2);
+  background: var(--surface-2);
+}
+.theme-btn .theme-icon { display: block; }
+.theme-btn .icon-sun { display: none; }
+[data-theme=dark] .theme-btn .icon-moon { display: none; }
+[data-theme=dark] .theme-btn .icon-sun  { display: block; }
+
+.btn-login {
+  font-family: var(--f-sans);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-2);
+  transition: color .15s;
+}
+.btn-login:hover { color: var(--bittersweet); }
+
+.btn-register {
+  padding: 9px 18px;
+  font-family: var(--f-sans);
+  font-size: 14px;
+  font-weight: 600;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-fg);
+  border-radius: 999px;
+  transition: all .2s;
+  letter-spacing: -0.01em;
+  position: relative;
+  overflow: hidden;
+}
+.btn-register::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gradient-warm);
+  opacity: 0;
+  transition: opacity .25s;
+}
+.btn-register span {
+  position: relative;
+  z-index: 1;
+}
+.btn-register:hover::before { opacity: 1; }
+.btn-register:hover { transform: translateY(-1px); color: #FAFAFA; }
+
+.burger {
+  display: none;
+  font-size: 22px;
+  color: var(--ink);
+  padding: 6px 8px;
+  border-radius: var(--r-sm);
+}
+@media (max-width: 1100px) {
+  .topbar-inner { gap: 16px; padding: 0 20px; }
+  .nav-item { padding: 8px 10px; font-size: 13px; }
+  .main-nav { gap: 2px; }
+}
+@media (max-width: 980px) {
+  .topbar-inner { grid-template-columns: 1fr auto; gap: 16px; padding: 0 16px; }
+  .main-nav { display: none; }
+  .burger { display: block; }
+  .btn-login { display: none; }
+}
+
+/* ════════════════ MAIN ════════════════ */
+main {
+  flex: 1;
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 28px;
+  position: relative;
+  z-index: 1;
+}
+@media (max-width: 720px) { main { padding: 0 20px; } }
+
+/* ════════════════ HERO ════════════════ */
+.hero {
+  padding: 88px 0 96px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 56px;
+  align-items: center;
+  position: relative;
+}
+@media (min-width: 1024px) {
+  .hero {
+    grid-template-columns: 1.3fr 1fr;
+    gap: 72px;
+    padding: 104px 0 112px;
+  }
+}
+
+.hero-meta {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--ink-3);
+  margin-bottom: 28px;
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 7px 14px;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+}
+.hero-meta::before {
+  content: '';
+  width: 8px; height: 8px;
+  background: var(--bittersweet);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+  box-shadow: 0 0 0 0 var(--bittersweet);
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,119,89,0.5); }
+  50% { box-shadow: 0 0 0 6px rgba(255,119,89,0); }
+}
+
+.hero h1 {
+  font-family: var(--f-sans);
+  font-size: clamp(40px, 7vw, 96px);
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+  margin-bottom: 28px;
+  color: var(--ink);
+}
+.hero h1 .gradient {
+  background: var(--gradient-warm);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+.hero h1 .typing-line {
+  display: block;
+  font-size: 0.42em;
+  font-weight: 400;
+  color: var(--ink-3);
+  margin-top: 20px;
+  letter-spacing: -0.02em;
+  min-height: 1.2em;
+  font-family: var(--f-mono);
+}
+.hero h1 .typing-line::after {
+  content: '';
+  display: inline-block;
+  width: 0.5em;
+  height: 1em;
+  background: var(--bittersweet);
+  margin-left: 4px;
+  animation: blink 1s step-end infinite;
+  vertical-align: -2px;
+}
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.hero-lede {
+  font-family: var(--f-sans);
+  font-size: var(--t-md);
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--ink-3);
+  margin-bottom: 36px;
+  max-width: 520px;
+  letter-spacing: -0.01em;
+}
+
+.hero-ctas {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 56px;
+}
+.cta-primary {
+  padding: 14px 26px;
+  font-family: var(--f-sans);
+  font-size: var(--t-md);
+  font-weight: 600;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-fg);
+  border-radius: 999px;
+  display: inline-flex; align-items: center; gap: 10px;
+  transition: all .25s;
+  letter-spacing: -0.01em;
+  position: relative;
+  overflow: hidden;
+}
+.cta-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gradient-warm);
+  opacity: 0;
+  transition: opacity .3s;
+}
+.cta-primary > * { position: relative; z-index: 1; }
+.cta-primary:hover::before { opacity: 1; }
+.cta-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--sh-glow);
+  color: #FAFAFA;
+}
+.cta-primary .arrow {
+  transition: transform .2s;
+  font-weight: 400;
+}
+.cta-primary:hover .arrow { transform: translateX(4px); }
+
+.cta-text {
+  font-family: var(--f-sans);
+  font-size: var(--t-md);
+  font-weight: 500;
+  color: var(--ink-2);
+  padding: 14px 0;
+  display: inline-flex; align-items: center; gap: 8px;
+  transition: color .2s;
+}
+.cta-text::after {
+  content: '→';
+  font-size: 18px;
+  transition: transform .2s;
+}
+.cta-text:hover { color: var(--bittersweet); }
+.cta-text:hover::after { transform: translateX(3px); }
+
+/* Hero stats — data dashboard style */
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0;
+  border: 1px solid var(--rule);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  overflow: hidden;
+  max-width: 540px;
+}
+@media (min-width: 500px) {
+  .hero-stats { grid-template-columns: repeat(4, 1fr); }
+}
+.h-stat {
+  padding: 18px 20px;
+  border-right: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  position: relative;
+  background: var(--surface);
+  transition: background .2s;
+}
+.h-stat:hover { background: var(--surface-2); }
+.h-stat:last-child { border-right: none; }
+@media (max-width: 499px) {
+  .h-stat:nth-child(2) { border-right: none; }
+  .h-stat:nth-child(3), .h-stat:nth-child(4) { border-bottom: none; }
+}
+@media (min-width: 500px) {
+  .h-stat { border-bottom: none; }
+}
+.h-stat .num {
+  font-family: var(--f-sans);
+  font-size: 32px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  display: block;
+  margin-bottom: 8px;
+}
+.h-stat .lbl {
+  display: block;
+  font-family: var(--f-mono);
+  font-size: 10px;
+  color: var(--ink-3);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+/* === HERO RIGHT — Voronoi card display === */
+.hero-aside {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 480px;
+}
+
+/* Floating cells — Voronoi inspired card stack */
+.hero-cells {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  height: 480px;
+}
+
+.cell {
+  position: absolute;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-lg);
+  padding: 20px;
+  transition: transform .4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow .3s;
+  cursor: pointer;
+  box-shadow: var(--sh-2);
+}
+
+.cell.c1 {
+  top: 0; right: 60px;
+  width: 280px;
+  z-index: 3;
+  animation: float-cell-1 8s ease-in-out infinite;
+  border-radius: 30% 70% 50% 50% / 40% 60% 40% 60%;
+}
+.cell.c2 {
+  top: 140px; right: 0;
+  width: 260px;
+  z-index: 2;
+  background: var(--surface-2);
+  animation: float-cell-2 10s ease-in-out infinite;
+  border-radius: 60% 40% 50% 50% / 50% 60% 40% 50%;
+}
+.cell.c3 {
+  top: 280px; right: 80px;
+  width: 270px;
+  z-index: 1;
+  background: var(--surface);
+  animation: float-cell-3 12s ease-in-out infinite;
+  border-radius: 50% 50% 60% 40% / 45% 55% 50% 45%;
+}
+
+@keyframes float-cell-1 {
+  0%, 100% { transform: translate(0, 0); border-radius: 30% 70% 50% 50% / 40% 60% 40% 60%; }
+  50% { transform: translate(-8px, -12px); border-radius: 45% 55% 60% 40% / 50% 50% 50% 50%; }
+}
+@keyframes float-cell-2 {
+  0%, 100% { transform: translate(0, 0); border-radius: 60% 40% 50% 50% / 50% 60% 40% 50%; }
+  50% { transform: translate(12px, -8px); border-radius: 50% 50% 40% 60% / 60% 50% 50% 40%; }
+}
+@keyframes float-cell-3 {
+  0%, 100% { transform: translate(0, 0); border-radius: 50% 50% 60% 40% / 45% 55% 50% 45%; }
+  50% { transform: translate(-6px, -10px); border-radius: 55% 45% 50% 50% / 50% 45% 55% 50%; }
+}
+
+.cell:hover {
+  transform: translate(0, -6px) scale(1.04);
+  animation: none;
+  box-shadow: var(--sh-3);
+  z-index: 10;
+  border-radius: var(--r-lg);
+}
+
+.cell-id {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  color: var(--ink-3);
+  letter-spacing: 0.06em;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+.cell-id .accent { color: var(--bittersweet); font-weight: 600; }
+.cell-word {
+  font-family: var(--f-sans);
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  margin-bottom: 6px;
+  color: var(--ink);
+}
+.cell-word .art {
+  font-weight: 400;
+  background: var(--gradient-warm);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-right: 4px;
+  font-size: 0.85em;
+}
+.cell-ipa {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  color: var(--ink-4);
+  margin-bottom: 10px;
+}
+.cell-vi {
+  font-family: var(--f-sans);
+  font-size: 13px;
+  color: var(--ink-2);
+  line-height: 1.45;
+  margin-bottom: 10px;
+}
+.cell-ex {
+  font-family: var(--f-sans);
+  font-size: 12px;
+  color: var(--ink-3);
+  padding-top: 10px;
+  border-top: 1px dashed var(--rule);
+  line-height: 1.5;
+}
+.cell-ex strong {
+  color: var(--bittersweet);
+  font-weight: 600;
+  background: linear-gradient(180deg, transparent 60%, rgba(255,119,89,0.18) 60%);
+  padding: 0 2px;
+}
+
+/* ════════════════ ACTIVITY TICKER ════════════════ */
+.activity {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 22px;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-lg);
+  margin-bottom: 48px;
+  font-size: var(--t-sm);
+  color: var(--ink-3);
+  position: relative;
+  overflow: hidden;
+}
+.activity::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--gradient-warm);
+}
+.activity .live-dot {
+  width: 8px; height: 8px;
+  background: var(--bittersweet);
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: pulse 2s ease-in-out infinite;
+}
+.activity strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+.activity .accent {
+  color: var(--bittersweet);
+  font-weight: 600;
+}
+
+/* ════════════════ SECTION ════════════════ */
+.section {
+  padding: 56px 0;
+  position: relative;
+}
+.section.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity .6s ease, transform .6s ease;
+}
+.section.reveal.shown { opacity: 1; transform: translateY(0); }
+
+.sec-head {
+  margin-bottom: 56px;
+  max-width: 760px;
+}
+.sec-kicker {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--bittersweet);
+  font-weight: 600;
+  margin-bottom: 16px;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.sec-kicker::before {
+  content: '';
+  width: 30px; height: 3px;
+  border-radius: 1px;
+  background: linear-gradient(to right,
+    var(--de-slate-on)  0%, var(--de-slate-on)  33%,
+    var(--de-blush-on) 33%, var(--de-blush-on)  66%,
+    var(--de-butter-on) 66%, var(--de-butter-on) 100%);
+}
+.sec-head h2 {
+  font-family: var(--f-sans);
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  color: var(--ink);
+  margin-bottom: 20px;
+}
+.sec-head h2 .gradient {
+  background: var(--gradient-warm);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.sec-head .sec-deck {
+  font-family: var(--f-sans);
+  font-size: var(--t-md);
+  color: var(--ink-3);
+  line-height: 1.55;
+  letter-spacing: -0.01em;
+}
+
+/* ════════════════ HOW IT WORKS — Bento grid with real data ════════════════ */
+.how-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 800px) {
+  .how-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; }
+}
+
+.how-card {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-lg);
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+  transition: all .3s;
+}
+.how-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--rule-2);
+  box-shadow: var(--sh-3);
+}
+.how-card::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 120px; height: 120px;
+  background: var(--gradient-warm);
+  opacity: 0.06;
+  filter: blur(40px);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.how-num-wrap {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 20px;
+}
+.how-num {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--bittersweet);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.how-cell-dot {
+  width: 14px; height: 14px;
+  background: var(--gradient-warm);
+  border-radius: 40% 60% 50% 50% / 60% 40% 60% 40%;
+  animation: morph 6s ease-in-out infinite;
+}
+.how-card.c2 .how-cell-dot { background: linear-gradient(135deg, var(--purple), var(--pink)); }
+.how-card.c3 .how-cell-dot { background: linear-gradient(135deg, var(--pink), var(--bittersweet)); }
+
+/* German pastel tints per how-card */
+.how-card.c1 { background: linear-gradient(145deg, rgba(252,224,144,0.35) 0%, transparent 55%), var(--surface); }
+.how-card.c1::before { background: var(--de-butter); }
+.how-card.c1 .how-cell-dot { background: linear-gradient(135deg, var(--de-butter-on), var(--de-butter)); }
+.how-card.c2 { background: linear-gradient(145deg, rgba(251,202,186,0.40) 0%, transparent 55%), var(--surface); }
+.how-card.c2::before { background: var(--de-blush); }
+.how-card.c3 { background: linear-gradient(145deg, rgba(214,210,222,0.50) 0%, transparent 55%), var(--surface); }
+.how-card.c3::before { background: var(--de-slate); }
+
+.how-card h3 {
+  font-family: var(--f-sans);
+  font-size: var(--t-xl);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  margin-bottom: 14px;
+  color: var(--ink);
+}
+.how-card p {
+  font-size: var(--t-sm);
+  color: var(--ink-3);
+  line-height: 1.6;
+  margin-bottom: 22px;
+}
+
+/* Real data example */
+.how-example {
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: var(--r);
+  padding: 14px 16px;
+}
+.how-example .ex-label {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+  font-weight: 600;
+  margin-bottom: 10px;
+  display: flex; align-items: center; gap: 6px;
+}
+.how-example .ex-label::before {
+  content: '◆';
+  color: var(--bittersweet);
+  font-size: 9px;
+}
+.how-example .ex-title {
+  font-family: var(--f-sans);
+  font-size: var(--t-md);
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 4px;
+  letter-spacing: -0.015em;
+}
+.how-example .ex-subtitle {
+  font-size: 12px;
+  color: var(--ink-3);
+  margin-bottom: 12px;
+}
+.how-example code {
+  font-family: var(--f-mono);
+  background: rgba(255,119,89,0.10);
+  color: var(--bittersweet-d);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+[data-theme=dark] .how-example code {
+  background: rgba(255,119,89,0.20);
+  color: var(--bittersweet-l);
+}
+.how-example .link-row {
+  display: flex; align-items: center; gap: 8px;
+  margin-top: 6px;
+  font-size: 12px;
+  font-family: var(--f-sans);
+  color: var(--ink-2);
+}
+.how-example .lv-tag {
+  font-family: var(--f-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  padding: 1px 5px;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-fg);
+  border-radius: 3px;
+  font-weight: 600;
+}
+
+/* ════════════════ DEMO FLASHCARD ════════════════ */
+.demo-flash {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 48px;
+  align-items: center;
+}
+@media (min-width: 880px) {
+  .demo-flash { grid-template-columns: 0.85fr 1fr; gap: 64px; }
+}
+.demo-info { max-width: 460px; }
+.demo-info h3 {
+  font-family: var(--f-sans);
+  font-size: var(--t-2xl);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: 18px;
+  color: var(--ink);
+}
+.demo-info h3 .gradient {
+  background: var(--gradient-warm);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.demo-info p {
+  font-size: var(--t-md);
+  color: var(--ink-3);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+.demo-progress-row {
+  display: flex; align-items: center; gap: 12px;
+  padding-top: 18px;
+  border-top: 1px solid var(--rule);
+}
+.demo-progress {
+  display: flex; gap: 4px;
+  flex: 1;
+}
+.demo-progress > div {
+  flex: 1; height: 3px;
+  background: var(--rule);
+  border-radius: 2px;
+}
+.demo-progress > div.on { background: var(--gradient-warm); }
+.demo-progress-lbl {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--ink-3);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* Flashcard — Cohere card */
+.demo-card-wrap { perspective: 1200px; }
+.demo-card {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-2xl);
+  padding: 40px 36px;
+  cursor: pointer;
+  min-height: 320px;
+  display: flex; flex-direction: column;
+  position: relative;
+  transition: transform .5s cubic-bezier(0.4, 0, 0.2, 1), border-color .25s, box-shadow .3s;
+  transform-style: preserve-3d;
+}
+.demo-card::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 200px; height: 200px;
+  background: var(--gradient-warm);
+  opacity: 0.10;
+  border-radius: 50%;
+  filter: blur(30px);
+  pointer-events: none;
+}
+.demo-card:hover {
+  border-color: var(--bittersweet);
+  box-shadow: var(--sh-3);
+}
+.demo-card.flipped { transform: rotateY(180deg); }
+.demo-front, .demo-back {
+  backface-visibility: hidden;
+  width: 100%;
+  display: flex; flex-direction: column;
+  flex: 1;
+}
+.demo-back {
+  position: absolute;
+  top: 40px; left: 36px; right: 36px; bottom: 40px;
+  transform: rotateY(180deg);
+}
+
+.dc-meta {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 36px;
+  position: relative;
+  z-index: 1;
+}
+.dc-id {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--ink-3);
+  letter-spacing: 0.06em;
+  font-weight: 500;
+}
+.dc-tag {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--bittersweet);
+  font-weight: 700;
+  padding: 4px 10px;
+  background: rgba(255,119,89,0.10);
+  border-radius: 999px;
+}
+.dc-word {
+  font-family: var(--f-sans);
+  font-size: clamp(40px, 7vw, 64px);
+  font-weight: 500;
+  letter-spacing: -0.045em;
+  line-height: 1;
+  margin-bottom: 14px;
+  color: var(--ink);
+  position: relative;
+  z-index: 1;
+}
+.dc-word .art {
+  font-weight: 400;
+  background: var(--gradient-warm);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-right: 6px;
+  font-size: 0.7em;
+}
+.dc-ipa {
+  font-family: var(--f-mono);
+  font-size: var(--t-base);
+  color: var(--ink-3);
+  margin-bottom: auto;
+  position: relative;
+  z-index: 1;
+}
+.dc-hint {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  font-weight: 600;
+  margin-top: 24px;
+  display: flex; align-items: center; gap: 8px;
+}
+.dc-hint::after {
+  content: '↻';
+  font-size: 16px;
+  color: var(--bittersweet);
+}
+.dc-vi {
+  font-family: var(--f-sans);
+  font-size: var(--t-2xl);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  margin-bottom: 12px;
+  line-height: 1.05;
+}
+.dc-en {
+  font-family: var(--f-sans);
+  font-size: var(--t-md);
+  color: var(--ink-3);
+  margin-bottom: auto;
+}
+.dc-example {
+  margin-top: 24px;
+  padding: 16px 18px;
+  background: var(--bg);
+  border-radius: var(--r);
+  border-left: 3px solid var(--bittersweet);
+}
+.dc-example .ex-de {
+  font-family: var(--f-sans);
+  font-weight: 500;
+  font-size: var(--t-md);
+  color: var(--ink);
+  margin-bottom: 4px;
+  letter-spacing: -0.015em;
+}
+.dc-example .ex-vi {
+  font-family: var(--f-sans);
+  font-size: 13px;
+  color: var(--ink-3);
+}
+
+/* ════════════════ FEATURED CARDS — Bento grid ════════════════ */
+.featured-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 720px) {
+  .featured-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 1fr;
+  }
+  /* First card spans 2 columns for bento effect */
+  .feat-card.featured { grid-column: 1 / -1; }
+}
+@media (min-width: 1024px) {
+  .featured-grid { grid-template-columns: repeat(3, 1fr); }
+  .feat-card.featured { grid-column: span 2; grid-row: span 2; }
+}
+
+.feat-card {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-lg);
+  padding: 22px;
+  cursor: pointer;
+  transition: all .25s;
+  position: relative;
+  overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.feat-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--rule-2);
+  box-shadow: var(--sh-2);
+}
+.feat-card.featured {
+  background: linear-gradient(135deg, rgba(255,119,89,0.08), rgba(166,127,240,0.05));
+  border: 1px solid rgba(255,119,89,0.20);
+}
+.feat-card.featured::before {
+  content: '';
+  position: absolute;
+  top: -50px; right: -50px;
+  width: 240px; height: 240px;
+  background: var(--gradient-warm);
+  opacity: 0.12;
+  border-radius: 50%;
+  filter: blur(50px);
+  pointer-events: none;
+}
+
+.feat-meta-row {
+  display: flex; gap: 10px; align-items: center;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+.feat-id {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--ink-3);
+  letter-spacing: 0.06em;
+  font-weight: 500;
+}
+.feat-badge {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  padding: 2px 8px;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  border-radius: 999px;
+  border: 1px solid;
+}
+.feat-badge.l-a1 { color: var(--de-butter-on); border-color: var(--de-butter-on); background: var(--de-butter); }
+.feat-badge.l-a2 { color: var(--de-blush-on);  border-color: var(--de-blush-on);  background: var(--de-blush); }
+.feat-badge.l-b1 { color: var(--de-slate-on);  border-color: var(--de-slate-on);  background: var(--de-slate); }
+.feat-badge.l-b2 { color: #C97900; border-color: #C97900; background: rgba(201,121,0,0.08); }
+
+.feat-type {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  font-weight: 600;
+}
+
+.feat-title {
+  font-family: var(--f-sans);
+  font-size: var(--t-lg);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+  color: var(--ink);
+  margin-bottom: 10px;
+  position: relative;
+  z-index: 1;
+}
+.feat-card.featured .feat-title {
+  font-size: var(--t-2xl);
+  margin-bottom: 14px;
+}
+.feat-brief {
+  font-family: var(--f-sans);
+  font-size: var(--t-sm);
+  color: var(--ink-3);
+  line-height: 1.55;
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+.feat-card.featured .feat-brief {
+  font-size: var(--t-md);
+  max-width: 480px;
+}
+
+.feat-foot {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--ink-3);
+  position: relative;
+  z-index: 1;
+}
+.feat-views { font-weight: 600; color: var(--ink); }
+.feat-views .v-num {
+  background: var(--gradient-warm);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
+}
+
+/* ════════════════ ROADMAP A1-B2 ════════════════ */
+.roadmap {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-xl);
+  padding: 40px 36px;
+  position: relative;
+  overflow: hidden;
+}
+.roadmap::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 320px; height: 320px;
+  background: var(--gradient-warm);
+  opacity: 0.06;
+  border-radius: 50%;
+  filter: blur(60px);
+  pointer-events: none;
+}
+.rm-track {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  position: relative;
+  gap: 16px;
+}
+@media (max-width: 600px) {
+  .rm-track { grid-template-columns: 1fr 1fr; gap: 36px 16px; }
+  .rm-track::before { display: none; }
+}
+.rm-track::before {
+  content: '';
+  position: absolute;
+  top: 18px; left: 6%; right: 6%;
+  height: 2px;
+  background: linear-gradient(to right,
+    var(--de-butter-on) 0%,
+    var(--de-blush-on)  33%,
+    var(--de-slate-on)  66%,
+    var(--bittersweet)  100%);
+  opacity: 0.55;
+}
+.rm-step {
+  text-align: left;
+  padding-top: 52px;
+  position: relative;
+  z-index: 1;
+}
+.rm-step::before {
+  content: '';
+  position: absolute;
+  top: 8px; left: 0;
+  width: 20px; height: 20px;
+  background: var(--bg);
+  border-radius: 50%;
+  border: 2px solid var(--rule-2);
+}
+.rm-step.completed::before {
+  background: #2D7A3D;
+  border-color: #2D7A3D;
+}
+.rm-step.current::before {
+  background: var(--bittersweet);
+  border-color: var(--bittersweet);
+  box-shadow: 0 0 0 6px rgba(255,119,89,0.25);
+  animation: pulse-current 2s ease-in-out infinite;
+}
+@keyframes pulse-current {
+  0%, 100% { box-shadow: 0 0 0 6px rgba(255,119,89,0.25); }
+  50% { box-shadow: 0 0 0 10px rgba(255,119,89,0.10); }
+}
+.rm-step.locked::before {
+  background: var(--bg);
+  border-color: var(--rule);
+  border-style: dashed;
+}
+.rm-level {
+  font-family: var(--f-sans);
+  font-size: var(--t-2xl);
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.rm-step.current .rm-level {
+  background: var(--gradient-warm);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.rm-name {
+  font-family: var(--f-sans);
+  font-size: var(--t-sm);
+  font-weight: 600;
+  color: var(--ink-2);
+  margin-bottom: 6px;
+}
+.rm-time {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--ink-3);
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+.rm-pct {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-3);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.rm-step.completed .rm-pct { color: #2D7A3D; }
+.rm-step.current .rm-pct { color: var(--bittersweet); }
+.rm-step.locked { opacity: 0.55; }
+
+/* ════════════════ MODULES — Cohere-style cards ════════════════ */
+.modules-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+@media (min-width: 700px) {
+  .modules-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1024px) {
+  .modules-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.module {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-lg);
+  padding: 22px;
+  cursor: pointer;
+  transition: all .25s;
+  position: relative;
+  overflow: hidden;
+  display: flex; flex-direction: column;
+  min-height: 200px;
+}
+.module:hover:not(.locked) {
+  transform: translateY(-3px);
+  border-color: var(--rule-2);
+  box-shadow: var(--sh-2);
+}
+.module::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 80px; height: 80px;
+  background: var(--gradient-warm);
+  opacity: 0.06;
+  border-radius: 0 var(--r-lg) 0 50%;
+  filter: blur(20px);
+  pointer-events: none;
+}
+
+.module-row1 {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 18px;
+}
+.module-id {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  font-weight: 600;
+}
+.module-cell {
+  width: 24px; height: 24px;
+  background: var(--gradient-warm);
+  border-radius: 40% 60% 50% 50% / 60% 40% 60% 40%;
+  animation: morph 6s ease-in-out infinite;
+}
+.module.m-grammar .module-cell { background: linear-gradient(135deg, var(--de-butter-on), var(--de-blush-on)); }
+.module.m-vocab .module-cell { background: linear-gradient(135deg, var(--purple), var(--pink)); }
+.module.m-listen .module-cell { background: linear-gradient(135deg, var(--pink), var(--bittersweet)); }
+.module.m-read .module-cell { background: linear-gradient(135deg, var(--bittersweet), var(--purple)); }
+.module.m-speak .module-cell { background: linear-gradient(135deg, var(--purple-d), var(--bittersweet)); }
+.module.m-write .module-cell { background: linear-gradient(135deg, var(--magenta), var(--purple)); }
+.module.m-test .module-cell { background: linear-gradient(135deg, var(--bittersweet-l), var(--purple)); }
+
+.module-title {
+  font-family: var(--f-sans);
+  font-size: var(--t-xl);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+.module-sub {
+  font-family: var(--f-sans);
+  font-size: var(--t-sm);
+  color: var(--ink-3);
+  line-height: 1.55;
+  flex: 1;
+  margin-bottom: 18px;
+}
+.module-foot {
+  display: flex; align-items: center; gap: 10px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+  font-family: var(--f-mono);
+  font-size: 11px;
+}
+.module-count { color: var(--ink); font-weight: 700; font-variant-numeric: tabular-nums; }
+.module-lbl { color: var(--ink-3); }
+.module-bar {
+  flex: 1;
+  height: 3px;
+  background: var(--rule);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.module-bar > div {
+  height: 100%;
+  background: var(--gradient-warm);
+  border-radius: 2px;
+}
+.module-pct {
+  color: var(--bittersweet);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.module.locked {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.module.locked .module-cell {
+  background: var(--ink-5);
+  animation: none;
+}
+.module.locked::after {
+  content: 'Sắp ra mắt';
+  position: absolute;
+  top: 22px; right: 22px;
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+  font-weight: 600;
+  padding: 3px 8px;
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+}
+
+/* ════════════════ TESTIMONIALS ════════════════ */
+.testi-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+@media (min-width: 800px) {
+  .testi-grid { grid-template-columns: repeat(3, 1fr); }
+}
+.testi {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-lg);
+  padding: 28px 24px;
+  position: relative;
+  overflow: hidden;
+  transition: all .25s;
+}
+.testi:hover {
+  transform: translateY(-3px);
+  border-color: var(--rule-2);
+  box-shadow: var(--sh-2);
+}
+.testi::before {
+  content: '"';
+  position: absolute;
+  top: 8px; left: 18px;
+  font-family: var(--f-sans);
+  font-size: 64px;
+  background: var(--gradient-warm);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1;
+  font-weight: 500;
+  opacity: 0.4;
+}
+.testi-body {
+  font-family: var(--f-sans);
+  font-size: var(--t-base);
+  color: var(--ink-2);
+  line-height: 1.6;
+  margin: 28px 0 22px;
+  letter-spacing: -0.01em;
+}
+.testi-author {
+  display: flex; align-items: center; gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+}
+.testi-avatar {
+  width: 40px; height: 40px;
+  background: var(--gradient-warm);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--alabaster);
+  font-family: var(--f-sans);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: -0.02em;
+  border-radius: 50%;
+}
+.testi-avatar.a2 { background: linear-gradient(135deg, var(--purple), var(--pink)); }
+.testi-avatar.a3 { background: linear-gradient(135deg, var(--pink), var(--bittersweet)); }
+.testi-info strong {
+  display: block;
+  font-family: var(--f-sans);
+  font-weight: 600;
+  font-size: var(--t-sm);
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.testi-info span {
+  display: block;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--ink-3);
+  margin-top: 2px;
+}
+
+/* ════════════════ FOOTER ════════════════ */
+footer {
+  background: var(--footer-bg);
+  color: var(--footer-fg);
+  padding: 52px 0 0;
+  margin-top: 60px;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  transition: background .3s, color .3s;
+}
+footer::before {
+  content: '';
+  position: absolute;
+  top: -100px; right: -100px;
+  width: 600px; height: 600px;
+  background: var(--gradient-warm);
+  opacity: 0.08;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+}
+
+.footer-content {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 28px;
+  display: grid;
+  grid-template-columns: 1.8fr 1fr 1fr;
+  gap: 36px;
+  position: relative;
+  z-index: 1;
+}
+@media (max-width: 900px) { .footer-content { grid-template-columns: 1fr 1fr; gap: 32px; } }
+@media (max-width: 600px) {
+  footer { padding: 36px 0 0; margin-top: 32px; }
+  .footer-content { grid-template-columns: 1fr !important; gap: 14px; padding: 0 20px; }
+  .footer-brand-wrap { max-width: none; }
+  .footer-col { display: flex !important; flex-wrap: wrap; align-items: baseline; row-gap: 6px; column-gap: 10px; }
+  .footer-col h4 { margin-bottom: 0; flex-shrink: 0; }
+  .footer-col ul { display: flex !important; flex-direction: row !important; flex-wrap: wrap; gap: 4px 12px; }
+  .footer-col li { display: inline-block; }
+  .footer-bottom { margin: 22px auto 0; padding: 14px 20px; gap: 10px; }
+}
+
+.footer-brand-wrap { max-width: 340px; }
+.footer-brand-name {
+  font-family: var(--f-sans);
+  font-size: var(--t-xl);
+  font-weight: 500;
+  color: var(--footer-fg);
+  letter-spacing: -0.03em;
+  margin-bottom: 14px;
+}
+.footer-brand-name .gradient {
+  background: var(--gradient-warm);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.footer-brand-tag {
+  font-family: var(--f-sans);
+  font-size: var(--t-sm);
+  color: var(--footer-fg-3);
+  line-height: 1.55;
+  letter-spacing: -0.005em;
+}
+
+.footer-col h4 {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--bittersweet);
+  margin-bottom: 14px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.footer-col li a {
+  font-family: var(--f-sans);
+  font-size: 14px;
+  color: var(--footer-fg-2);
+  transition: color .15s;
+  letter-spacing: -0.005em;
+}
+.footer-col li a:hover { color: var(--footer-fg); }
+.footer-col li a.disabled {
+  color: var(--footer-fg-4);
+  cursor: not-allowed;
+}
+.footer-col li a.disabled::after {
+  content: ' •';
+  color: var(--bittersweet);
+  opacity: 0.5;
+}
+
+.footer-bottom {
+  max-width: 1280px;
+  margin: 40px auto 0;
+  padding: 20px 28px;
+  border-top: 1px solid var(--footer-rule);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+.copyright {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--footer-fg-3);
+  letter-spacing: 0.04em;
+}
+.copyright .accent {
+  color: var(--bittersweet);
+}
+.footer-social { display: flex; gap: 20px; }
+.footer-social a {
+  font-family: var(--f-sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--footer-fg-2);
+  transition: color .15s;
+  letter-spacing: -0.005em;
+}
+.footer-social a:hover { color: var(--bittersweet); }
+
+/* ════════════════ MOBILE MENU ════════════════ */
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: 68px; left: 0; right: 0; bottom: 0;
+  background: var(--bg);
+  z-index: 99;
+  padding: 32px 28px;
+  overflow-y: auto;
+  border-top: 1px solid var(--rule);
+}
+.mobile-menu.show { display: block; }
+.mm-section { margin-bottom: 32px; }
+.mm-section h5 {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--bittersweet);
+  margin-bottom: 18px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--rule);
+}
+.mm-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 0;
+  font-family: var(--f-sans);
+  font-size: var(--t-md);
+  font-weight: 500;
+  color: var(--ink);
+  border-bottom: 1px solid var(--rule);
+  letter-spacing: -0.02em;
+}
+.mm-item.disabled { color: var(--ink-5); }
+.mm-item.disabled::after {
+  content: '•';
+  color: var(--ink-5);
+}
+.mm-auth { display: flex; flex-direction: column; gap: 12px; margin-top: 28px; }
+.mm-btn-login, .mm-btn-register {
+  padding: 14px; font-family: var(--f-sans);
+  font-size: var(--t-md); font-weight: 600;
+  text-align: center;
+  border-radius: 999px;
+  letter-spacing: -0.01em;
+}
+.mm-btn-login { border: 1px solid var(--rule-2); color: var(--ink); }
+.mm-btn-register {
+  background: var(--gradient-warm);
+  color: var(--alabaster);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  .voronoi-bg { display: none; }
+}
+
+/* ════════════════ LOCKED MODULE MODAL ════════════════ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(33, 33, 33, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: modal-fade .2s ease;
+}
+.modal-overlay.show {
+  display: flex;
+}
+@keyframes modal-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal {
+  position: relative;
+  background: var(--surface);
+  border-radius: var(--r-xl, 24px);
+  padding: 32px 28px 28px;
+  max-width: 460px;
+  width: 100%;
+  box-shadow:
+    0 20px 60px rgba(33, 33, 33, 0.25),
+    0 8px 16px rgba(33, 33, 33, 0.08);
+  border: 1px solid var(--rule);
+  animation: modal-pop .3s cubic-bezier(.16, 1.2, .3, 1);
+  text-align: center;
+}
+@keyframes modal-pop {
+  from { opacity: 0; transform: translateY(20px) scale(.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.modal-close {
+  position: absolute;
+  top: 14px; right: 14px;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid var(--rule);
+  color: var(--ink-3);
+  font-size: 18px;
+  line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: all .15s;
+}
+.modal-close:hover {
+  background: var(--surface-2);
+  color: var(--ink);
+  border-color: var(--rule-2);
+}
+
+.modal-icon {
+  width: 56px; height: 56px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(255,119,89,0.12), rgba(79,74,92,0.08));
+  color: var(--bittersweet);
+  display: flex; align-items: center; justify-content: center;
+}
+
+.modal-title {
+  font-family: var(--f-sans);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin-bottom: 12px;
+  line-height: 1.25;
+}
+.modal-title #modalModuleName {
+  color: var(--bittersweet);
+}
+
+.modal-body {
+  font-family: var(--f-sans);
+  font-size: 14px;
+  color: var(--ink-3);
+  line-height: 1.6;
+  margin-bottom: 24px;
+  max-width: 360px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+@media (max-width: 460px) {
+  .modal-actions { flex-direction: column-reverse; }
+  .modal-actions > * { width: 100%; }
+}
+
+.modal-btn-ghost {
+  padding: 11px 18px;
+  font-family: var(--f-sans);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-2);
+  background: transparent;
+  border: 1px solid var(--rule-2);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all .15s;
+  letter-spacing: -0.005em;
+}
+.modal-btn-ghost:hover {
+  background: var(--surface-2);
+  border-color: var(--ink-4);
+}
+
+.modal-btn-primary {
+  padding: 11px 18px;
+  font-family: var(--f-sans);
+  font-size: 14px;
+  font-weight: 600;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-fg);
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  transition: all .2s;
+  letter-spacing: -0.005em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-btn-primary:hover {
+  background: var(--bittersweet);
+  color: var(--alabaster);
+  transform: translateY(-1px);
+}
 </style>
 </head>
 <body>
 
-<!-- ── NAV ── -->
-<nav class="nav" aria-label="Primary">
-  <div class="nav-inner">
-    <a href="/" class="brand" aria-label="Quay về Dino Language">
-      <span class="brand-mark" aria-hidden="true">D</span>
-      <span>Dino Language</span>
-    </a>
-    <span class="breadcrumb" aria-hidden="true">Tiếng Đức</span>
-    <div class="nav-links">
-      <a href="#modules" class="nav-link">7 modules</a>
-      <a href="#roadmap" class="nav-link">Lộ trình</a>
-      <a href="/assistant" class="nav-link">KI Tutor</a>
-      <button class="icon-btn" id="themeBtn" aria-label="Đổi giao diện sáng/tối" title="Đổi giao diện">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+<!-- Voronoi background blobs -->
+<div class="voronoi-bg v1"></div>
+<div class="voronoi-bg v2"></div>
+<div class="voronoi-bg v3"></div>
+
+<!-- ═══ TOPBAR ═══ -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="logo-group">
+      <a class="logo" href="/" aria-label="Về trang chủ Dino Language">
+        <div class="logo-mark"></div>
+        <span class="logo-name">Dino Language</span>
+      </a>
+      <span class="lang-pill"><span class="pill-dot"></span>DEUTSCH</span>
+    </div>
+    <nav class="main-nav">
+      <a class="nav-item" href="/deutsch/grammar">Ngữ pháp</a>
+      <a class="nav-item" href="/deutsch/vocab">Từ vựng</a>
+      <a class="nav-item" href="/deutsch/listening">Nghe</a>
+      <a class="nav-item" href="/deutsch/reading">Đọc</a>
+      <a class="nav-item disabled">Nói</a>
+      <a class="nav-item disabled">Viết</a>
+      <a class="nav-item disabled">Test</a>
+    </nav>
+    <div class="tb-actions">
+      <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" aria-label="Đổi chế độ sáng/tối">
+        <svg class="theme-icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="theme-icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.07" y2="4.93"/></svg>
       </button>
-    </div>
-  </div>
-</nav>
-
-<!-- ── HERO ── -->
-<header class="hero">
-  <div class="container hero-inner">
-    <div>
-      <div class="hero-eyebrow"><span class="dot" aria-hidden="true"></span> Goethe A1 — B2 · live beta</div>
-      <h1>Tiếng Đức,<br>bắt đầu từ <em>thẻ đầu tiên</em>.</h1>
-      <p class="hero-lede">
-        Học từ vựng, ngữ pháp, hội thoại và đọc hiểu theo phương pháp Zettelkasten. Mỗi thẻ độc lập, có ID riêng, liên kết qua mạng lưới. Có KI Tutor AI giải thích trực tiếp khi mày bí.
-      </p>
-      <div class="hero-ctas">
-        <a href="/deutsch/grammar" class="btn btn-primary">
-          Mở thẻ đầu tiên
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
-        <a href="/assistant" class="btn-text">Hỏi KI Tutor →</a>
-      </div>
-      <div class="hero-meta">
-        <div class="hero-meta-item">
-          <span class="v">3.170</span>
-          <span class="l">Wortschatz</span>
-        </div>
-        <div class="hero-meta-item">
-          <span class="v">30</span>
-          <span class="l">Grammatik cards</span>
-        </div>
-        <div class="hero-meta-item">
-          <span class="v">12</span>
-          <span class="l">Cabinets</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="flashcard" aria-hidden="true">
-      <div class="fc-head">
-        <span class="fc-id">VO.A1 · 0142</span>
-        <span class="fc-tag">A1 · Familie</span>
-      </div>
-      <div class="fc-word"><span class="fc-art">die</span> Schwester</div>
-      <div class="fc-ipa">[diː ˈʃvɛstɐ]</div>
-      <div class="fc-meaning">
-        <div class="lbl">Tiếng Việt</div>
-        <div class="val">chị / em gái</div>
-        <div class="lbl">English</div>
-        <div class="val">sister</div>
-      </div>
-      <div class="fc-ex">
-        Meine <strong>Schwester</strong> wohnt in Berlin.<br>
-        <span style="opacity:.6;">Chị tôi sống ở Berlin.</span>
-      </div>
+      <a class="btn-login" href="/assistant">KI Tutor</a>
+      <a class="btn-register" href="/deutsch/grammar"><span>Bắt đầu</span></a>
+      <button class="burger" onclick="toggleMobileMenu()">≡</button>
     </div>
   </div>
 </header>
 
-<!-- ── MODULES ── -->
-<section class="section modules" id="modules">
-  <div class="container">
-    <div class="section-head">
-      <span class="mono-label">01 · Modules</span>
-      <h2 style="margin-top:12px;">Bảy mảng kỹ năng + KI Tutor. Năm đang mở.</h2>
-      <p>Modules được tổ chức theo chuẩn Goethe — bao phủ đủ 4 kỹ năng Hören · Lesen · Sprechen · Schreiben cộng với ngữ pháp, từ vựng, và luyện đề. Bí chỗ nào thì hỏi KI Tutor.</p>
-    </div>
-
-    <div class="modules-grid" role="list">
-      <a href="/deutsch/grammar" class="module-card is-live" role="listitem">
-        <div class="mod-head">
-          <span class="mod-icon" aria-hidden="true">📐</span>
-          <span class="mod-status is-live">Live</span>
-        </div>
-        <div>
-          <h3 class="mod-title">Ngữ pháp</h3>
-          <p class="mod-de">Grammatik</p>
-        </div>
-        <p class="mod-desc">30 chủ đề · 12 cabinets. Der/die/das, 4 Fälle, Zeitformen, Konjunktiv.</p>
-        <span class="mod-action">Mở thẻ → </span>
-      </a>
-
-      <a href="/deutsch/vocab" class="module-card is-live" role="listitem">
-        <div class="mod-head">
-          <span class="mod-icon" aria-hidden="true">📚</span>
-          <span class="mod-status is-live">Live</span>
-        </div>
-        <div>
-          <h3 class="mod-title">Từ vựng</h3>
-          <p class="mod-de">Wortschatz</p>
-        </div>
-        <p class="mod-desc">3.170 từ · IPA · ví dụ thật · 15 nhóm chủ đề A1—B2.</p>
-        <span class="mod-action">Mở thẻ → </span>
-      </a>
-
-      <a href="/deutsch/listening" class="module-card is-live" role="listitem">
-        <div class="mod-head">
-          <span class="mod-icon" aria-hidden="true">🎧</span>
-          <span class="mod-status is-live">Live</span>
-        </div>
-        <div>
-          <h3 class="mod-title">Nghe</h3>
-          <p class="mod-de">Hören</p>
-        </div>
-        <p class="mod-desc">Tình huống thật A1—B2. Transcript + từ khóa + shadowing.</p>
-        <span class="mod-action">Bắt đầu → </span>
-      </a>
-
-      <a href="/deutsch/reading" class="module-card is-live" role="listitem">
-        <div class="mod-head">
-          <span class="mod-icon" aria-hidden="true">📖</span>
-          <span class="mod-status is-live">Live</span>
-        </div>
-        <div>
-          <h3 class="mod-title">Đọc</h3>
-          <p class="mod-de">Lesen</p>
-        </div>
-        <p class="mod-desc">Bài đọc theo cấp độ. Câu hỏi hiểu ý chính & chi tiết.</p>
-        <span class="mod-action">Bắt đầu → </span>
-      </a>
-
-      <div class="module-card is-locked" role="listitem">
-        <div class="mod-head">
-          <span class="mod-icon" aria-hidden="true">🎤</span>
-          <span class="mod-status">Sớm</span>
-        </div>
-        <div>
-          <h3 class="mod-title">Nói</h3>
-          <p class="mod-de">Sprechen</p>
-        </div>
-        <p class="mod-desc">Hội thoại tự do với KI Tutor. Đang xây — dùng tạm qua chat.</p>
-        <span class="mod-action">Đang xây</span>
-      </div>
-
-      <div class="module-card is-locked" role="listitem">
-        <div class="mod-head">
-          <span class="mod-icon" aria-hidden="true">✍️</span>
-          <span class="mod-status">Sớm</span>
-        </div>
-        <div>
-          <h3 class="mod-title">Viết</h3>
-          <p class="mod-de">Schreiben</p>
-        </div>
-        <p class="mod-desc">Mẫu email A1—B2. Sửa bài tự động. Goethe-format.</p>
-        <span class="mod-action">Đang xây</span>
-      </div>
-
-      <div class="module-card is-locked" role="listitem">
-        <div class="mod-head">
-          <span class="mod-icon" aria-hidden="true">📝</span>
-          <span class="mod-status">Sớm</span>
-        </div>
-        <div>
-          <h3 class="mod-title">Luyện đề</h3>
-          <p class="mod-de">Prüfung</p>
-        </div>
-        <p class="mod-desc">Mock test Goethe A1, A2, B1, B2 đầy đủ 4 kỹ năng.</p>
-        <span class="mod-action">Đang xây</span>
-      </div>
-
-      <a href="/assistant" class="module-card is-live" role="listitem">
-        <div class="mod-head">
-          <span class="mod-icon" aria-hidden="true">🤖</span>
-          <span class="mod-status is-live">Live</span>
-        </div>
-        <div>
-          <h3 class="mod-title">KI Tutor</h3>
-          <p class="mod-de">Anthropic Claude</p>
-        </div>
-        <p class="mod-desc">Trợ lý AI bám sát học liệu. Hỏi gì cũng có ví dụ tiếng Đức.</p>
-        <span class="mod-action">Mở chat → </span>
-      </a>
-    </div>
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <div class="mm-section">
+    <h5>Module học</h5>
+    <a class="mm-item" href="/deutsch/grammar">Ngữ pháp</a>
+    <a class="mm-item" href="/deutsch/vocab">Từ vựng</a>
+    <a class="mm-item" href="/deutsch/listening">Nghe</a>
+    <a class="mm-item" href="/deutsch/reading">Đọc</a>
+    <a class="mm-item disabled">Nói</a>
+    <a class="mm-item disabled">Viết</a>
+    <a class="mm-item disabled">Test</a>
   </div>
-</section>
-
-<!-- ── ROADMAP ── -->
-<section class="section" id="roadmap">
-  <div class="container">
-    <div class="section-head">
-      <span class="mono-label">02 · Lộ trình CEFR</span>
-      <h2 style="margin-top:12px;">A1 → B2. Bốn cấp độ. Một mạng lưới.</h2>
-      <p>Mỗi cấp độ là một tầng kiến thức. Thẻ trong cabinet con luôn link ngược về thẻ gốc — vì thế kiến thức xếp chồng, không bị rời rạc.</p>
-    </div>
-
-    <div class="roadmap-grid" role="list">
-      <article class="roadmap-card" role="listitem">
-        <span class="rc-tag is-done">Hoàn tất</span>
-        <div class="rc-level">A1</div>
-        <h3 class="rc-title">Khởi đầu</h3>
-        <span class="rc-time">2 — 3 tháng</span>
-        <p class="rc-note">Chào hỏi, gia đình, ăn uống, mua sắm. Der/die/das, Präsens.</p>
-      </article>
-
-      <article class="roadmap-card is-active" role="listitem">
-        <span class="rc-tag is-active">Hiện tại</span>
-        <div class="rc-level">A2</div>
-        <h3 class="rc-title">Cơ bản</h3>
-        <span class="rc-time">3 — 4 tháng</span>
-        <p class="rc-note">Quá khứ, modal verbs, Akkusativ + Dativ. Hội thoại đời sống.</p>
-      </article>
-
-      <article class="roadmap-card" role="listitem">
-        <span class="rc-tag">Sắp tới</span>
-        <div class="rc-level">B1</div>
-        <h3 class="rc-title">Giao tiếp</h3>
-        <span class="rc-time">4 — 6 tháng</span>
-        <p class="rc-note">Konjunktiv II, Passiv, mệnh đề phụ. Đủ đi du học.</p>
-      </article>
-
-      <article class="roadmap-card" role="listitem">
-        <span class="rc-tag">Sắp tới</span>
-        <div class="rc-level">B2</div>
-        <h3 class="rc-title">Thành thạo</h3>
-        <span class="rc-time">6 — 9 tháng</span>
-        <p class="rc-note">Học thuật, báo chí, văn nói/viết phân tách rõ. Đi làm được.</p>
-      </article>
-    </div>
+  <div class="mm-auth">
+    <button class="mm-btn-login">Đăng nhập</button>
+    <button class="mm-btn-register">Đăng ký</button>
   </div>
-</section>
+</div>
 
-<!-- ── HOW (Zettelkasten) ── -->
-<section class="section" style="background:var(--surface-1); border-top:1px solid var(--hairline); border-bottom:1px solid var(--hairline);">
-  <div class="container">
-    <div class="section-head">
-      <span class="mono-label">03 · Phương pháp</span>
-      <h2 style="margin-top:12px;">Mở thẻ. Lật xem nghĩa. Tự đánh giá.</h2>
-      <p>Không phải Duolingo. Không streak chấm xanh. Chỉ có thẻ, mạng lưới link, và spaced repetition để não nhớ đúng lúc cần.</p>
+<main>
+
+  <!-- ═══ HERO ═══ -->
+  <section class="hero">
+    <div class="hero-text">
+      <div class="hero-meta">v9 · Tiếng Đức</div>
+      <h1>
+        Học tiếng Đức<br>
+        theo phương pháp<br>
+        <span class="gradient">Zettelkasten</span>.
+        <span class="typing-line" id="typingTarget">Bắt đầu từ A1.</span>
+      </h1>
+      <p class="hero-lede">3.192 từ vựng, 30 chủ đề ngữ pháp. Mỗi mục là một tế bào ngôn ngữ độc lập, liên kết qua lại — não nhớ theo mạng lưới, không phải danh sách.</p>
+      <div class="hero-ctas">
+        <button class="cta-primary">
+          <span>Bắt đầu miễn phí</span>
+          <span class="arrow">→</span>
+        </button>
+        <a class="cta-text">Xem thẻ mẫu</a>
+      </div>
+      <div class="hero-stats">
+        <div class="h-stat">
+          <span class="num" data-count="30">0</span>
+          <span class="lbl">Grammar</span>
+        </div>
+        <div class="h-stat">
+          <span class="num" data-count="3192">0</span>
+          <span class="lbl">Vocab</span>
+        </div>
+        <div class="h-stat">
+          <span class="num" data-count="7">0</span>
+          <span class="lbl">Module</span>
+        </div>
+        <div class="h-stat">
+          <span class="num" data-count="100" data-suffix="%">0</span>
+          <span class="lbl">Miễn phí</span>
+        </div>
+      </div>
     </div>
+
+    <aside class="hero-aside">
+      <div class="hero-cells">
+        <div class="cell c1">
+          <div class="cell-id"><span class="accent">DE.A1</span> / 0142 · NOMEN</div>
+          <div class="cell-word"><span class="art">der</span>Apfel</div>
+          <div class="cell-ipa">/ˈapfl̩/</div>
+          <div class="cell-vi">Quả táo — giống đực</div>
+          <div class="cell-ex">Ich esse einen <strong>Apfel</strong>.<br>→ Tôi ăn một quả táo.</div>
+        </div>
+        <div class="cell c2">
+          <div class="cell-id"><span class="accent">GR.A2</span> / 0007 · KASUS</div>
+          <div class="cell-word">Akkusativ</div>
+          <div class="cell-ipa">cách bổ ngữ trực tiếp</div>
+          <div class="cell-vi">der → den · die → die · das → das</div>
+          <div class="cell-ex">Ich sehe <strong>den</strong> Mann.<br>→ Tôi thấy người đàn ông.</div>
+        </div>
+        <div class="cell c3">
+          <div class="cell-id"><span class="accent">DE.A1</span> / 0089 · VERB</div>
+          <div class="cell-word">essen</div>
+          <div class="cell-ipa">/ˈɛsn̩/ · BQT</div>
+          <div class="cell-vi">ăn — động từ bất quy tắc</div>
+          <div class="cell-ex">ich esse · du <strong>isst</strong> · er <strong>isst</strong></div>
+        </div>
+      </div>
+    </aside>
+  </section>
+
+  <!-- Activity ticker -->
+  <div class="activity">
+    <span class="live-dot"></span>
+    <span>
+      <strong>Akkusativ</strong> · <span class="accent">cách bổ ngữ trực tiếp</span> · vừa được cập nhật trong cabinet Die Fälle
+    </span>
+  </div>
+
+  <!-- ═══ HOW IT WORKS ═══ -->
+  <section class="section reveal">
+    <header class="sec-head">
+      <div class="sec-kicker">Phương pháp</div>
+      <h2>Vì sao học theo <span class="gradient">Zettelkasten</span>.</h2>
+      <p class="sec-deck">Phương pháp được dùng bởi sociologist Niklas Luhmann để viết 70 quyển sách và 400 bài báo. Áp dụng cho học ngôn ngữ, nó hoạt động như thế này.</p>
+    </header>
 
     <div class="how-grid">
-      <div class="how-card">
-        <div class="how-num">01 / Cabinet</div>
-        <h3>Nhóm thẻ theo chủ đề</h3>
-        <p>12 cabinets ngữ pháp: Grundlagen, Artikel & Nomen, Die Fälle, Zeitformen, Präpositionen, Adjektive, Pronomen, Satzstruktur, Spezialverben, Passiv & Konjunktiv, Kommunikation, Wortbildung.</p>
-        <code>GR.A2 / 0007</code>
-      </div>
-      <div class="how-card">
-        <div class="how-num">02 / Card</div>
-        <h3>Thẻ độc lập có ID</h3>
-        <p>Mỗi thẻ là một đơn vị tri thức. Từ vựng có: từ, giống, plural, IPA, nghĩa Việt + Anh, ví dụ, ghi chú ngữ pháp. Grammar card có: cấu trúc, 2 ví dụ, lỗi hay gặp.</p>
-        <code>VO.A1 / 0142</code>
-      </div>
-      <div class="how-card">
-        <div class="how-num">03 / Recall</div>
-        <h3>Spaced repetition</h3>
-        <p>Sau khi xem nghĩa, tự đánh giá: dễ / khó / quên hẳn. Hệ thống lập lịch ôn lại. Thẻ khó ôn sớm, thẻ dễ ôn muộn. Não tự nhớ đúng lúc cần.</p>
-        <code>Easy → 7d · Hard → 1d</code>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ── AI BAND ── -->
-<section class="ai-band">
-  <div class="container ai-inner">
-    <div>
-      <span class="mono-label">04 · KI Tutor</span>
-      <h2 style="margin-top:12px;">Bí chỗ nào? Hỏi AI — nó biết học liệu của web.</h2>
-      <p>KI Tutor được train trên đúng kho ngữ pháp và từ vựng của Dino Language. Câu trả lời luôn dẫn ngược về thẻ gốc, có ví dụ tiếng Đức chuẩn, giải thích bằng tiếng Việt.</p>
-      <a href="/assistant" class="btn btn-primary">
-        Mở chat KI Tutor
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
-    </div>
-    <div class="ai-mock" aria-hidden="true">
-      <div class="ai-msg">
-        <span class="role">USER</span>
-        <span class="text">Khi nào dùng Akkusativ vs Dativ?</span>
-      </div>
-      <div class="ai-msg">
-        <span class="role">KI TUTOR</span>
-        <span class="text">
-          Akkusativ = đối tượng nhận hành động trực tiếp (Wen? Was?).<br>
-          Dativ = đối tượng nhận lợi/hại gián tiếp (Wem?).<br><br>
-          Ich sehe <strong style="color:var(--coral);">den Mann.</strong> (Akk.)<br>
-          Ich helfe <strong style="color:var(--coral);">dem Mann.</strong> (Dat.)<br><br>
-          Tham khảo thẻ: GR.A2/0007 — Die Fälle.
-        </span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ── FOOTER ── -->
-<footer class="footer">
-  <div class="container">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <div class="brand">
-          <span class="brand-mark" aria-hidden="true">D</span>
-          <span>Dino Language</span>
+      <article class="how-card c1">
+        <div class="how-num-wrap">
+          <div class="how-cell-dot"></div>
+          <span class="how-num">01 · Card</span>
         </div>
-        <p>Học ngôn ngữ theo phương pháp Zettelkasten. Bắt đầu với tiếng Đức. Một dự án indie từ Việt Nam.</p>
-        <a href="mailto:hi@dinolanguage.com" class="btn-text" style="padding:0;">hi@dinolanguage.com</a>
+        <h3>Mỗi khái niệm là một tế bào.</h3>
+        <p>Thay vì đọc một chương 20 trang về "cách" (Kasus), Akkusativ là một thẻ độc lập, có ID, đọc trong 2 phút.</p>
+        <div class="how-example">
+          <span class="ex-label">Thẻ thực tế</span>
+          <div class="ex-title">Akkusativ</div>
+          <div class="ex-subtitle">Cách bổ ngữ trực tiếp</div>
+          <div style="line-height: 1.8;">der → <code>den</code> · die → <code>die</code> · das → <code>das</code></div>
+        </div>
+      </article>
+
+      <article class="how-card c2">
+        <div class="how-num-wrap">
+          <div class="how-cell-dot"></div>
+          <span class="how-num">02 · Link</span>
+        </div>
+        <h3>Tế bào kết nối với tế bào.</h3>
+        <p>Học Akkusativ thì lập tức kéo theo các thẻ liên quan. Não thấy mạng lưới, không phải danh sách.</p>
+        <div class="how-example">
+          <span class="ex-label">Từ GR.A2 / 0007</span>
+          <div style="display: flex; flex-direction: column; gap: 7px; margin-top: 6px;">
+            <div class="link-row"><span class="lv-tag">A1</span> Artikel der/die/das</div>
+            <div class="link-row"><span class="lv-tag">A1</span> Nominativ</div>
+            <div class="link-row"><span class="lv-tag">A2</span> Động từ cần Akk</div>
+            <div class="link-row"><span class="lv-tag">A2</span> Pronomen im Akk</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="how-card c3">
+        <div class="how-num-wrap">
+          <div class="how-cell-dot"></div>
+          <span class="how-num">03 · Network</span>
+        </div>
+        <h3>Não nhớ theo mạng lưới.</h3>
+        <p>Khi học từ "essen" (ăn), não tự động kéo theo cluster ngữ pháp và từ vựng liên quan.</p>
+        <div class="how-example">
+          <span class="ex-label">Cluster: essen</span>
+          <div class="ex-title" style="font-size: 14px;">essen (BQT) → <span style="color: var(--bittersweet); font-weight: 600;">isst</span></div>
+          <div style="line-height: 1.9; margin-top: 8px;">
+            ↔ <code>der Apfel</code> (tân ngữ)<br>
+            ↔ <code>im Restaurant</code> (context)<br>
+            ↔ Perfekt: <code>habe gegessen</code>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ═══ DEMO FLASHCARD ═══ -->
+  <section class="section reveal">
+    <header class="sec-head">
+      <div class="sec-kicker">Thử nghiệm</div>
+      <h2>Mở một thẻ. <span class="gradient">Không cần đăng ký.</span></h2>
+      <p class="sec-deck">Mỗi từ là một thẻ. Click để lật. Tự đánh giá độ nhớ. Não được nhắc lại đúng lúc theo thuật toán SM-2.</p>
+    </header>
+
+    <div class="demo-flash">
+      <div class="demo-info">
+        <h3>Một cách học <span class="gradient">khác</span> để nhớ lâu hơn.</h3>
+        <p>Flashcard không phải đếm số lần lặp. Não chỉ nhớ khi sắp quên — đó là khoa học. SM-2 tính toán đúng thời điểm đó cho mày, dựa trên đánh giá của chính mày.</p>
+        <div class="demo-progress-row">
+          <div class="demo-progress">
+            <div class="on"></div>
+            <div class="on"></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+          <span class="demo-progress-lbl">02 / 05 · Food A1</span>
+        </div>
       </div>
-      <div class="footer-col">
-        <h4>Modules</h4>
-        <ul>
-          <li><a href="/deutsch/grammar">📐 Grammatik</a></li>
-          <li><a href="/deutsch/vocab">📚 Wortschatz</a></li>
-          <li><a href="/deutsch/listening">🎧 Hören</a></li>
-          <li><a href="/deutsch/reading">📖 Lesen</a></li>
-          <li><a href="/assistant">🤖 KI Tutor</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Tài nguyên</h4>
-        <ul>
-          <li><a href="/LEARN_GERMAN_RESOURCES.md">Tài liệu học tiếng Đức</a></li>
-          <li><a href="/">← Quay về Homepage</a></li>
-          <li><a href="#roadmap">Lộ trình A1 → B2</a></li>
-          <li><a href="mailto:hi@dinolanguage.com">Liên hệ</a></li>
-        </ul>
+
+      <div class="demo-card-wrap">
+        <div class="demo-card" id="demoCard" onclick="flipDemoCard()">
+          <div class="demo-front">
+            <div class="dc-meta">
+              <span class="dc-id">VO.A1 / 0142</span>
+              <span class="dc-tag">A1 · Nomen</span>
+            </div>
+            <div class="dc-word"><span class="art">der</span>Apfel</div>
+            <div class="dc-ipa">/ˈapfl̩/</div>
+            <div class="dc-hint">Bấm để lật thẻ</div>
+          </div>
+          <div class="demo-back">
+            <div class="dc-meta">
+              <span class="dc-id">VO.A1 / 0142</span>
+              <span class="dc-tag">A1 · Nomen</span>
+            </div>
+            <div class="dc-vi">Quả táo</div>
+            <div class="dc-en">apple — die Äpfel (Pl)</div>
+            <div class="dc-example">
+              <div class="ex-de">Ich esse einen Apfel.</div>
+              <div class="ex-vi">→ Tôi ăn một quả táo.</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="footer-bottom">
-      <span>© 2026 Dino Language · Made in Vietnam</span>
-      <div class="links">
-        <a href="#">Privacy</a>
-        <a href="#">Terms</a>
+  </section>
+
+  <!-- ═══ FEATURED CARDS (Bento) ═══ -->
+  <section class="section reveal">
+    <header class="sec-head">
+      <div class="sec-kicker">Tuần này</div>
+      <h2>Sáu thẻ được mở <span class="gradient">nhiều nhất</span>.</h2>
+      <p class="sec-deck">Cập nhật mỗi sáng thứ Hai. Click vào một thẻ để xem chi tiết và mở các thẻ liên kết.</p>
+    </header>
+
+    <div class="featured-grid">
+      <article class="feat-card featured">
+        <div class="feat-meta-row">
+          <span class="feat-id">GR.A2 / 0007</span>
+          <span class="feat-badge l-a2">A2</span>
+          <span class="feat-type">Grammar</span>
+        </div>
+        <div class="feat-title">Akkusativ — cách bổ ngữ trực tiếp</div>
+        <div class="feat-brief">Quy tắc cần thuộc khi chia article. Chỉ der → den là thay đổi. Đây là cách phổ biến nhất sau Nominativ, xuất hiện trong hầu hết câu có tân ngữ.</div>
+        <div class="feat-foot">
+          <span>Top tuần</span>
+          <span class="feat-views">4 thẻ liên kết</span>
+        </div>
+      </article>
+
+      <article class="feat-card">
+        <div class="feat-meta-row">
+          <span class="feat-id">GR.A1 / 0003</span>
+          <span class="feat-badge l-a1">A1</span>
+          <span class="feat-type">Grammar</span>
+        </div>
+        <div class="feat-title">Artikel der/die/das</div>
+        <div class="feat-brief">Quy tắc, ngoại lệ, và cách nhớ giống tự nhiên cho người Việt.</div>
+        <div class="feat-foot">
+          <span>Nền tảng A1</span>
+          <span class="feat-views">3 thẻ liên kết</span>
+        </div>
+      </article>
+
+      <article class="feat-card">
+        <div class="feat-meta-row">
+          <span class="feat-id">VO.A1 / 0034</span>
+          <span class="feat-badge l-a1">A1</span>
+          <span class="feat-type">Vocab</span>
+        </div>
+        <div class="feat-title">Familie — 38 từ về gia đình</div>
+        <div class="feat-brief">Cha, mẹ, anh chị em, ông bà. Bộ từ vựng đầu tiên ai cũng học.</div>
+        <div class="feat-foot">
+          <span>Chủ đề Vocab</span>
+          <span class="feat-views">38 từ</span>
+        </div>
+      </article>
+
+      <article class="feat-card">
+        <div class="feat-meta-row">
+          <span class="feat-id">GR.A2 / 0011</span>
+          <span class="feat-badge l-a2">A2</span>
+          <span class="feat-type">Grammar</span>
+        </div>
+        <div class="feat-title">Modalverben — Động từ khuyết thiếu</div>
+        <div class="feat-brief">können, müssen, dürfen, sollen, wollen, mögen — 6 động từ thay đổi toàn bộ ý câu.</div>
+        <div class="feat-foot">
+          <span>—</span>
+          <span class="feat-views">6 thẻ con</span>
+        </div>
+      </article>
+
+      <article class="feat-card">
+        <div class="feat-meta-row">
+          <span class="feat-id">GR.B1 / 0023</span>
+          <span class="feat-badge l-b1">B1</span>
+          <span class="feat-type">Grammar</span>
+        </div>
+        <div class="feat-title">Konjunktiv II — Cách giả định</div>
+        <div class="feat-brief">"Ich würde gerne…" — cách nói lịch sự, mong muốn giả định.</div>
+        <div class="feat-foot">
+          <span>—</span>
+          <span class="feat-views">B1 mở rộng</span>
+        </div>
+      </article>
+
+      <article class="feat-card">
+        <div class="feat-meta-row">
+          <span class="feat-id">VO.A2 / 0078</span>
+          <span class="feat-badge l-a2">A2</span>
+          <span class="feat-type">Vocab</span>
+        </div>
+        <div class="feat-title">Im Restaurant</div>
+        <div class="feat-brief">Đặt món, gọi bill, phàn nàn nhẹ. Dialog mẫu hoàn chỉnh.</div>
+        <div class="feat-foot">
+          <span>—</span>
+          <span class="feat-views">Dialog mẫu</span>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ═══ ROADMAP ═══ -->
+  <section class="section reveal">
+    <header class="sec-head">
+      <div class="sec-kicker">Lộ trình</div>
+      <h2>Từ A1 đến B2, <span class="gradient">theo từng chặng</span>.</h2>
+      <p class="sec-deck">Mỗi level mất 3 đến 6 tháng nếu học đều 30 phút/ngày. Mày đang ở A2.</p>
+    </header>
+
+    <div class="roadmap">
+      <div class="rm-track">
+        <div class="rm-step completed">
+          <div class="rm-level">A1</div>
+          <div class="rm-name">Khởi đầu</div>
+          <div class="rm-time">2—3 tháng</div>
+          <div class="rm-pct">Hoàn thành</div>
+        </div>
+        <div class="rm-step current">
+          <div class="rm-level">A2</div>
+          <div class="rm-name">Cơ bản</div>
+          <div class="rm-time">3—4 tháng</div>
+          <div class="rm-pct">68% · đang học</div>
+        </div>
+        <div class="rm-step locked">
+          <div class="rm-level">B1</div>
+          <div class="rm-name">Giao tiếp</div>
+          <div class="rm-time">4—6 tháng</div>
+          <div class="rm-pct">Chưa mở</div>
+        </div>
+        <div class="rm-step locked">
+          <div class="rm-level">B2</div>
+          <div class="rm-name">Thành thạo</div>
+          <div class="rm-time">6—9 tháng</div>
+          <div class="rm-pct">Chưa mở</div>
+        </div>
       </div>
+    </div>
+  </section>
+
+  <!-- ═══ MODULES ═══ -->
+  <section class="section reveal">
+    <header class="sec-head">
+      <div class="sec-kicker">Module học</div>
+      <h2>Bảy <span class="gradient">tế bào</span> trong một mạng lưới.</h2>
+      <p class="sec-deck">Bốn module đã xuất bản. Ba module còn lại đang biên tập.</p>
+    </header>
+
+    <div class="modules-grid">
+      <a class="module m-grammar" href="/deutsch/grammar" style="text-decoration:none;color:inherit;">
+        <div class="module-row1">
+          <span class="module-id">Grammatik · 01</span>
+          <div class="module-cell"></div>
+        </div>
+        <div class="module-title">Ngữ pháp</div>
+        <div class="module-sub">12 cabinets · 30 chủ đề từ động từ thì hiện tại đến mệnh đề quan hệ.</div>
+        <div class="module-foot">
+          <span class="module-count">30</span><span class="module-lbl"> thẻ</span>
+          <span class="module-pct" style="margin-left:auto;">A1—B2</span>
+        </div>
+      </a>
+
+      <a class="module m-vocab" href="/deutsch/vocab" style="text-decoration:none;color:inherit;">
+        <div class="module-row1">
+          <span class="module-id">Wortschatz · 02</span>
+          <div class="module-cell"></div>
+        </div>
+        <div class="module-title">Từ vựng</div>
+        <div class="module-sub">3.192 từ A1—B2 trong 15 chủ đề. Browse, Flashcard, Quiz và SRS.</div>
+        <div class="module-foot">
+          <span class="module-count">3.192</span><span class="module-lbl"> từ</span>
+          <span class="module-pct" style="margin-left:auto;">A1—B2</span>
+        </div>
+      </a>
+
+      <a class="module m-listen" href="/deutsch/listening" style="text-decoration:none;color:inherit;">
+        <div class="module-row1">
+          <span class="module-id">Hören · 03</span>
+          <div class="module-cell"></div>
+        </div>
+        <div class="module-title">Nghe</div>
+        <div class="module-sub">Bài nghe theo level Goethe, có transcript và bài tập điền chỗ trống.</div>
+      </a>
+
+      <a class="module m-read" href="/deutsch/reading" style="text-decoration:none;color:inherit;">
+        <div class="module-row1">
+          <span class="module-id">Lesen · 04</span>
+          <div class="module-cell"></div>
+        </div>
+        <div class="module-title">Đọc</div>
+        <div class="module-sub">Email, blog, báo thực tế với câu hỏi hiểu và highlight từ mới.</div>
+      </a>
+
+      <div class="module m-speak locked">
+        <div class="module-row1">
+          <span class="module-id">Sprechen · 05</span>
+          <div class="module-cell"></div>
+        </div>
+        <div class="module-title">Nói</div>
+        <div class="module-sub">Luyện phát âm với AI tutor, roleplay tình huống thực tế.</div>
+      </div>
+
+      <div class="module m-write locked">
+        <div class="module-row1">
+          <span class="module-id">Schreiben · 06</span>
+          <div class="module-cell"></div>
+        </div>
+        <div class="module-title">Viết</div>
+        <div class="module-sub">Viết email, đoạn văn theo template. AI chấm và sửa lỗi ngữ pháp.</div>
+      </div>
+
+      <div class="module m-test locked">
+        <div class="module-row1">
+          <span class="module-id">Prüfung · 07</span>
+          <div class="module-cell"></div>
+        </div>
+        <div class="module-title">Test</div>
+        <div class="module-sub">Đề thi mẫu Goethe A1—B2, kiểm tra level, mô phỏng phòng thi.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- (Testimonials removed: chưa có user thật, brief cấm fake testimonials) -->
+
+</main>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="footer-content">
+    <div class="footer-brand-wrap">
+      <div class="footer-brand-name"><span class="gradient">Dino Language</span></div>
+      <div class="footer-brand-tag">Một dự án tự học tiếng Đức, làm bởi một người Việt đang trên đường lên B2. Mở thẻ mỗi ngày, liên kết qua mạng lưới.</div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Module</h4>
+      <ul>
+        <li><a href="/deutsch/grammar">Ngữ pháp</a></li>
+        <li><a href="/deutsch/vocab">Từ vựng</a></li>
+        <li><a href="/deutsch/listening">Nghe</a></li>
+        <li><a href="/deutsch/reading">Đọc</a></li>
+        <li><a class="disabled">Nói</a></li>
+        <li><a class="disabled">Viết</a></li>
+        <li><a class="disabled">Test</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Hỗ trợ</h4>
+      <ul>
+        <li><a href="/assistant">KI Tutor (AI)</a></li>
+        <li><a href="/LEARN_GERMAN_RESOURCES.md">Tài liệu Đức</a></li>
+        <li><a href="/">← Homepage</a></li>
+        <li><a href="mailto:hi@dinolanguage.com">Liên hệ</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <span class="copyright">© 2026 Dino Language <span class="accent">·</span> Made in Vietnam <span class="accent">·</span> v9</span>
+    <div class="footer-social">
+      <a href="mailto:hi@dinolanguage.com">Email</a>
     </div>
   </div>
 </footer>
 
 <script>
-/* ── Theme toggle (shared logic with index) ── */
-(function(){
-  const root = document.documentElement;
-  const btn = document.getElementById('themeBtn');
-  const KEY = 'dl-theme';
+  // ═══ TYPING ═══
+  const lines = [
+    'Bắt đầu từ A1.',
+    'Đi qua A2.',
+    'Cán mốc B1.',
+    'Hoặc xa hơn — B2.'
+  ];
+  let li = 0, ci = 0, del = false;
+  const tgt = document.getElementById('typingTarget');
+  function typeLoop() {
+    const l = lines[li];
+    if (!del) {
+      ci++; tgt.textContent = l.slice(0, ci);
+      if (ci === l.length) { del = true; setTimeout(typeLoop, 2200); return; }
+      setTimeout(typeLoop, 60);
+    } else {
+      ci--; tgt.textContent = l.slice(0, ci);
+      if (ci === 0) { del = false; li = (li + 1) % lines.length; setTimeout(typeLoop, 400); return; }
+      setTimeout(typeLoop, 30);
+    }
+  }
+  setTimeout(typeLoop, 1200);
 
-  function setTheme(t){
-    root.setAttribute('data-theme', t);
-    try{ localStorage.setItem(KEY, t); }catch(_){}
+  // ═══ COUNT-UP ═══
+  function animateCount(el, target, suffix = '') {
+    const dur = 1400;
+    const start = performance.now();
+    function step(now) {
+      const p = Math.min((now - start) / dur, 1);
+      const e = 1 - Math.pow(1 - p, 3);
+      const v = Math.floor(target * e);
+      el.textContent = v.toLocaleString('de-DE') + suffix;
+      if (p < 1) requestAnimationFrame(step);
+      else el.textContent = target.toLocaleString('de-DE') + suffix;
+    }
+    requestAnimationFrame(step);
   }
 
-  try{
-    const saved = localStorage.getItem(KEY);
-    if(saved === 'dark' || saved === 'light'){
-      setTheme(saved);
-    } else if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches){
-      setTheme('dark');
+  // ═══ INTERSECTION OBSERVER ═══
+  let heroCounted = false;
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (en.isIntersecting) {
+        en.target.classList.add('shown');
+        obs.unobserve(en.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  // Run hero count-up on load
+  setTimeout(() => {
+    document.querySelectorAll('.hero [data-count]').forEach(el => {
+      const t = parseInt(el.dataset.count);
+      const s = el.dataset.suffix || '';
+      animateCount(el, t, s);
+    });
+  }, 600);
+
+  // ═══ THEME (synced with global dl-theme) ═══
+  (function initTheme(){
+    try{
+      var t = localStorage.getItem('dl-theme');
+      if(!t) t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', t);
+    }catch(_){}
+  })();
+  function toggleTheme() {
+    const cur = document.documentElement.getAttribute('data-theme') || 'light';
+    const next = cur === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', next);
+    try{
+      localStorage.setItem('dl-theme', next);
+      localStorage.setItem('theme', next);
+      localStorage.setItem('dm', next === 'dark' ? '1' : '0');
+    }catch(_){}
+  }
+
+  // ═══ MOBILE MENU ═══
+  function toggleMobileMenu() {
+    document.getElementById('mobileMenu').classList.toggle('show');
+  }
+  document.addEventListener('click', e => {
+    const mm = document.getElementById('mobileMenu');
+    const b = document.querySelector('.burger');
+    if (mm && mm.classList.contains('show') && !mm.contains(e.target) && !b.contains(e.target)) {
+      mm.classList.remove('show');
     }
-  }catch(_){}
-
-  btn && btn.addEventListener('click', () => {
-    const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    setTheme(next);
   });
-})();
 
-/* ── Smooth scroll ── */
-document.querySelectorAll('a[href^="#"]').forEach((a) => {
-  a.addEventListener('click', (e) => {
-    const id = a.getAttribute('href').slice(1);
-    if(!id) return;
-    const target = document.getElementById(id);
-    if(!target) return;
-    e.preventDefault();
-    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    history.pushState(null, '', '#' + id);
+  // ═══ FLASHCARD FLIP ═══
+  function flipDemoCard() {
+    document.getElementById('demoCard').classList.toggle('flipped');
+  }
+
+  // ═══ SCROLL TOP ═══
+  function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+  // ═══ LOCKED CLICK ═══
+  document.querySelectorAll('.module.locked, .nav-item.disabled, .footer-col a.disabled, .mm-item.disabled').forEach(el => {
+    el.addEventListener('click', e => {
+      e.preventDefault();
+      const moduleName = el.querySelector('.module-title')?.textContent
+        || el.textContent.trim();
+      openLockedModal(moduleName);
+    });
   });
-});
+
+  // ═══ MODAL CENTERED ═══
+  const modalOverlay = document.getElementById('lockedModal');
+  const modalCloseBtn = document.getElementById('modalClose');
+  const modalCloseBtn2 = document.getElementById('modalCloseBtn');
+  const modalGoHome = document.getElementById('modalGoHome');
+  const modalModuleName = document.getElementById('modalModuleName');
+
+  function openLockedModal(name) {
+    if (modalModuleName) modalModuleName.textContent = name || 'Module này';
+    modalOverlay.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLockedModal() {
+    modalOverlay.classList.remove('show');
+    document.body.style.overflow = '';
+  }
+  modalCloseBtn?.addEventListener('click', closeLockedModal);
+  modalCloseBtn2?.addEventListener('click', closeLockedModal);
+  modalOverlay?.addEventListener('click', e => {
+    if (e.target === modalOverlay) closeLockedModal();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && modalOverlay?.classList.contains('show')) closeLockedModal();
+  });
 </script>
+
+<!-- ═══ LOCKED MODULE MODAL ═══ -->
+<div class="modal-overlay" id="lockedModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal">
+    <button class="modal-close" id="modalClose" aria-label="Đóng">×</button>
+    <div class="modal-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="32" height="32" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2"/>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+      </svg>
+    </div>
+    <h3 id="modalTitle" class="modal-title">
+      <span id="modalModuleName">Module</span> đang được biên tập
+    </h3>
+    <p class="modal-body">
+      Module này nằm trong lộ trình phát triển tiếp theo của tiếng Đức. Trong khi chờ, mày có thể duyệt các thẻ ngữ pháp và từ vựng đã có, hoặc xem các ngôn ngữ khác sắp ra mắt.
+    </p>
+    <div class="modal-actions">
+      <button class="modal-btn-ghost" id="modalCloseBtn">Tiếp tục học tiếng Đức</button>
+      <a class="modal-btn-primary" id="modalGoHome" href="/">Xem các ngôn ngữ khác →</a>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
