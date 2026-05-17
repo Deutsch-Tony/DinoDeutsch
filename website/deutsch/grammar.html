@@ -6,7 +6,7 @@
 <title>Grammatik · Dino Language</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════════════════════
    NOTION DESIGN SYSTEM — Zettelkasten German Grammar
@@ -84,7 +84,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-size: 16px; overflow-x: hidden; scroll-behavior: smooth; }
 body {
-  font-family: 'Space Grotesk', -apple-system, system-ui, 'Segoe UI', Helvetica, Arial, sans-serif;
+  font-family: 'Geist','Geist','Inter', -apple-system, system-ui, 'Segoe UI', Helvetica, Arial, sans-serif;
   font-size: 16px;
   font-weight: 400;
   line-height: 1.5;
@@ -192,7 +192,7 @@ body {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 6px 12px; margin-bottom: 24px;
   border: 1px solid var(--border); border-radius: var(--r-pill);
-  font-family: var(--font-mono, 'JetBrains Mono', ui-monospace, monospace);
+  font-family: var(--font-mono, 'Geist Mono','JetBrains Mono', ui-monospace, monospace);
   font-size: 12px; letter-spacing: 0.04em; color: var(--text-muted);
   width: fit-content;
 }
@@ -227,7 +227,7 @@ body {
 }
 .badge-pill::after {
   content: attr(data-label);
-  font-family: var(--font-mono, 'JetBrains Mono', ui-monospace, monospace);
+  font-family: var(--font-mono, 'Geist Mono','JetBrains Mono', ui-monospace, monospace);
   font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
   color: var(--text-dim); font-weight: 500;
 }
@@ -263,7 +263,7 @@ body {
 }
 /* ─── Section eyebrow + label (Cohere editorial) ─── */
 .section-eyebrow {
-  font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  font-family: 'Geist Mono','JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
   font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase;
   color: var(--text-muted);
   margin: 56px 0 12px;
@@ -327,7 +327,7 @@ body {
   background: transparent; color: var(--text-dim);
   border-radius: 0; font-size: 13px; font-weight: 500;
   padding: 0; white-space: nowrap; flex-shrink: 0;
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-family: 'Geist Mono','JetBrains Mono', ui-monospace, monospace;
   letter-spacing: 0.02em;
   align-self: center;
 }
@@ -336,7 +336,7 @@ body {
 .cab-tag {
   font-size: 11px; font-weight: 500; color: var(--text-dim);
   background: transparent; border: 1px solid var(--border); border-radius: 4px; padding: 2px 8px;
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-family: 'Geist Mono','JetBrains Mono', ui-monospace, monospace;
   letter-spacing: 0.02em;
 }
 .cabinet-card:hover .cab-tag { border-color: var(--border-md); }
@@ -540,7 +540,7 @@ body {
   flex: 1; border: 1px solid var(--border); border-radius: var(--r-card);
   padding: 14px; text-align: center; display: flex; flex-direction: column; gap: 4px;
 }
-.gc-art { font-size: 22px; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+.gc-art { font-size: 22px; font-weight: 700; font-family: 'Geist Mono','JetBrains Mono', monospace; }
 .gc-name { font-size: 11px; font-weight: 600; color: var(--text-muted); letter-spacing: 0.3px; text-transform: uppercase; }
 .gc-m .gc-art { color: var(--notion-blue); }
 .gc-f .gc-art { color: var(--pink); }
@@ -556,7 +556,7 @@ body {
   display: flex; justify-content: space-between; align-items: center;
 }
 .cp-sub { font-size: 13px; color: var(--text-muted); font-weight: 500; }
-.cp-end { font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; color: var(--notion-blue); }
+.cp-end { font-family: 'Geist Mono','JetBrains Mono', monospace; font-size: 16px; font-weight: 700; color: var(--notion-blue); }
 
 /* Formula box */
 .formula-box {
@@ -566,7 +566,7 @@ body {
 }
 .f-part {
   display: inline-block; padding: 4px 12px; border-radius: 4px;
-  font-family: 'JetBrains Mono', monospace; font-weight: 600;
+  font-family: 'Geist Mono','JetBrains Mono', monospace; font-weight: 600;
 }
 .f-aux { background: rgba(0,117,222,0.12); color: var(--notion-blue); }
 .f-main { background: rgba(221,91,0,0.1); color: var(--orange); }
@@ -581,7 +581,7 @@ body {
   border-left: 3px solid var(--notion-blue);
   border-radius: 0 var(--r-sm) var(--r-sm) 0;
 }
-.ex-de { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text); line-height: 1.5; }
+.ex-de { font-family: 'Geist Mono','JetBrains Mono', monospace; font-size: 13px; color: var(--text); line-height: 1.5; }
 .ex-vi { font-size: 12px; color: var(--text-muted); font-weight: 400; }
 
 /* Warn/Tip sections */
@@ -607,7 +607,7 @@ body {
   background: var(--badge-bg); color: var(--badge-txt);
   border: 1px solid rgba(9,127,232,0.2); border-radius: var(--r-pill);
   font-size: 12px; font-weight: 600; padding: 3px 11px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Geist Mono','JetBrains Mono', monospace;
 }
 
 /* Highlight box */
@@ -668,7 +668,7 @@ body {
 /* Lists */
 .zt-list { padding-left: 18px; display: flex; flex-direction: column; gap: 5px; }
 .zt-list li { font-size: 13px; color: var(--text); line-height: 1.5; }
-.zt-list code { background: var(--warm-white); border-radius: 3px; padding: 1px 5px; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+.zt-list code { background: var(--warm-white); border-radius: 3px; padding: 1px 5px; font-family: 'Geist Mono','JetBrains Mono', monospace; font-size: 12px; }
 
 /* ─── Related cards in modal ─── */
 .modal-related {
@@ -791,11 +791,12 @@ footer strong { color: white; }
 body { overflow-y: auto !important; }
 
 /* ─── Dino Language Shell ─── */
-.dl-shell{position:sticky;top:0;z-index:1000;background:color-mix(in srgb, var(--bg) 88%, transparent);backdrop-filter:saturate(140%) blur(12px);-webkit-backdrop-filter:saturate(140%) blur(12px);border-bottom:1px solid var(--border);font-family:'Space Grotesk',-apple-system,system-ui,sans-serif}
+.dl-shell{position:sticky;top:0;z-index:1000;background:color-mix(in srgb, var(--bg) 88%, transparent);backdrop-filter:saturate(140%) blur(12px);-webkit-backdrop-filter:saturate(140%) blur(12px);border-bottom:1px solid var(--border);font-family:'Geist','Geist','Inter',-apple-system,system-ui,sans-serif}
 .dl-shell-inner{display:flex;align-items:center;gap:14px;height:64px;max-width:1280px;margin:0 auto;padding:0 24px}
 .dl-shell-brand{display:inline-flex;align-items:center;gap:10px;font-weight:600;font-size:15px;letter-spacing:-.01em;color:var(--text);text-decoration:none;flex-shrink:0}
-.dl-shell-brand-mark{width:26px;height:26px;border-radius:7px;background:#17171c;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;letter-spacing:-.02em}
-[data-theme="dark"] .dl-shell-brand-mark{background:var(--coral);color:#17171c}
+.dl-shell-brand-mark{width:28px;height:28px;background:linear-gradient(135deg,#FF7759 0%,#D9A557 50%,#4F4A5C 100%);border-radius:40% 60% 55% 45% / 50% 45% 55% 50%;color:#FAFAFA;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;letter-spacing:-.04em;transition:border-radius .8s ease;flex-shrink:0}
+.dl-shell-brand:hover .dl-shell-brand-mark{animation:dl-blob-morph 4s ease-in-out infinite}
+@keyframes dl-blob-morph{0%,100%{border-radius:40% 60% 55% 45% / 50% 45% 55% 50%}33%{border-radius:55% 45% 40% 60% / 45% 60% 40% 55%}66%{border-radius:50% 50% 60% 40% / 55% 40% 60% 45%}}
 .dl-shell-crumbs{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-muted);flex-shrink:0}
 .dl-shell-crumb{color:var(--text-muted);text-decoration:none;transition:color .15s ease}
 .dl-shell-crumb:hover{color:var(--text)}

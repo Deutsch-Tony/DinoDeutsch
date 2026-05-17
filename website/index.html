@@ -772,13 +772,27 @@ footer::before{
     const el = document.getElementById('langs');
     if(el) window.scrollTo({top: el.offsetTop - 60, behavior:'smooth'});
   }
+  // Inline toast for soon/disabled items (no native alert)
+  function showToast(msg){
+    let t = document.getElementById('dl-toast');
+    if(!t){
+      t = document.createElement('div');
+      t.id = 'dl-toast';
+      t.style.cssText = 'position:fixed;left:50%;bottom:32px;transform:translateX(-50%) translateY(20px);background:#212121;color:#FAFAFA;font-family:Geist,Inter,sans-serif;font-size:14px;font-weight:500;padding:12px 20px;border-radius:999px;box-shadow:0 12px 32px rgba(33,33,33,0.18);z-index:9999;opacity:0;transition:opacity .25s,transform .25s;letter-spacing:-0.01em;max-width:90vw;text-align:center;';
+      document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    requestAnimationFrame(()=>{t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';});
+    clearTimeout(t._timer);
+    t._timer = setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(-50%) translateY(20px)';}, 2400);
+  }
   document.querySelectorAll('.lang-card--soon, .footer-col a.disabled').forEach(el => {
     el.addEventListener('click', e => {
       e.preventDefault();
       const lang = el.dataset.lang;
-      alert(lang
-        ? `${lang} đang được biên tập. Đăng ký để nhận thông báo khi xuất bản.`
-        : 'Mục này đang được biên tập. Đăng ký để nhận thông báo khi xuất bản.');
+      showToast(lang
+        ? `${lang} đang được biên tập — sẽ có sớm.`
+        : 'Mục này đang được biên tập.');
     });
   });
 </script>

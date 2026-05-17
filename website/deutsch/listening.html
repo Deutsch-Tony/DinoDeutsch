@@ -6,7 +6,7 @@
 <title>Hören · Dino Language</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#fff;--bg2:#fafaf9;--bg3:#f5f4f0;
@@ -17,8 +17,8 @@
   --green:#2a9d99;--orange:#dd5b00;--teal:#2a9d99;--purple:#391c57;
   --shadow:0 1px 2px rgba(0,0,0,.04);
   --shadow-deep:0 12px 32px -8px rgba(0,0,0,.08);
-  --font:'Space Grotesk',-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
-  --font-mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  --font:'Geist','Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  --font-mono:'Geist Mono','JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
 }
 [data-theme="dark"]{
   --bg:#0f0f12;--bg2:#16161b;--bg3:#1c1c22;
@@ -88,8 +88,9 @@ textarea{width:100%;min-height:112px;resize:vertical;border:1px solid var(--bord
 .dl-shell{position:sticky;top:0;z-index:1000;background:color-mix(in srgb, var(--bg) 88%, transparent);backdrop-filter:saturate(140%) blur(12px);-webkit-backdrop-filter:saturate(140%) blur(12px);border-bottom:1px solid var(--border);font-family:var(--font)}
 .dl-shell-inner{display:flex;align-items:center;gap:16px;height:64px;max-width:1200px;margin:0 auto;padding:0 24px}
 .dl-shell-brand{display:inline-flex;align-items:center;gap:10px;font-weight:600;font-size:15px;letter-spacing:-.01em;color:var(--tx);text-decoration:none}
-.dl-shell-brand-mark{width:26px;height:26px;border-radius:7px;background:#17171c;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;letter-spacing:-.02em}
-[data-theme="dark"] .dl-shell-brand-mark{background:var(--coral);color:#17171c}
+.dl-shell-brand-mark{width:28px;height:28px;background:linear-gradient(135deg,#FF7759 0%,#D9A557 50%,#4F4A5C 100%);border-radius:40% 60% 55% 45% / 50% 45% 55% 50%;color:#FAFAFA;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;letter-spacing:-.04em;transition:border-radius .8s ease;flex-shrink:0}
+.dl-shell-brand:hover .dl-shell-brand-mark{animation:dl-blob-morph 4s ease-in-out infinite}
+@keyframes dl-blob-morph{0%,100%{border-radius:40% 60% 55% 45% / 50% 45% 55% 50%}33%{border-radius:55% 45% 40% 60% / 45% 60% 40% 55%}66%{border-radius:50% 50% 60% 40% / 55% 40% 60% 45%}}
 .dl-shell-crumbs{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--tx2)}
 .dl-shell-crumb{color:var(--tx2);text-decoration:none;transition:color .15s ease}
 .dl-shell-crumb:hover{color:var(--tx)}

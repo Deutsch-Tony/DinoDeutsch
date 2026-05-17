@@ -6,7 +6,7 @@
 <title>KI Tutor · Dino Language</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ═══ COHERE EDITION ═══════════════════════════════════ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -43,8 +43,8 @@
   --r16: 22px;
   --rpill: 9999px;
 
-  --font: 'Space Grotesk', -apple-system, system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --font: 'Geist','Geist','Inter', -apple-system, system-ui, sans-serif;
+  --font-mono: 'Geist Mono','JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 }
 
 [data-theme="dark"]{
@@ -99,15 +99,24 @@ nav {
   display: flex; align-items: center; gap: 8px;
 }
 .logo-mark {
-  width: 26px; height: 26px;
-  background: #17171c;
-  color: #ffffff;
-  border-radius: 7px;
+  width: 28px; height: 28px;
+  background: linear-gradient(135deg, #FF7759 0%, #D9A557 50%, #4F4A5C 100%);
+  color: #FAFAFA;
+  border-radius: 40% 60% 55% 45% / 50% 45% 55% 50%;
   display: flex; align-items: center; justify-content: center;
-  font-size: 13px; font-weight: 700;
-  letter-spacing: -0.02em;
+  font-size: 14px; font-weight: 700;
+  letter-spacing: -0.04em;
+  transition: border-radius 0.8s ease;
+  flex-shrink: 0;
 }
-[data-theme="dark"] .logo-mark { background: var(--coral); color: #17171c; }
+.logo:hover .logo-mark {
+  animation: dl-blob-morph 4s ease-in-out infinite;
+}
+@keyframes dl-blob-morph {
+  0%,100% { border-radius: 40% 60% 55% 45% / 50% 45% 55% 50%; }
+  33% { border-radius: 55% 45% 40% 60% / 45% 60% 40% 55%; }
+  66% { border-radius: 50% 50% 60% 40% / 55% 40% 60% 45%; }
+}
 .logo-copy strong { font-size: 15px; }
 .nav-sep {
   color: var(--gray-100);

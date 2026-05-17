@@ -6,7 +6,7 @@
 <title>Wortschatz · Dino Language</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#fff;--bg2:#fafaf9;--bg3:#f5f4f0;
@@ -31,7 +31,7 @@
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
-body{background:var(--bg);color:var(--tx);font-family:'Space Grotesk',-apple-system,system-ui,sans-serif;font-size:16px;line-height:1.5;transition:background .25s,color .15s;}
+body{background:var(--bg);color:var(--tx);font-family:'Geist','Geist','Inter',-apple-system,system-ui,sans-serif;font-size:16px;line-height:1.5;transition:background .25s,color .15s;}
 ::selection{background:rgba(0,117,222,.2);}
 
 /* ── TOPBAR ── */
@@ -65,7 +65,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Space Grotesk',-apple-sys
   display:inline-flex;align-items:center;gap:8px;
   padding:6px 12px;margin-bottom:24px;
   border:var(--b);border-radius:9999px;
-  font-family:'JetBrains Mono',ui-monospace,monospace;
+  font-family:'Geist Mono','JetBrains Mono',ui-monospace,monospace;
   font-size:12px;letter-spacing:0.04em;color:var(--tx2);
   width:fit-content;
 }
@@ -83,7 +83,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Space Grotesk',-apple-sys
 }
 .pill::after{
   content:attr(data-label);
-  font-family:'JetBrains Mono',ui-monospace,monospace;
+  font-family:'Geist Mono','JetBrains Mono',ui-monospace,monospace;
   font-size:11px;letter-spacing:0.06em;text-transform:uppercase;
   color:var(--tx3);font-weight:500;
 }
@@ -103,7 +103,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Space Grotesk',-apple-sys
 
 /* ── SECTION LABEL (Cohere editorial) ── */
 .section-eyebrow{
-  font-family:'JetBrains Mono',ui-monospace,monospace;
+  font-family:'Geist Mono','JetBrains Mono',ui-monospace,monospace;
   font-size:12px;letter-spacing:0.06em;text-transform:uppercase;
   color:var(--tx2);
   margin:48px auto 12px;max-width:1200px;padding:0 24px;
@@ -129,11 +129,11 @@ body{background:var(--bg);color:var(--tx);font-family:'Space Grotesk',-apple-sys
 .ct{font-size:19px;font-weight:600;letter-spacing:-0.01em;margin-bottom:0;color:var(--tx);line-height:1.2;}
 .cd{font-size:14px;color:var(--tx2);line-height:1.5;margin-bottom:0;}
 .cf{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:4px;}
-.cc{font-size:13px;font-weight:500;background:transparent;color:var(--tx3);border-radius:0;padding:0;font-family:'JetBrains Mono',ui-monospace,monospace;letter-spacing:0.02em;}
+.cc{font-size:13px;font-weight:500;background:transparent;color:var(--tx3);border-radius:0;padding:0;font-family:'Geist Mono','JetBrains Mono',ui-monospace,monospace;letter-spacing:0.02em;}
 .ca{font-size:14px;color:var(--tx3);transition:transform .15s,color .15s;}
 .cab:hover .ca,.cab.open .ca{color:var(--coral);transform:translateX(3px);}
 .ctags{display:flex;flex-wrap:wrap;gap:6px;margin-top:0;}
-.ctag{font-size:11px;color:var(--tx3);background:transparent;border:var(--b);border-radius:4px;padding:2px 8px;font-family:'JetBrains Mono',ui-monospace,monospace;letter-spacing:0.02em;}
+.ctag{font-size:11px;color:var(--tx3);background:transparent;border:var(--b);border-radius:4px;padding:2px 8px;font-family:'Geist Mono','JetBrains Mono',ui-monospace,monospace;letter-spacing:0.02em;}
 
 /* ── STUDY MODES BAR ── */
 .mbar{display:none;border-top:var(--b);background:var(--bg);}
@@ -367,11 +367,12 @@ nav.tb { display: none !important; }
 body { overflow-y: auto !important; }
 
 /* ─── Dino Language Shell ─── */
-.dl-shell{position:sticky;top:0;z-index:1000;background:color-mix(in srgb, var(--bg) 88%, transparent);backdrop-filter:saturate(140%) blur(12px);-webkit-backdrop-filter:saturate(140%) blur(12px);border-bottom:var(--b);font-family:'Space Grotesk',-apple-system,system-ui,sans-serif}
+.dl-shell{position:sticky;top:0;z-index:1000;background:color-mix(in srgb, var(--bg) 88%, transparent);backdrop-filter:saturate(140%) blur(12px);-webkit-backdrop-filter:saturate(140%) blur(12px);border-bottom:var(--b);font-family:'Geist','Geist','Inter',-apple-system,system-ui,sans-serif}
 .dl-shell-inner{display:flex;align-items:center;gap:14px;height:64px;max-width:1280px;margin:0 auto;padding:0 24px}
 .dl-shell-brand{display:inline-flex;align-items:center;gap:10px;font-weight:600;font-size:15px;letter-spacing:-.01em;color:var(--tx);text-decoration:none;flex-shrink:0}
-.dl-shell-brand-mark{width:26px;height:26px;border-radius:7px;background:#17171c;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;letter-spacing:-.02em}
-[data-theme=dark] .dl-shell-brand-mark{background:var(--coral);color:#17171c}
+.dl-shell-brand-mark{width:28px;height:28px;background:linear-gradient(135deg,#FF7759 0%,#D9A557 50%,#4F4A5C 100%);border-radius:40% 60% 55% 45% / 50% 45% 55% 50%;color:#FAFAFA;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;letter-spacing:-.04em;transition:border-radius .8s ease;flex-shrink:0}
+.dl-shell-brand:hover .dl-shell-brand-mark{animation:dl-blob-morph 4s ease-in-out infinite}
+@keyframes dl-blob-morph{0%,100%{border-radius:40% 60% 55% 45% / 50% 45% 55% 50%}33%{border-radius:55% 45% 40% 60% / 45% 60% 40% 55%}66%{border-radius:50% 50% 60% 40% / 55% 40% 60% 45%}}
 .dl-shell-crumbs{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--tx2);flex-shrink:0}
 .dl-shell-crumb{color:var(--tx2);text-decoration:none;transition:color .15s ease}
 .dl-shell-crumb:hover{color:var(--tx)}
